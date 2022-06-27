@@ -6,4 +6,4 @@ build:
     - linux
   stage: build
   script:
-    - mvn clean install
+    - ./mvnw clean verify --show-version --batch-mode --errors
