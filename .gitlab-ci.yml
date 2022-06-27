@@ -1,0 +1,9 @@
+stages:
+  - build
+
+build:
+  tags:
+    - linux
+  stage: build
+  script:
+    - maven clean verify --show-version --batch-mode --errors
