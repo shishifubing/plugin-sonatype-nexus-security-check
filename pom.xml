@@ -4,7 +4,7 @@
 
   <groupId>io.snyk.plugins</groupId>
   <artifactId>nexus-snyk-security-plugin</artifactId>
-  <version>${revision}</version>
+  <version>0.0.1</version>
   <packaging>pom</packaging>
 
   <name>Nexus Snyk Security :: Aggregator</name>
@@ -18,7 +18,7 @@
     <project.targetCompatibility>1.8</project.targetCompatibility>
 
     <!-- will be overridden in CD pipeline -->
-    <revision>LOCAL-SNAPSHOT</revision>
+    <revision>0.0.1</revision>
 
     <!--
      | dependency and plugin versions, please keep alphabetical.
