@@ -10,7 +10,7 @@ build:
     DEPLOY_DIR: /var/nexus/deploy
     DATA_DIR: /var/nexus/data
   script:
-    - ./mvnw clean install -P buildKar
+    - ./mvnw -P buildKar clean verify --show-version --batch-mode --errors
     - sudo cp target/nexus-security-plugin-*-bundle.kar "${DEPLOY_DIR}/"
     - sudo chown 200 "${DEPLOY_DIR}"/*
     - docker restart nexus
