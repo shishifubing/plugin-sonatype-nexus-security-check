@@ -1,0 +1,83 @@
+package com.kongrentian.plugins.nexus.scanner;
+
+import javax.annotation.Nonnull;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.time.Instant;
+
+import com.kongrentian.plugins.nexus.api.ClientAPI;
+import com.kongrentian.plugins.nexus.model.ScanResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.sonatype.nexus.common.collect.AttributesMap;
+import org.sonatype.nexus.common.collect.NestedAttributesMap;
+import org.sonatype.nexus.repository.storage.Asset;
+import org.sonatype.nexus.repository.storage.AssetStore;
+import org.sonatype.nexus.repository.view.Content;
+import org.sonatype.nexus.repository.view.Payload;
+import org.sonatype.nexus.repository.Repository;
+import retrofit2.Response;
+
+
+@Named
+public class Scanner {
+    private static final Logger LOG = LoggerFactory.getLogger(Scanner.class);
+
+    private final AssetStore assetStore;
+
+    @Inject
+    public Scanner(final AssetStore assetStore) {
+        this.assetStore = assetStore;
+    }
+
+    ScanResult scan(@Nonnull org.sonatype.nexus.repository.view.Response response,
+                    @Nonnull Repository repository,
+                    ClientAPI clientAPI) throws Exception {
+        Payload payload = response.getPayload();
+        if (payload == null || !(payload instanceof Content)) {
+            return null;
+        }
+        Content content = (Content) payload;
+        LOG.info("Payload - {}", content.getAttributes().backing().toString());
+        AttributesMap attributes = content.getAttributes();
+        Asset asset = attributes.get(Asset.class);
+        if (asset == null) {
+            return null;
+        }
+
+        NestedAttributesMap securityAttributes = asset.attributes().child("Security");
+        if (skipScan(securityAttributes)) {
+            return null;
+        }
+
+        Response<ScanResult> responseCheck = clientAPI.check(attributes).execute();
+        ScanResult scanResult = responseCheck.body();
+        if (!responseCheck.isSuccessful() || scanResult == null) {
+            return scanResult;
+        }
+        LOG.debug("Security check response: {}", responseCheck.message());
+        updateAssetAttributes(scanResult, securityAttributes);
+        assetStore.save(asset);
+
+        return scanResult;
+    }
+
+    private boolean skipScan(NestedAttributesMap securityAttributes) {
+        if (securityAttributes == null || securityAttributes.isEmpty()) {
+            return false;
+        }
+        // TODO: a date check
+        // (Instant) securityAttributes.get("security_check_date");
+        return true;
+    }
+
+    private void updateAssetAttributes(@Nonnull ScanResult scanResult,
+                                       @Nonnull NestedAttributesMap securityAttributes) {
+        securityAttributes.clear();
+        securityAttributes.set("security_issue", scanResult.issue);
+        securityAttributes.set("security_allowed", scanResult.allowed);
+        securityAttributes.set("security_check_date", scanResult.checkDate);
+        securityAttributes.set("security_reason", scanResult.reason);
+    }
+
+}

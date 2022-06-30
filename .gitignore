@@ -17,6 +17,8 @@ target/
 .settings/
 .classpath
 .project
+bin
+.apt_generated
 
 #################################
 # Logs and temp files           #

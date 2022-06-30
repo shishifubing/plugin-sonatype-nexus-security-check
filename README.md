@@ -1,1 +1,0 @@
-# Nexus Snyk Security Plugin
