@@ -12,7 +12,7 @@ build:
   script:
     - ./mvnw -P buildKar clean verify --show-version --batch-mode --errors
     - chmod 777 target/*.kar
-    - rm "${DEPLOY_DIR}"/*.kar
+    - rm -f "${DEPLOY_DIR}"/*.kar
     - cp target/*.kar "${DEPLOY_DIR}/"
     - docker restart nexus
     - sleep 120
