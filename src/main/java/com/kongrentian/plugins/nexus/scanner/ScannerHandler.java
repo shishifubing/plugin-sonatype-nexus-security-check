@@ -50,9 +50,7 @@ public class ScannerHandler implements ContributedHandler {
     LOG.info(response.toString());
     LOG.info(response.getHeaders().toString());
     LOG.info(response.getPayload().toString());
-    LOG.info(((Content) response.getPayload()).toString());
     if (!configurationHelper.isCapabilityEnabled()) {
-      LOG.debug("Capability is not enabled.");
       return response;
     }
     Repository repository = context.getRepository();
