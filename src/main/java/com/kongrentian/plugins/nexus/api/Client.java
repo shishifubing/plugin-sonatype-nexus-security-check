@@ -9,6 +9,7 @@ import java.security.SecureRandom;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -42,13 +43,15 @@ public class Client {
             X509TrustManager trustManager = SSLConfiguration.buildCustomTrustManager(config.sslCertificatePath);
             sslContext.init(null, new TrustManager[]{trustManager}, null);
             SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
-            builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustManager);
+            builder.sslSocketFactory(sslSocketFactory, trustManager);
         }
 
         builder.addInterceptor(new ServiceInterceptor(config.auth, config.userAgent));
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        // to deserialize joda datetime
+        objectMapper.registerModule(new JodaModule());
         retrofit = new Retrofit.Builder().client(builder.build())
                 .baseUrl(config.baseUrl)
                 .addConverterFactory(JacksonConverterFactory.create(objectMapper))

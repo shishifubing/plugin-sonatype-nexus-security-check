@@ -3,7 +3,9 @@ package com.kongrentian.plugins.nexus.scanner;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 import com.kongrentian.plugins.nexus.api.ClientAPI;
 import com.kongrentian.plugins.nexus.model.ScanResult;
@@ -34,7 +36,7 @@ public class Scanner {
                     @Nonnull Repository repository,
                     ClientAPI clientAPI) throws Exception {
         Payload payload = response.getPayload();
-        if (payload == null || !(payload instanceof Content)) {
+        if (!(payload instanceof Content)) {
             return null;
         }
         Content content = (Content) payload;
@@ -55,6 +57,7 @@ public class Scanner {
         if (!responseCheck.isSuccessful() || scanResult == null) {
             return scanResult;
         }
+
         LOG.debug("Security check response: {}", responseCheck.message());
         updateAssetAttributes(scanResult, securityAttributes);
         assetStore.save(asset);
@@ -66,9 +69,11 @@ public class Scanner {
         if (securityAttributes == null || securityAttributes.isEmpty()) {
             return false;
         }
-        // TODO: a date check
-        // (Instant) securityAttributes.get("security_check_date");
-        return true;
+        Instant checkDate =  (Instant) securityAttributes.get("security_check_date");
+        if (checkDate == null) {
+            return false;
+        }
+        return ChronoUnit.HOURS.between(checkDate, Instant.now()) <= 24;
     }
 
     private void updateAssetAttributes(@Nonnull ScanResult scanResult,
