@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.sonatype.nexus.common.collect.AttributesMap;
 import org.sonatype.nexus.repository.Repository;
 import org.sonatype.nexus.repository.types.ProxyType;
+import org.sonatype.nexus.repository.view.Content;
 import org.sonatype.nexus.repository.view.Context;
 import org.sonatype.nexus.repository.view.Response;
 import org.sonatype.nexus.repository.view.handlers.ContributedHandler;
@@ -42,9 +43,13 @@ public class ScannerHandler implements ContributedHandler {
   @Nonnull
   @Override
   public Response handle(@Nonnull Context context) throws Exception {
-    LOG.info("Context - {}", context.getAttributes().toString());
-    LOG.info("Request - {}", context.getRequest().toString());
+    LOG.info(context.getRequest().toString());
+    LOG.info(context.getRequest().toString());
     Response response = context.proceed();
+    LOG.info(response.toString());
+    LOG.info(response.getHeaders().toString());
+    LOG.info(response.getPayload().toString());
+    LOG.info(((Content) response.getPayload()).toString());
     if (!configurationHelper.isCapabilityEnabled()) {
       LOG.debug("Capability is not enabled.");
       return response;

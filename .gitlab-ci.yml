@@ -15,5 +15,8 @@ build:
     - sudo chown 200 "${DEPLOY_DIR}"/*
     - docker restart nexus
     - sleep 120
-    - curl --fail "${NEXUS_URL}/repository/pypi/packages/pip/21.3.1/pip-21.3.1-py3-none-any.whl"
+    - curl 
+      --fail 
+      --user "${NEXUS_LOGIN}:${NEXUS_PASSWORD}" 
+      "${NEXUS_URL}/repository/pypi/packages/pip/21.3.1/pip-21.3.1-py3-none-any.whl"
       || sudo tail -n 300 "${DATA_DIR}/log/nexus.log"
