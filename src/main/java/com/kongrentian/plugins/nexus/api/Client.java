@@ -51,7 +51,7 @@ public class Client {
 
         builder.addInterceptor(new ServiceInterceptor(config.auth, config.userAgent));
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         // to deserialize joda datetime
         objectMapper.registerModule(new JodaModule());

@@ -18,6 +18,8 @@ import org.sonatype.nexus.repository.view.Context;
 import org.sonatype.nexus.repository.view.Response;
 import org.sonatype.nexus.repository.view.handlers.ContributedHandler;
 
+import java.util.Map;
+
 @Named
 @Singleton
 public class ScannerHandler implements ContributedHandler {
@@ -54,10 +56,13 @@ public class ScannerHandler implements ContributedHandler {
       return response;
     }
     AttributesMap attributes = context.getAttributes();
-    ScanResult scanResult = scanner.scan(response, repository, clientAPI);
-    if (scanResult == null || scanResult.allowed) {
-      return response;
+    for (Map.Entry<String, Object> entry: attributes.entries()) {
+      LOG.info("entry {}: {}", entry.getKey(), entry.getValue());
     }
+    //ScanResult scanResult = scanner.scan(response, repository, clientAPI);
+    //if (scanResult == null || scanResult.allowed) {
+    //  return response;
+    //}
     throw new RuntimeException("not allowed");
   }
 

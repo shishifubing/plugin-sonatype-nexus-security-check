@@ -3,9 +3,9 @@ package com.kongrentian.plugins.nexus.scanner;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Map;
 
 import com.kongrentian.plugins.nexus.api.ClientAPI;
 import com.kongrentian.plugins.nexus.model.ScanResult;
@@ -19,7 +19,6 @@ import org.sonatype.nexus.repository.view.Content;
 import org.sonatype.nexus.repository.view.Payload;
 import org.sonatype.nexus.repository.Repository;
 import retrofit2.Response;
-import org.sonatype.nexus.repository.security.SecurityHandler;
 
 
 @Named
@@ -50,7 +49,8 @@ public class Scanner {
         if (skipScan(securityAttributes)) {
             return null;
         }
-        Response<ScanResult> responseCheck = clientAPI.check(asset.attributes()).execute();
+
+        Response<ScanResult> responseCheck = clientAPI.check(attributes).execute();
         String message = responseCheck.message();
         LOG.info("Security check response: {}", message);
         ScanResult scanResult = responseCheck.body();
