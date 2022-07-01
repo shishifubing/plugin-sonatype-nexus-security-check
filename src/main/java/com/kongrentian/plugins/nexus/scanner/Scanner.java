@@ -50,7 +50,7 @@ public class Scanner {
         if (skipScan(securityAttributes)) {
             return null;
         }
-        Response<ScanResult> responseCheck = clientAPI.check(attributes).execute();
+        Response<ScanResult> responseCheck = clientAPI.check(asset.attributes()).execute();
         String message = responseCheck.message();
         LOG.info("Security check response: {}", message);
         ScanResult scanResult = responseCheck.body();
