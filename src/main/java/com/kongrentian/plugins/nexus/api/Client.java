@@ -9,6 +9,7 @@ import java.security.SecureRandom;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -52,6 +53,8 @@ public class Client {
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         // to deserialize joda datetime
         objectMapper.registerModule(new JodaModule());
+        // No serializer found for class com.google.common.hash.HashCode$BytesHashCode
+        objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
         retrofit = new Retrofit.Builder().client(builder.build())
                 .baseUrl(config.baseUrl)
                 .addConverterFactory(JacksonConverterFactory.create(objectMapper))

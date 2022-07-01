@@ -10,6 +10,7 @@ import com.kongrentian.plugins.nexus.capability.CapabilityConfiguration;
 import com.kongrentian.plugins.nexus.model.ScanResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sonatype.nexus.common.collect.AttributesMap;
 import org.sonatype.nexus.repository.Repository;
 import org.sonatype.nexus.repository.types.ProxyType;
 import org.sonatype.nexus.repository.view.Context;
@@ -24,7 +25,7 @@ public class ScannerHandler implements ContributedHandler {
   private final ConfigurationHelper configurationHelper;
   private final Scanner scanner;
 
-  private ClientAPI clientAPI;
+  private final ClientAPI clientAPI;
   private CapabilityConfiguration configuration;
 
   @Inject
@@ -41,7 +42,8 @@ public class ScannerHandler implements ContributedHandler {
   @Nonnull
   @Override
   public Response handle(@Nonnull Context context) throws Exception {
-    LOG.info("Context - {}", context.getAttributes().backing().toString());
+    LOG.info("Context - {}", context.getAttributes().toString());
+    LOG.info("Request - {}", context.getRequest().toString());
     Response response = context.proceed();
     if (!configurationHelper.isCapabilityEnabled()) {
       LOG.debug("Capability is not enabled.");
@@ -53,6 +55,7 @@ public class ScannerHandler implements ContributedHandler {
               repository.getName(), repository.getType());
       return response;
     }
+    AttributesMap attributes = context.getAttributes();
     ScanResult scanResult = scanner.scan(response, repository, clientAPI);
     if (scanResult == null || scanResult.allowed) {
       return response;
