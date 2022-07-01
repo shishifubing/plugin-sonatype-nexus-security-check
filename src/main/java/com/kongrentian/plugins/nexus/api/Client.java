@@ -55,12 +55,14 @@ public class Client {
         objectMapper.registerModule(new JodaModule());
         // No serializer found for class com.google.common.hash.HashCode$BytesHashCode
         objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+        // Direct self-reference leading to cycle
+        objectMapper.disable(SerializationFeature.FAIL_ON_SELF_REFERENCES);
+
         retrofit = new Retrofit.Builder().client(builder.build())
                 .baseUrl(config.baseUrl)
                 .addConverterFactory(JacksonConverterFactory.create(objectMapper))
                 .build();
     }
-
 
     public ClientAPI buildSync() {
         return retrofit.create(ClientAPI.class);
