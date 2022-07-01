@@ -7,6 +7,8 @@ import javax.net.ssl.X509TrustManager;
 import java.security.SecureRandom;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -61,6 +63,8 @@ public class Client {
         // (through reference chain:
         // com.orientechnologies.orient.core.id.ORecordId["identity"]
         objectMapper.disable(SerializationFeature.WRITE_SELF_REFERENCES_AS_NULL);
+        objectMapper.disable(JsonParser.Feature.STRICT_DUPLICATE_DETECTION);
+        objectMapper.disable(JsonGenerator.Feature.STRICT_DUPLICATE_DETECTION);
 
         retrofit = new Retrofit.Builder().client(builder.build())
                 .baseUrl(config.baseUrl)
