@@ -55,24 +55,10 @@ public class ScannerHandler implements ContributedHandler {
               repository.getName(), repository.getType());
       return response;
     }
-    AttributesMap attributes = context.getAttributes();
-    LOG.info("----------------------------------------------");
-    for (Map.Entry<String, Object> entry: response.getAttributes().entries()) {
-      LOG.info("RESPONSE ENTRY({}) {}: {}", entry.getValue().getClass(), entry.getKey(), entry.getValue());
+    ScanResult scanResult = scanner.scan(response, repository, clientAPI);
+    if (scanResult == null || scanResult.allowed) {
+      return response;
     }
-    for (Map.Entry<String, Object> entry: ((Content) response.getPayload()).getAttributes().entries()) {
-      LOG.info("RESPONSE ENTRY({}) {}: {}", entry.getValue().getClass(), entry.getKey(), entry.getValue());
-    }
-    for (Map.Entry<String, Object> entry: context.getAttributes().entries()) {
-      LOG.info("CONTEXT ENTRY({}) {}: {}", entry.getValue().getClass(), entry.getKey(), entry.getValue());
-    }
-    for (Map.Entry<String, Map<String, Object>> entry: context.getRepository().getConfiguration().getAttributes().entrySet()) {
-      LOG.info("REPOSITORY ENTRY({}) {}: {}", entry.getValue().getClass(), entry.getKey(), entry.getValue());
-    }
-    //ScanResult scanResult = scanner.scan(response, repository, clientAPI);
-    //if (scanResult == null || scanResult.allowed) {
-    //  return response;
-    //}
     throw new RuntimeException("not allowed");
   }
 
