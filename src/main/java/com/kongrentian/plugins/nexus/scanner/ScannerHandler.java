@@ -43,13 +43,7 @@ public class ScannerHandler implements ContributedHandler {
   @Nonnull
   @Override
   public Response handle(@Nonnull Context context) throws Exception {
-    LOG.info(context.getRequest().toString());
-    LOG.info(context.getRequest().toString());
     Response response = context.proceed();
-    LOG.info(context.getRepository().toString());
-    LOG.info(response.toString());
-    LOG.info(response.getHeaders().toString());
-    LOG.info(response.getPayload().toString());
     if (!configurationHelper.isCapabilityEnabled()) {
       return response;
     }

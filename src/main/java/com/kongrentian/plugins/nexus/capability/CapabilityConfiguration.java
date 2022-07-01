@@ -8,12 +8,12 @@ import static com.kongrentian.plugins.nexus.capability.CapabilityKey.API_TOKEN;
 import static com.kongrentian.plugins.nexus.capability.CapabilityKey.API_URL;
 
 public class CapabilityConfiguration extends CapabilityConfigurationSupport {
-  private String apiUrl;
-  private String apiToken;
+  private final String apiUrl;
+  private final String apiToken;
 
   CapabilityConfiguration(Map<String, String> properties) {
     apiUrl = properties.getOrDefault(API_URL.propertyKey(), API_URL.defaultValue());
-    apiToken = properties.get(API_TOKEN.propertyKey());
+    apiToken = properties.getOrDefault(API_TOKEN.propertyKey(), "");
   }
 
   public String getApiUrl() {

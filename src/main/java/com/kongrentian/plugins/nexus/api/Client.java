@@ -57,6 +57,10 @@ public class Client {
         objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
         // Direct self-reference leading to cycle
         objectMapper.disable(SerializationFeature.FAIL_ON_SELF_REFERENCES);
+        // Infinite recursion (StackOverflowError)
+        // (through reference chain:
+        // com.orientechnologies.orient.core.id.ORecordId["identity"]
+        objectMapper.disable(SerializationFeature.WRITE_SELF_REFERENCES_AS_NULL);
 
         retrofit = new Retrofit.Builder().client(builder.build())
                 .baseUrl(config.baseUrl)

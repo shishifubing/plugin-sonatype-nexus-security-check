@@ -41,25 +41,24 @@ public class Scanner {
             return null;
         }
         Content content = (Content) payload;
-        LOG.info("Payload - {}", content.getAttributes().backing().toString());
         AttributesMap attributes = content.getAttributes();
         Asset asset = attributes.get(Asset.class);
         if (asset == null) {
             return null;
         }
-
         NestedAttributesMap securityAttributes = asset.attributes().child("Security");
         if (skipScan(securityAttributes)) {
             return null;
         }
-
         Response<ScanResult> responseCheck = clientAPI.check(attributes).execute();
+        String message = responseCheck.message();
+        LOG.info("Security check response: {}", message);
         ScanResult scanResult = responseCheck.body();
         if (!responseCheck.isSuccessful() || scanResult == null) {
-            return scanResult;
+            throw new RuntimeException("Could not check " + asset
+                                       + ", code - " + responseCheck.code()
+                                       + ", response: " +  message);
         }
-
-        LOG.debug("Security check response: {}", responseCheck.message());
         updateAssetAttributes(scanResult, securityAttributes);
         assetStore.save(asset);
 
