@@ -56,8 +56,18 @@ public class ScannerHandler implements ContributedHandler {
       return response;
     }
     AttributesMap attributes = context.getAttributes();
-    for (Map.Entry<String, Object> entry: attributes.entries()) {
-      LOG.info("entry {}: {}", entry.getKey(), entry.getValue());
+    LOG.info("----------------------------------------------");
+    for (Map.Entry<String, Object> entry: response.getAttributes().entries()) {
+      LOG.info("RESPONSE ENTRY({}) {}: {}", entry.getValue().getClass(), entry.getKey(), entry.getValue());
+    }
+    for (Map.Entry<String, Object> entry: ((Content) response.getPayload()).getAttributes().entries()) {
+      LOG.info("RESPONSE ENTRY({}) {}: {}", entry.getValue().getClass(), entry.getKey(), entry.getValue());
+    }
+    for (Map.Entry<String, Object> entry: context.getAttributes().entries()) {
+      LOG.info("CONTEXT ENTRY({}) {}: {}", entry.getValue().getClass(), entry.getKey(), entry.getValue());
+    }
+    for (Map.Entry<String, Map<String, Object>> entry: context.getRepository().getConfiguration().getAttributes().entrySet()) {
+      LOG.info("REPOSITORY ENTRY({}) {}: {}", entry.getValue().getClass(), entry.getKey(), entry.getValue());
     }
     //ScanResult scanResult = scanner.scan(response, repository, clientAPI);
     //if (scanResult == null || scanResult.allowed) {
