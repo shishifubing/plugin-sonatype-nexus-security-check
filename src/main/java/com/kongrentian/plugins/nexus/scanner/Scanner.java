@@ -19,6 +19,7 @@ import org.sonatype.nexus.repository.view.Content;
 import org.sonatype.nexus.repository.view.Payload;
 import org.sonatype.nexus.repository.Repository;
 import retrofit2.Response;
+import org.sonatype.nexus.repository.security.SecurityHandler;
 
 
 @Named
