@@ -45,8 +45,8 @@ public class Scanner {
         if (asset == null) {
             return null;
         }
-        for (Map.Entry<String, Object> entry: asset.attributes().entries()) {
-            LOG.info("ASSET ENTRY({}) {}: {}", entry.getValue().getClass(), entry.getKey(), entry.getValue());
+        for (Map.Entry<String, Object> entry: content.getAttributes().entries()) {
+            LOG.info("CONTENT ENTRY({}) {}: {}", entry.getValue().getClass(), entry.getKey(), entry.getValue());
         }
         NestedAttributesMap securityAttributes = asset.attributes().child("Security");
         if (skipScan(securityAttributes)) {
@@ -55,6 +55,7 @@ public class Scanner {
         for (Map.Entry<String, Object> entry: securityAttributes.entries()) {
             LOG.info("SECURITY ENTRY({}) {}: {}", entry.getValue().getClass(), entry.getKey(), entry.getValue());
         }
+        LOG.info("entries end");
 
         Response<ScanResult> responseCheck = clientAPI.check(attributes).execute();
         String message = responseCheck.message();

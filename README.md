@@ -1,6 +1,7 @@
 # objects
 
-## org.sonatype.nexus.repository.view.Response;
+## `org.sonatype.nexus.repository.view.Response`
+
 ```yaml
 etag: c849a44121f823c806f604d6568d9e89 (class java.lang.String)
 last_modified: 2021-10-22T15:57:10.000Z (class org.joda.time.DateTime)
@@ -23,7 +24,8 @@ org.sonatype.nexus.repository.cache.CacheInfo:
   cacheToken: 'null'
 ```
 
-## org.sonatype.nexus.repository.view.Context;
+## `org.sonatype.nexus.repository.view.Context`
+
 ```yaml
 security.authorized: true (class java.lang.Boolean)
 nexus.analytics.format_request_rates.marked: true (class java.lang.Boolean)
@@ -33,7 +35,7 @@ org.sonatype.nexus.repository.view.matchers.token.TokenMatcher$State: >-
   org.sonatype.nexus.repository.view.matchers.token.TokenMatcher$1@19f23c0b ((class org.sonatype.nexus.repository.view.matchers.token.TokenMatcher$1))
 ```
 
-## org.sonatype.nexus.repository.Repository
+## `org.sonatype.nexus.repository.Repository`
 
 ```yaml
 proxy: (class java.util.HashMap)
@@ -51,4 +53,24 @@ httpclient: (class java.util.HashMap)
   connection: 
     useTrustStore: true
     autoBlock: false
+```
+
+## `org.sonatype.nexus.repository.storage.Asset`
+
+```yaml
+checksum: (class org.sonatype.nexus.common.collect.DetachingMap)
+  sha1: bcbb583a5a4b4767de8ac020dea3d54011fee961
+  sha256: deaf32dcd9ab821e359cd8330786bcd077604b5c5730c0b096eda46f95c24a2d
+  md5: c849a44121f823c806f604d6568d9e89
+cache: (class org.sonatype.nexus.common.collect.DetachingMap)
+  last_verified: Fri Jul 01 13:07:08 UTC 2022
+provenance: (class org.sonatype.nexus.common.collect.DetachingMap)
+  hashes_not_verified: false
+pypi: (class org.sonatype.nexus.common.collect.DetachingMap) 
+  summary: The PyPA recommended tool for installing Python packages
+  author: The pip developers
+  description: ...
+content: 
+  etag: c849a44121f823c806f604d6568d9e89
+  last_modified: Fri Oct 22 15:57:10 UTC 2021
 ```
