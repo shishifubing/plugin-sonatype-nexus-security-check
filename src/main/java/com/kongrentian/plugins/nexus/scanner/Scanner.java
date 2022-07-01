@@ -39,25 +39,17 @@ public class Scanner {
         if (!(payload instanceof Content)) {
             return null;
         }
-        Content content = (Content) payload;
-        AttributesMap attributes = content.getAttributes();
+        AttributesMap attributes = ((Content) payload).getAttributes();
         Asset asset = attributes.get(Asset.class);
         if (asset == null) {
             return null;
-        }
-        for (Map.Entry<String, Object> entry: content.getAttributes().entries()) {
-            LOG.info("CONTENT ENTRY({}) {}: {}", entry.getValue().getClass(), entry.getKey(), entry.getValue());
         }
         NestedAttributesMap securityAttributes = asset.attributes().child("Security");
         if (skipScan(securityAttributes)) {
             return null;
         }
-        for (Map.Entry<String, Object> entry: securityAttributes.entries()) {
-            LOG.info("SECURITY ENTRY({}) {}: {}", entry.getValue().getClass(), entry.getKey(), entry.getValue());
-        }
-        LOG.info("entries end");
 
-        Response<ScanResult> responseCheck = clientAPI.check(attributes).execute();
+        Response<ScanResult> responseCheck = clientAPI.check(asset.attributes()).execute();
         String message = responseCheck.message();
         LOG.info("Security check response: {}", message);
         ScanResult scanResult = responseCheck.body();

@@ -16,7 +16,6 @@ import org.sonatype.nexus.repository.view.Context;
 import org.sonatype.nexus.repository.view.Response;
 import org.sonatype.nexus.repository.view.handlers.ContributedHandler;
 
-import java.util.Map;
 
 @Named
 @Singleton
@@ -30,11 +29,11 @@ public class ScannerHandler implements ContributedHandler {
   private CapabilityConfiguration configuration;
 
   @Inject
-  public ScannerHandler(final ConfigurationHelper configurationHelper,
+  public ScannerHandler(ConfigurationHelper configurationHelper,
                         Scanner scanner) {
     this.configurationHelper = configurationHelper;
     this.scanner = scanner;
-    clientAPI = configurationHelper.getSecurityClientAPI();
+    this.clientAPI = configurationHelper.getSecurityClientAPI();
     if (configuration == null) {
       configuration = configurationHelper.getConfiguration();
     }
