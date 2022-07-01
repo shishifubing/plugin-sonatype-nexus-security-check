@@ -49,7 +49,7 @@ public class Scanner {
             return null;
         }
 
-        Response<ScanResult> responseCheck = clientAPI.check(attributes.get("hashCodesMap")).execute();
+        Response<ScanResult> responseCheck = clientAPI.check(attributes.backing()).execute();
         String message = responseCheck.message();
         LOG.info("Security check response: {}", message);
         ScanResult scanResult = responseCheck.body();
