@@ -8,13 +8,14 @@ import java.time.temporal.ChronoUnit;
 import java.util.Map;
 
 import com.kongrentian.plugins.nexus.api.ClientAPI;
+import com.kongrentian.plugins.nexus.model.CheckRequest;
 import com.kongrentian.plugins.nexus.model.ScanResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonatype.nexus.common.collect.AttributesMap;
 import org.sonatype.nexus.common.collect.NestedAttributesMap;
-import org.sonatype.nexus.repository.storage.Asset;
-import org.sonatype.nexus.repository.storage.AssetStore;
+import org.sonatype.nexus.repository.search.DefaultComponentMetadataProducer;
+import org.sonatype.nexus.repository.storage.*;
 import org.sonatype.nexus.repository.view.Content;
 import org.sonatype.nexus.repository.view.Payload;
 import org.sonatype.nexus.repository.Repository;
@@ -27,9 +28,12 @@ public class Scanner {
 
     private final AssetStore assetStore;
 
+    private final ComponentStore componentStore;
+
     @Inject
-    public Scanner(final AssetStore assetStore) {
-        this.assetStore = assetStore;
+    public Scanner(final AssetStore assetStore, final ComponentStore componentStore) {
+       this.assetStore = assetStore;
+       this.componentStore = componentStore;
     }
 
     ScanResult scan(@Nonnull org.sonatype.nexus.repository.view.Response response,
@@ -48,8 +52,18 @@ public class Scanner {
         if (skipScan(securityAttributes)) {
             return null;
         }
+        Component component = componentStore.read(asset.componentId());
+        for (Map.Entry<String, Object> entry: component.attributes().entries()) {
+            LOG.info("COMPONENT ENTRY({}) {}: {}", entry.getValue().getClass(), entry.getKey(), entry.getValue());
+        }
+        for (Map.Entry<String, Object> entry: component.formatAttributes().entries()) {
+            LOG.info("FORMAT ENTRY({}) {}: {}", entry.getValue().getClass(), entry.getKey(), entry.getValue());
+        }
+        LOG.info("COMPONENT INFO = {}, {}, {}, {}", component.format(), component.group(), component.version(),
+                component.name());
 
-        Response<ScanResult> responseCheck = clientAPI.check(attributes.backing()).execute();
+        CheckRequest request = new CheckRequest(response, repository, asset);
+        Response<ScanResult> responseCheck = clientAPI.check(request).execute();
         String message = responseCheck.message();
         LOG.info("Security check response: {}", message);
         ScanResult scanResult = responseCheck.body();
