@@ -49,14 +49,9 @@ public class Client {
 
         builder.addInterceptor(new ServiceInterceptor(config.auth, config.userAgent));
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         // to deserialize joda datetime
         objectMapper.registerModule(new JodaModule());
-        // No serializer found for class com.google.common.hash.HashCode$BytesHashCode
-        objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-        // Direct self-reference leading to cycle
-        objectMapper.disable(SerializationFeature.FAIL_ON_SELF_REFERENCES);
 
         retrofit = new Retrofit.Builder().client(builder.build())
                 .baseUrl(config.baseUrl)

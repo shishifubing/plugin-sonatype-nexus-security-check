@@ -13,7 +13,7 @@ public class ScanResult implements Serializable {
     public boolean allowed;
     @JsonProperty("reason")
     public String reason = "";
-    @JsonProperty("checkDate")
+    @JsonProperty("check_date")
     public Instant checkDate;
 }
 
