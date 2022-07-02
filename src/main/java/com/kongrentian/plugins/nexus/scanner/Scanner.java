@@ -7,6 +7,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kongrentian.plugins.nexus.api.ClientAPI;
 import com.kongrentian.plugins.nexus.model.CheckRequest;
 import com.kongrentian.plugins.nexus.model.ScanResult;
@@ -53,16 +54,9 @@ public class Scanner {
             return null;
         }
         Component component = componentStore.read(asset.componentId());
-        for (Map.Entry<String, Object> entry: component.attributes().entries()) {
-            LOG.info("COMPONENT ENTRY({}) {}: {}", entry.getValue().getClass(), entry.getKey(), entry.getValue());
-        }
-        for (Map.Entry<String, Object> entry: component.formatAttributes().entries()) {
-            LOG.info("FORMAT ENTRY({}) {}: {}", entry.getValue().getClass(), entry.getKey(), entry.getValue());
-        }
-        LOG.info("COMPONENT INFO = {}, {}, {}, {}", component.format(), component.group(), component.version(),
-                component.name());
 
-        CheckRequest request = new CheckRequest(response, repository, asset);
+        CheckRequest request = new CheckRequest(repository, response, asset, component);
+        LOG.info("request - {}", new ObjectMapper().writeValueAsString(request));
         Response<ScanResult> responseCheck = clientAPI.check(request).execute();
         String message = responseCheck.message();
         LOG.info("Security check response: {}", message);
