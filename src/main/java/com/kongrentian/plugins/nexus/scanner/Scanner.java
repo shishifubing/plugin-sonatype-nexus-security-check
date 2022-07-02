@@ -8,6 +8,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.kongrentian.plugins.nexus.api.ClientAPI;
 import com.kongrentian.plugins.nexus.model.CheckRequest;
 import com.kongrentian.plugins.nexus.model.ScanResult;
@@ -56,7 +57,8 @@ public class Scanner {
         Component component = componentStore.read(asset.componentId());
 
         CheckRequest request = new CheckRequest(repository, response, asset, component);
-        LOG.info("request - {}", new ObjectMapper().writeValueAsString(request));
+        ObjectMapper mapper = new ObjectMapper().registerModule(new JodaModule());
+        LOG.info("request - {}", mapper.writeValueAsString(request));
         Response<ScanResult> responseCheck = clientAPI.check(request).execute();
         String message = responseCheck.message();
         LOG.info("Security check response: {}", message);
