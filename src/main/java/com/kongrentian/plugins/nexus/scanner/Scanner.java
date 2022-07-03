@@ -45,7 +45,8 @@ public class Scanner {
         if (!(payload instanceof Content)) {
             return null;
         }
-        AttributesMap attributes = ((Content) payload).getAttributes();
+        Content content = (Content) payload;
+        AttributesMap attributes = content.getAttributes();
         Asset asset = attributes.get(Asset.class);
         if (asset == null) {
             return null;
@@ -55,7 +56,7 @@ public class Scanner {
             return null;
         }
         Component component = componentStore.read(asset.componentId());
-        CheckRequest request = new CheckRequest(userId, repository, response, asset, component);
+        CheckRequest request = new CheckRequest(userId, repository, content, asset, component);
         LOG.info("Security check request - {}", client.getMapper().writeValueAsString(request));
         Response<ScanResult> responseCheck = client.getApi().check(request).execute();
         String message = responseCheck.message();
