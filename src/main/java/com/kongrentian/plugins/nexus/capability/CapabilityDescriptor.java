@@ -46,9 +46,8 @@ public class CapabilityDescriptor
                                 SCAN_INTERVAL.defaultValue())),
                 new CheckboxFormField(
                         FAIL_ON_REQUEST_ERRORS.propertyKey(),
-                        "Whether to fail on scan requests errors",
-                        "If true, and a request fails, an artifact "
-                                + "will not be allowed to be downloaded",
+                        "Fail on scan request errors",
+                        "If false, an artifact can be downloaded if a scan request fails",
                         FormField.OPTIONAL)
                         .withInitialValue(Boolean.parseBoolean(
                                 FAIL_ON_REQUEST_ERRORS.defaultValue())),

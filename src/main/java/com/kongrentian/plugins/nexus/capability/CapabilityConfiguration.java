@@ -23,11 +23,9 @@ public class CapabilityConfiguration extends CapabilityConfigurationSupport {
 
     public CapabilityConfiguration(Map<String, String> properties) {
         /*
-         you cannot use just `get`, because capabilities do not change after
-         they are created
+         you cannot use just `get`, because for some reason properties can be null sometimes
 
-         if you use `get` and the capability does not have such property, it will return `null`,
-         an exception will be thrown, and nexus will not boot up
+         if some of them are null, an exception will be thrown and nexus will not boot up
         */
         this.properties = properties;
 
