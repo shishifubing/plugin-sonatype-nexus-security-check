@@ -17,11 +17,14 @@ public class CheckRequest implements Serializable {
     public CheckRequestRepository repository;
     @JsonProperty
     public CheckRequestComponent component;
+    @JsonProperty
+    public String userId;
 
-    public CheckRequest(Repository repository, Response response,
+    public CheckRequest(String userId, Repository repository, Response response,
                         Asset asset, Component component) {
         this.repository = new CheckRequestRepository(repository);
         this.component = new CheckRequestComponent(response, asset, component);
+        this.userId = userId;
     }
 }
 

@@ -29,7 +29,6 @@ public class ServiceInterceptor implements Interceptor {
         if (this.auth != null && !this.auth.isEmpty()) {
             builder.addHeader("Authorization", "Basic " + this.auth);
         }
-
         return chain.proceed(builder.build());
     }
 }

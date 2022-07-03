@@ -22,16 +22,14 @@ public class ConfigurationHelper {
     private Provider<CapabilityLocator> locatorProvider;
 
     @Nullable
-    public ClientAPI getSecurityClientAPI() {
+    public Client getSecurityClient() {
         CapabilityLocator locator = locatorProvider.get();
         if (locator == null) {
-            LOG.warn("Client cannot be built because CapabilityLocator is null!");
+            LOG.warn("Client cannot be built because CapabilityLocator is null");
             return null;
         }
         try {
-            Client.Config config = new Client.Config(locator.getSecurityCapabilityConfiguration()
-                    .getApiToken());
-            return new Client(config).buildSync();
+            return new Client(locator.getSecurityCapabilityConfiguration());
         } catch (Exception exception) {
             LOG.error("Client could not be created", exception);
             return null;

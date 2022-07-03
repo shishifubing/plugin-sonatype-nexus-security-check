@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.kongrentian.plugins.nexus.capability.CapabilityConfiguration;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -19,79 +20,44 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public class Client {
 
-    private static final String DEFAULT_BASE_URL = "https://localhost/api/v1/";
-    private static final String DEFAULT_USER_AGENT = "";
-    private static final long DEFAULT_CONNECTION_TIMEOUT = 30_000L;
-    private static final long DEFAULT_READ_TIMEOUT = 60_000L;
-    private static final long DEFAULT_WRITE_TIMEOUT = 60_000L;
+    private final ClientAPI api;
+    private final CapabilityConfiguration configuration;
 
-    private final Retrofit retrofit;
-
-    public Client(Config config) throws Exception {
+    public Client(CapabilityConfiguration config) throws Exception {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .connectTimeout(DEFAULT_CONNECTION_TIMEOUT, MILLISECONDS)
-                .readTimeout(DEFAULT_READ_TIMEOUT, MILLISECONDS)
-                .writeTimeout(DEFAULT_WRITE_TIMEOUT, MILLISECONDS);
+                .connectTimeout(config.getConnectionTimeout(), MILLISECONDS)
+                .readTimeout(config.getReadTimeout(), MILLISECONDS)
+                .writeTimeout(config.getWriteTimeout(), MILLISECONDS);
 
-        if (config.trustAllCertificates) {
+        if (config.getApiTrustAllCertificates()) {
             SSLContext sslContext = SSLContext.getInstance("TLS");
             TrustManager[] trustManagers = SSLConfiguration.buildUnsafeTrustManager();
             sslContext.init(null, trustManagers, new SecureRandom());
             SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
             builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustManagers[0]);
-        } else if (config.sslCertificatePath != null && !config.sslCertificatePath.isEmpty()) {
-            SSLContext sslContext = SSLContext.getInstance("TLS");
-            X509TrustManager trustManager = SSLConfiguration.buildCustomTrustManager(config.sslCertificatePath);
-            sslContext.init(null, new TrustManager[]{trustManager}, null);
-            SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
-            builder.sslSocketFactory(sslSocketFactory, trustManager);
         }
 
-        builder.addInterceptor(new ServiceInterceptor(config.auth, config.userAgent));
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        builder.addInterceptor(new ServiceInterceptor(config.getApiAuth(),
+                config.getUserAgent()));
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         // to deserialize joda datetime
-        objectMapper.registerModule(new JodaModule());
+        mapper.registerModule(new JodaModule());
 
-        retrofit = new Retrofit.Builder().client(builder.build())
-                .baseUrl(config.baseUrl)
-                .addConverterFactory(JacksonConverterFactory.create(objectMapper))
+        Retrofit retrofit = new Retrofit.Builder().client(builder.build())
+                .baseUrl(config.getApiUrl())
+                .addConverterFactory(JacksonConverterFactory.create(mapper))
                 .build();
+
+        api = retrofit.create(ClientAPI.class);
+        configuration = config;
     }
 
-    public ClientAPI buildSync() {
-        return retrofit.create(ClientAPI.class);
+    public ClientAPI getApi() {
+        return api;
     }
 
-    public static final class Config {
-        String baseUrl;
-        String auth;
-        String userAgent;
-        boolean trustAllCertificates;
-        String sslCertificatePath;
-
-        public Config(String token) {
-            this(DEFAULT_BASE_URL, token);
-        }
-
-        public Config(String baseUrl, String auth) {
-            this(baseUrl, auth, DEFAULT_USER_AGENT);
-        }
-
-        public Config(String baseUrl, String auth, String userAgent) {
-            this(baseUrl, auth, userAgent, false);
-        }
-
-        public Config(String baseUrl, String auth, String userAgent, boolean trustAllCertificates) {
-            this(baseUrl, auth, userAgent, trustAllCertificates, "");
-        }
-
-        public Config(String baseUrl, String auth, String userAgent, boolean trustAllCertificates, String sslCertificatePath) {
-            this.baseUrl = baseUrl;
-            this.auth = auth;
-            this.userAgent = userAgent;
-            this.trustAllCertificates = trustAllCertificates;
-            this.sslCertificatePath = sslCertificatePath;
-        }
+    public CapabilityConfiguration getConfiguration() {
+        return configuration;
     }
 }

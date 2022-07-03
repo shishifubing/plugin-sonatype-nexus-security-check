@@ -5,19 +5,18 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Map;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
-import com.kongrentian.plugins.nexus.api.ClientAPI;
+import com.kongrentian.plugins.nexus.api.Client;
 import com.kongrentian.plugins.nexus.model.CheckRequest;
 import com.kongrentian.plugins.nexus.model.ScanResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonatype.nexus.common.collect.AttributesMap;
 import org.sonatype.nexus.common.collect.NestedAttributesMap;
-import org.sonatype.nexus.repository.search.DefaultComponentMetadataProducer;
-import org.sonatype.nexus.repository.storage.*;
+import org.sonatype.nexus.repository.storage.Asset;
+import org.sonatype.nexus.repository.storage.AssetStore;
+import org.sonatype.nexus.repository.storage.Component;
+import org.sonatype.nexus.repository.storage.ComponentStore;
 import org.sonatype.nexus.repository.view.Content;
 import org.sonatype.nexus.repository.view.Payload;
 import org.sonatype.nexus.repository.Repository;
@@ -34,13 +33,14 @@ public class Scanner {
 
     @Inject
     public Scanner(final AssetStore assetStore, final ComponentStore componentStore) {
-       this.assetStore = assetStore;
-       this.componentStore = componentStore;
+        this.assetStore = assetStore;
+        this.componentStore = componentStore;
     }
 
     ScanResult scan(@Nonnull org.sonatype.nexus.repository.view.Response response,
                     @Nonnull Repository repository,
-                    ClientAPI clientAPI) throws Exception {
+                    Client client,
+                    String userId) throws Exception {
         Payload payload = response.getPayload();
         if (!(payload instanceof Content)) {
             return null;
@@ -51,22 +51,19 @@ public class Scanner {
             return null;
         }
         NestedAttributesMap securityAttributes = asset.attributes().child("Security");
-        if (skipScan(securityAttributes)) {
+        if (skipScan(securityAttributes, client.getConfiguration().getScanInterval())) {
             return null;
         }
         Component component = componentStore.read(asset.componentId());
-
-        CheckRequest request = new CheckRequest(repository, response, asset, component);
-        ObjectMapper mapper = new ObjectMapper().registerModule(new JodaModule());
-        LOG.info("request - {}", mapper.writeValueAsString(request));
-        Response<ScanResult> responseCheck = clientAPI.check(request).execute();
+        CheckRequest request = new CheckRequest(userId, repository, response, asset, component);
+        Response<ScanResult> responseCheck = client.getApi().check(request).execute();
         String message = responseCheck.message();
         LOG.info("Security check response: {}", message);
         ScanResult scanResult = responseCheck.body();
         if (!responseCheck.isSuccessful() || scanResult == null) {
             throw new RuntimeException("Could not check " + asset
-                                       + ", code - " + responseCheck.code()
-                                       + ", response: " +  message);
+                    + ", code - " + responseCheck.code()
+                    + ", response: " + message);
         }
         updateAssetAttributes(scanResult, securityAttributes);
         assetStore.save(asset);
@@ -74,15 +71,15 @@ public class Scanner {
         return scanResult;
     }
 
-    private boolean skipScan(NestedAttributesMap securityAttributes) {
+    private boolean skipScan(NestedAttributesMap securityAttributes, long intervalMinutes) {
         if (securityAttributes == null || securityAttributes.isEmpty()) {
             return false;
         }
-        Instant checkDate =  (Instant) securityAttributes.get("security_check_date");
+        Instant checkDate = (Instant) securityAttributes.get("security_check_date");
         if (checkDate == null) {
             return false;
         }
-        return ChronoUnit.HOURS.between(checkDate, Instant.now()) <= 24;
+        return ChronoUnit.MINUTES.between(checkDate, Instant.now()) <= intervalMinutes;
     }
 
     private void updateAssetAttributes(@Nonnull ScanResult scanResult,

@@ -12,11 +12,9 @@ import org.sonatype.nexus.capability.CapabilityDescriptorSupport;
 import org.sonatype.nexus.capability.CapabilityType;
 import org.sonatype.nexus.capability.Tag;
 import org.sonatype.nexus.capability.Taggable;
-import org.sonatype.nexus.formfields.FormField;
-import org.sonatype.nexus.formfields.StringTextFormField;
+import org.sonatype.nexus.formfields.*;
 
-import static com.kongrentian.plugins.nexus.capability.CapabilityKey.API_TOKEN;
-import static com.kongrentian.plugins.nexus.capability.CapabilityKey.API_URL;
+import static com.kongrentian.plugins.nexus.capability.CapabilityKey.*;
 
 @Singleton
 @Named(CapabilityDescriptor.CAPABILITY_ID)
@@ -27,14 +25,59 @@ public class CapabilityDescriptor
     private static final String CAPABILITY_NAME = "Scan Security Configuration";
     private static final String CAPABILITY_DESCRIPTION = "Provides support to test artifacts";
 
-    private final StringTextFormField fieldApiUrl;
-    private final StringTextFormField fieldApiToken;
+    private final List<FormField> fields;
 
     public CapabilityDescriptor() {
-        fieldApiUrl = new StringTextFormField(API_URL.propertyKey(), "API URL", "", FormField.MANDATORY)
-                .withInitialValue(API_URL.defaultValue());
-        fieldApiToken = new StringTextFormField(API_TOKEN.propertyKey(), "API Token", "", FormField.OPTIONAL)
-                .withInitialValue(API_TOKEN.defaultValue());
+        boolean apiTrustAllCertificates = Boolean.parseBoolean(API_TRUST_ALL_CERTIFICATES.defaultValue());
+        fields = Arrays.asList(
+                new UrlFormField(
+                        API_URL.propertyKey(),
+                        "API URL",
+                        "",
+                        FormField.OPTIONAL)
+                        .withInitialValue(API_URL.defaultValue()),
+                new PasswordFormField(
+                        API_TOKEN.propertyKey(),
+                        "API token",
+                        "",
+                        FormField.OPTIONAL)
+                        .withInitialValue(API_TOKEN.defaultValue()),
+                new CheckboxFormField(
+                        API_TRUST_ALL_CERTIFICATES.propertyKey(),
+                        "Trust all ssl certificates",
+                        "",
+                        FormField.OPTIONAL)
+                        .withInitialValue(apiTrustAllCertificates),
+                new StringTextFormField(
+                        USER_AGENT.propertyKey(),
+                        "User agent",
+                        "",
+                        FormField.OPTIONAL)
+                        .withInitialValue(USER_AGENT.defaultValue()),
+                new NumberTextFormField(
+                        CONNECTION_TIMEOUT.propertyKey(),
+                        "Connection timeout",
+                        "milliseconds",
+                        FormField.OPTIONAL)
+                        .withInitialValue(Long.parseLong(CONNECTION_TIMEOUT.defaultValue())),
+                new NumberTextFormField(
+                        READ_TIMEOUT.propertyKey(),
+                        "Read timeout",
+                        "milliseconds",
+                        FormField.OPTIONAL)
+                        .withInitialValue(Long.parseLong(READ_TIMEOUT.defaultValue())),
+                new NumberTextFormField(
+                        WRITE_TIMEOUT.propertyKey(),
+                        "Write timeout",
+                        "milliseconds",
+                        FormField.OPTIONAL)
+                        .withInitialValue(Long.parseLong(WRITE_TIMEOUT.defaultValue())),
+                new NumberTextFormField(
+                        SCAN_INTERVAL.propertyKey(),
+                        "Scan interval",
+                        "minutes",
+                        FormField.OPTIONAL)
+                        .withInitialValue(Long.parseLong(SCAN_INTERVAL.defaultValue())));
     }
 
     @Override
@@ -53,9 +96,7 @@ public class CapabilityDescriptor
     }
 
     @Override
-    public List<FormField> formFields() {
-        return Arrays.asList(fieldApiUrl, fieldApiToken);
-    }
+    public List<FormField> formFields() { return fields; }
 
     @Override
     protected CapabilityConfiguration createConfig(Map<String, String> properties) {
@@ -66,4 +107,5 @@ public class CapabilityDescriptor
     public Set<Tag> getTags() {
         return Collections.singleton(Tag.categoryTag("Security"));
     }
+
 }

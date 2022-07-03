@@ -1,4 +1,4 @@
-# objects
+# attributes of some classes
 
 ## `org.sonatype.nexus.repository.view.Response`
 
@@ -22,6 +22,21 @@ org.sonatype.nexus.repository.storage.Asset:
 org.sonatype.nexus.repository.cache.CacheInfo: 
   lastVerified: 2022-07-01T12:46:21.457Z
   cacheToken: 'null'
+```
+
+## `org.sonatype.nexus.repository.view.Request`
+
+```yaml
+org.apache.shiro.subject.support.DefaultSubjectContext.SESSION_CREATION_ENABLED: false (class java.lang.Boolean)
+Key[type=org.sonatype.nexus.security.SecurityFilter, annotation=[none]].FILTERED: true (class java.lang.Boolean)
+authcAntiCsrf.FILTERED: true (class java.lang.Boolean)
+nx-authc.FILTERED: true (class java.lang.Boolean)
+org.apache.shiro.web.servlet.ShiroHttpServletRequest_SESSION_ID_URL_REWRITING_ENABLED: false (class java.lang.Boolean)
+javax.servlet.include.servlet_path: /repository/pypi/packages/pip/21.3.1/pip-21.3.1-py3-none-any.whl (class java.lang.String)
+nexus.user.principal: admin (class java.lang.String)
+nx-anonymous.FILTERED: true (class java.lang.Boolean)
+nexus.user.id: admin (class java.lang.String)
+nx-apikey-authc.FILTERED: true (class java.lang.Boolean)
 ```
 
 ## `org.sonatype.nexus.repository.view.Context`

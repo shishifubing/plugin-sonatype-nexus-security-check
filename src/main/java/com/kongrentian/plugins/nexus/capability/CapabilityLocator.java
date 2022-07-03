@@ -22,26 +22,41 @@ public class CapabilityLocator {
 
   public boolean isSecurityCapabilityActive() {
     LOG.debug("List all available Nexus capabilities");
-    CapabilityReference reference = capabilityRegistry.getAll()
-                                                      .stream()
-                                                      .peek(e -> {
-                                                        org.sonatype.nexus.capability.Capability capability = e.capability();
-                                                        LOG.debug("  {}", capability);
-                                                      })
-                                                      .filter(e -> Capability.class.getSimpleName().equals(e.capability().getClass().getSimpleName()))
-                                                      .findFirst().orElse(null);
+    CapabilityReference reference = capabilityRegistry
+            .getAll()
+            .stream()
+            .peek(_reference -> {
+            org.sonatype.nexus.capability.Capability capability = _reference.capability();
+            LOG.debug("  {}", capability);
+            })
+            .filter(_reference -> Capability.class
+                    .getSimpleName()
+                    .equals(_reference
+                            .capability()
+                            .getClass()
+                            .getSimpleName()))
+            .findFirst().orElse(null);
+
     if (reference == null) {
       LOG.debug("Security Configuration capability does not exist.");
       return false;
     }
-
     return reference.context().isActive();
   }
 
   public CapabilityConfiguration getSecurityCapabilityConfiguration() {
-    CapabilityReference reference = capabilityRegistry.getAll().stream()
-                                                      .filter(e -> Capability.class.getSimpleName().equals(e.capability().getClass().getSimpleName()))
-                                                      .findFirst().orElse(null);
+    CapabilityReference reference = capabilityRegistry
+            .getAll()
+            .stream()
+            .filter(_reference -> Capability.class
+                    .getSimpleName()
+                    .equals(_reference
+                            .capability()
+                            .getClass()
+                            .getSimpleName()))
+            .findFirst()
+            .orElse(null);
+
     if (reference == null) {
       LOG.debug("Security Configuration capability is not created.");
       return null;
