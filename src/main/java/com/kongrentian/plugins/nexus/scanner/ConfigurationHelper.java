@@ -7,7 +7,6 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import com.kongrentian.plugins.nexus.api.Client;
-import com.kongrentian.plugins.nexus.api.ClientAPI;
 import com.kongrentian.plugins.nexus.capability.CapabilityConfiguration;
 import com.kongrentian.plugins.nexus.capability.CapabilityLocator;
 import org.slf4j.Logger;
@@ -29,7 +28,7 @@ public class ConfigurationHelper {
             return null;
         }
         try {
-            return new Client(locator.getSecurityCapabilityConfiguration());
+            return new Client(locator.getCapabilityConfiguration());
         } catch (Exception exception) {
             LOG.error("Client could not be created", exception);
             return null;
@@ -37,21 +36,8 @@ public class ConfigurationHelper {
 
     }
 
-    @Nullable
-    public CapabilityConfiguration getConfiguration() {
-        CapabilityLocator locator = locatorProvider.get();
-        if (locator == null) {
-            return null;
-        }
-        return locator.getSecurityCapabilityConfiguration();
-
-    }
-
     public boolean isCapabilityEnabled() {
         CapabilityLocator locator = locatorProvider.get();
-        if (locator == null) {
-            return false;
-        }
-        return locator.isSecurityCapabilityActive();
+        return locator != null && locator.isCapabilityActive();
     }
 }

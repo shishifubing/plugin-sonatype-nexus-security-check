@@ -56,6 +56,7 @@ public class Scanner {
         }
         Component component = componentStore.read(asset.componentId());
         CheckRequest request = new CheckRequest(userId, repository, response, asset, component);
+        LOG.info("Security check request - {}", client.getMapper().writeValueAsString(request));
         Response<ScanResult> responseCheck = client.getApi().check(request).execute();
         String message = responseCheck.message();
         LOG.info("Security check response: {}", message);

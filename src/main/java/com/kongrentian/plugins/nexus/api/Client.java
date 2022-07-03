@@ -22,6 +22,7 @@ public class Client {
 
     private final ClientAPI api;
     private final CapabilityConfiguration configuration;
+    private final ObjectMapper mapper;
 
     public Client(CapabilityConfiguration config) throws Exception {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
@@ -39,7 +40,7 @@ public class Client {
 
         builder.addInterceptor(new ServiceInterceptor(config.getApiAuth(),
                 config.getUserAgent()));
-        ObjectMapper mapper = new ObjectMapper();
+        mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         // to deserialize joda datetime
         mapper.registerModule(new JodaModule());
@@ -55,6 +56,10 @@ public class Client {
 
     public ClientAPI getApi() {
         return api;
+    }
+
+    public ObjectMapper getMapper() {
+        return mapper;
     }
 
     public CapabilityConfiguration getConfiguration() {

@@ -13,6 +13,8 @@ import org.sonatype.nexus.capability.CapabilityRegistry;
 public class CapabilityLocator {
   private static final Logger LOG = LoggerFactory.getLogger(CapabilityLocator.class);
 
+  private static final String capabilityClassName = Capability.class.getSimpleName();
+
   private final CapabilityRegistry capabilityRegistry;
 
   @Inject
@@ -20,49 +22,30 @@ public class CapabilityLocator {
     this.capabilityRegistry = capabilityRegistry;
   }
 
-  public boolean isSecurityCapabilityActive() {
-    LOG.debug("List all available Nexus capabilities");
-    CapabilityReference reference = capabilityRegistry
-            .getAll()
-            .stream()
-            .peek(_reference -> {
-            org.sonatype.nexus.capability.Capability capability = _reference.capability();
-            LOG.debug("  {}", capability);
-            })
-            .filter(_reference -> Capability.class
-                    .getSimpleName()
-                    .equals(_reference
-                            .capability()
-                            .getClass()
-                            .getSimpleName()))
-            .findFirst().orElse(null);
-
-    if (reference == null) {
-      LOG.debug("Security Configuration capability does not exist.");
-      return false;
-    }
-    return reference.context().isActive();
+  public boolean isCapabilityActive() {
+    CapabilityReference reference = getCapabilityReference();
+    return reference != null && reference.context().isActive();
   }
 
-  public CapabilityConfiguration getSecurityCapabilityConfiguration() {
+  public CapabilityConfiguration getCapabilityConfiguration() {
+    return getCapabilityReference().capabilityAs(Capability.class).getConfig();
+  }
+
+  private boolean isCapability(CapabilityReference reference) {
+    return capabilityClassName.equals(reference.capability().getClass().getSimpleName());
+  }
+
+  private CapabilityReference getCapabilityReference() {
     CapabilityReference reference = capabilityRegistry
             .getAll()
             .stream()
-            .filter(_reference -> Capability.class
-                    .getSimpleName()
-                    .equals(_reference
-                            .capability()
-                            .getClass()
-                            .getSimpleName()))
+            .filter(this::isCapability)
             .findFirst()
             .orElse(null);
-
     if (reference == null) {
-      LOG.debug("Security Configuration capability is not created.");
-      return null;
+      LOG.debug("Security Configuration capability does not exist.");
     }
-
-    Capability Capability = reference.capabilityAs(Capability.class);
-    return Capability.getConfig();
+    return reference;
   }
+
 }
