@@ -5,6 +5,7 @@ public enum CapabilityKey {
   API_TOKEN("scan.api.auth", ""),
   API_TRUST_ALL_CERTIFICATES("scan.api.trust_all_certificates", "false"),
   SCAN_INTERVAL("scan.interval", "5"),
+  FAIL_ON_REQUEST_ERRORS("scan.fail_on_request_errors", "false"),
   USER_AGENT("scan.connection.user_agent", ""),
   CONNECTION_TIMEOUT("scan.connection.timeout", "30"),
   READ_TIMEOUT("scan.connection.read_timeout", "60"),

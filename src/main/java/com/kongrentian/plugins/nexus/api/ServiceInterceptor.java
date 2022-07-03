@@ -27,7 +27,7 @@ public class ServiceInterceptor implements Interceptor {
                 .addHeader("Content-Type", "application/json")
                 .addHeader("User-Agent", this.userAgent);
         if (this.auth != null && !this.auth.isEmpty()) {
-            builder.addHeader("Authorization", "Basic " + this.auth);
+            builder.addHeader("Authorization", "Bearer " + this.auth);
         }
         return chain.proceed(builder.build());
     }

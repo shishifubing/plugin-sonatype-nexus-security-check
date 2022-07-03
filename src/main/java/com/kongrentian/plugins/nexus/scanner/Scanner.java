@@ -3,6 +3,7 @@ package com.kongrentian.plugins.nexus.scanner;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
@@ -56,16 +57,28 @@ public class Scanner {
             return null;
         }
         Component component = componentStore.read(asset.componentId());
-        CheckRequest request = new CheckRequest(userId, repository, content, asset, component);
-        LOG.info("Security check request - {}", client.getMapper().writeValueAsString(request));
-        Response<ScanResult> responseCheck = client.getApi().check(request).execute();
-        String message = responseCheck.message();
-        LOG.info("Security check response: {}", message);
-        ScanResult scanResult = responseCheck.body();
-        if (!responseCheck.isSuccessful() || scanResult == null) {
-            throw new RuntimeException("Could not check " + asset
-                    + ", code - " + responseCheck.code()
-                    + ", response: " + message);
+        CheckRequest request = new CheckRequest(
+                userId, repository, content, asset, component);
+        LOG.info("Security check request - {}",
+                client.getMapper().writeValueAsString(request));
+        ScanResult scanResult;
+        try {
+            Response<ScanResult> responseCheck = client
+                    .getApi().check(request).execute();
+            String message = responseCheck.message();
+            LOG.info("Security check response: {}", message);
+            scanResult = responseCheck.body();
+            if (!responseCheck.isSuccessful() || scanResult == null) {
+                throw new RuntimeException("Invalid response code "
+                        + responseCheck.code() + ": " + message);
+            }
+        } catch (IOException | RuntimeException exception) {
+            if (client.getConfiguration().getFailOnRequestErrors()) {
+                throw exception;
+            }
+            LOG.error("Could not check asset '{}' because of '{}'",
+                    asset, exception);
+            return null;
         }
         updateAssetAttributes(scanResult, securityAttributes);
         assetStore.save(asset);
