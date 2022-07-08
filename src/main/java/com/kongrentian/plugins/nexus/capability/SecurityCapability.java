@@ -5,7 +5,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.sonatype.nexus.capability.CapabilitySupport;
 
 @Named(SecurityCapabilityDescriptor.CAPABILITY_ID)
@@ -23,35 +22,20 @@ public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConf
     return new SecurityCapabilityConfiguration(properties);
   }
 
-  private void set() {
-    securityCapabilityHelper.setCapabilityReference(context().id());
-  }
-  private void unset() {
-    securityCapabilityHelper.setCapabilityReference(null);
-  }
-
   @Nullable
   @Override
   protected String renderStatus() throws Exception {
     return super.renderStatus();
   }
 
-  @Override
-  public void onCreate() throws Exception {
-    super.onCreate();
-    set();
-  }
-
+  /**
+   * in case the capability gets removed
+   * @throws Exception
+   */
   @Override
   public void onRemove() throws Exception {
-    unset();
+    securityCapabilityHelper.setSecurityCapabilityReference(null);
     super.onRemove();
-  }
-
-  @Override
-  public void onActivate() throws Exception {
-    super.onActivate();
-    set();
   }
 
 }
