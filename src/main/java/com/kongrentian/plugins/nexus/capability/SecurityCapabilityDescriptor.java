@@ -8,20 +8,18 @@ import org.sonatype.nexus.formfields.*;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 import static com.kongrentian.plugins.nexus.capability.SecurityCapabilityKey.*;
-import static org.apache.commons.lang.reflect.ConstructorUtils.invokeExactConstructor;
 
 @Singleton
 @Named(SecurityCapabilityDescriptor.CAPABILITY_ID)
 public class SecurityCapabilityDescriptor
         extends CapabilityDescriptorSupport<SecurityCapabilityConfiguration>
         implements Taggable {
-    static final String CAPABILITY_ID = "scan.security";
-    private static final String CAPABILITY_NAME = "Scan Security Configuration";
-    private static final String CAPABILITY_DESCRIPTION = "Provides support to test artifacts";
+    static final String CAPABILITY_ID = "security.capability.id";
+    private static final String CAPABILITY_NAME = "Security and monitoring of assets";
+    private static final String CAPABILITY_DESCRIPTION = "Security and monitoring of assets";
 
     private final List<FormField> fields;
 
