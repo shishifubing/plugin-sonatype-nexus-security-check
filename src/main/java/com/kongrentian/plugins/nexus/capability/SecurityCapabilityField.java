@@ -5,6 +5,7 @@ import org.sonatype.nexus.formfields.FormField;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -41,7 +42,7 @@ public final class SecurityCapabilityField<TEMPLATE> {
     }
 
     public static Instant parseTime(String text) {
-        return Instant.from(dateTimeFormatter.parse(text));
+        return Instant.from(LocalDate.parse(text, dateTimeFormatter));
     }
 
     public static List<FormField> createFields() throws RuntimeException {
