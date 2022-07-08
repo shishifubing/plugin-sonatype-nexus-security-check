@@ -4,6 +4,8 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -22,7 +24,8 @@ public class SecurityClient {
     private final SecurityClientAPI api;
     private final SecurityCapabilityConfiguration configuration;
     private final ObjectMapper mapper;
-    public SecurityClient(SecurityCapabilityConfiguration config) throws Exception {
+    public SecurityClient(SecurityCapabilityConfiguration config)
+            throws NoSuchAlgorithmException, KeyManagementException {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .connectTimeout(config.getHttpConnectionTimeout(), MILLISECONDS)
                 .readTimeout(config.getHttpReadTimeout(), MILLISECONDS)

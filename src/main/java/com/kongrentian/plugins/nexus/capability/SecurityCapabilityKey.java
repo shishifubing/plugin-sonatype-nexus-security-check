@@ -2,7 +2,6 @@ package com.kongrentian.plugins.nexus.capability;
 
 import org.sonatype.nexus.formfields.*;
 
-import java.time.Instant;
 
 /**
  * this monstrosity is created in order to
@@ -14,21 +13,21 @@ public enum SecurityCapabilityKey {
     ENABLE_SCAN_REMOTE(new SecurityCapabilityField<>(
             "security.enable.scan.remote",
             "false",
-            "Enables remote scans",
+            "Enable remote scans",
             CheckboxFormField.class,
             Boolean::parseBoolean
     )),
     ENABLE_MONITORING(new SecurityCapabilityField<>(
             "security.enable.monitoring",
             "false",
-            "Enables local scans",
+            "Enable monitoring",
             CheckboxFormField.class,
             Boolean::parseBoolean
     )),
     ENABLE_SCAN_LOCAL(new SecurityCapabilityField<>(
             "security.enable.scan.local",
             "true",
-            "Enables monitoring",
+            "Enable local scan",
             CheckboxFormField.class,
             Boolean::parseBoolean
     )),
@@ -36,7 +35,7 @@ public enum SecurityCapabilityKey {
     FAIL_ON_SCAN_ERRORS(new SecurityCapabilityField<>(
             "security.fail.on_scan_errors",
             "true",
-            "Whether to throw an error if a scan request fails",
+            "Whether to fail the request on errors",
             CheckboxFormField.class,
             Boolean::parseBoolean
     )),
@@ -99,6 +98,21 @@ public enum SecurityCapabilityKey {
             Long::parseLong
     )),
 
+    SCAN_LOCAL_LAST_MODIFIED(new SecurityCapabilityField<>(
+            "security.scan.local.last_modified",
+            "2022-02-20",
+            "All last_modified dates after this one are blocked",
+            StringTextFormField.class,
+            String::format
+    )),
+    SCAN_LOCAL_WHITE_LIST(new SecurityCapabilityField<>(
+            "security.scan.local.white_list",
+            "{}",
+            "White list for packages and users",
+            TextAreaFormField.class,
+            String::format
+    )),
+
     MONITORING_URL(new SecurityCapabilityField<>(
             "security.monitoring.url",
             "https://localhost:5601",
@@ -119,21 +133,6 @@ public enum SecurityCapabilityKey {
             "Password for monitoring",
             PasswordFormField.class,
             String::format
-    )),
-
-    SCAN_LOCAL_LAST_MODIFIED(new SecurityCapabilityField<>(
-            "security.scan.local.last_modified",
-            "2022-02-20",
-            "All last_modified dates after this one are blocked",
-            StringTextFormField.class,
-            String::format
-    )),
-    SCAN_LOCAL_WHITE_LIST(new SecurityCapabilityField<>(
-            "security.scan.local.white_list",
-            "{}",
-            "White list for packages and users",
-            TextAreaFormField.class,
-            String::format
     ));
 
     private final SecurityCapabilityField<?> securityCapabilityField;
@@ -147,10 +146,6 @@ public enum SecurityCapabilityKey {
 
     public String defaultValue() {
         return securityCapabilityField.defaultValue();
-    }
-
-    public String description() {
-        return securityCapabilityField.description();
     }
 
     public SecurityCapabilityField<?> field() {

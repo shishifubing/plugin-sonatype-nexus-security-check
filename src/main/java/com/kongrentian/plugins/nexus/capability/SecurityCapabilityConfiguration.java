@@ -1,5 +1,6 @@
 package com.kongrentian.plugins.nexus.capability;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kongrentian.plugins.nexus.model.WhiteList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +13,7 @@ import static com.kongrentian.plugins.nexus.capability.SecurityCapabilityKey.*;
 
 public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupport {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SecurityCapabilityLocator.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SecurityCapabilityHelper.class);
     private final boolean enableScanRemote;
     private final boolean enableMonitoring;
     private final boolean enableScanLocal;

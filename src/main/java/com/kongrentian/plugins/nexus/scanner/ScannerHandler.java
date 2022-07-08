@@ -6,6 +6,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import com.kongrentian.plugins.nexus.api.SecurityClient;
+import com.kongrentian.plugins.nexus.capability.SecurityCapabilityHelper;
 import com.kongrentian.plugins.nexus.model.ScanResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +18,6 @@ import org.sonatype.nexus.repository.view.Response;
 import org.sonatype.nexus.repository.view.handlers.ContributedHandler;
 import org.sonatype.nexus.security.SecurityFilter;
 
-import java.io.IOException;
-import java.util.Map;
 
 import static java.lang.String.format;
 
@@ -27,24 +26,24 @@ import static java.lang.String.format;
 @Singleton
 public class ScannerHandler implements ContributedHandler {
     private static final Logger LOG = LoggerFactory.getLogger(ScannerHandler.class);
-    private final ConfigurationHelper configurationHelper;
+    private final SecurityCapabilityHelper securityCapabilityHelper;
     private final Scanner scanner;
 
     private final SecurityClient securityClient;
 
     @Inject
-    public ScannerHandler(ConfigurationHelper configurationHelper,
-                          Scanner scanner) {
-        this.configurationHelper = configurationHelper;
+    public ScannerHandler(SecurityCapabilityHelper securityCapabilityHelper,
+                          Scanner scanner) throws Exception {
+        this.securityCapabilityHelper = securityCapabilityHelper;
         this.scanner = scanner;
-        this.securityClient = configurationHelper.getSecurityClient();
+        this.securityClient = securityCapabilityHelper.createClient();
     }
 
     @Nonnull
     @Override
     public Response handle(@Nonnull Context context) throws Exception {
         Response response = context.proceed();
-        if (!configurationHelper.isCapabilityActive()) {
+        if (!securityCapabilityHelper.isCapabilityActive()) {
             return response;
         }
         Repository repository = context.getRepository();
@@ -52,16 +51,13 @@ public class ScannerHandler implements ContributedHandler {
             return response;
         }
         Request request = context.getRequest();
-        for (Map.Entry<String, String> header : request.getHeaders().entries()) {
-            LOG.info("HEADER - {}", header);
-        }
         String user = (String) request.getAttributes()
                 .get(SecurityFilter.ATTR_USER_ID);
         ScanResult scanResult = null;
         try {
              scanResult = scanner.scan(response, repository,
                     securityClient, user);
-        } catch (IOException exception) {
+        } catch (Exception exception) {
             if (securityClient.getConfiguration().isFailOnScanErrors()) {
                 throw exception;
             }
