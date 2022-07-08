@@ -6,9 +6,8 @@ import javax.inject.Named;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
-import com.kongrentian.plugins.nexus.api.Client;
-import com.kongrentian.plugins.nexus.capability.CapabilityConfiguration;
-import com.kongrentian.plugins.nexus.capability.CapabilityLocator;
+import com.kongrentian.plugins.nexus.api.SecurityClient;
+import com.kongrentian.plugins.nexus.capability.SecurityCapabilityLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,26 +17,26 @@ public class ConfigurationHelper {
     private static final Logger LOG = LoggerFactory.getLogger(ConfigurationHelper.class);
 
     @Inject
-    private Provider<CapabilityLocator> locatorProvider;
+    private Provider<SecurityCapabilityLocator> locatorProvider;
 
     @Nullable
-    public Client getSecurityClient() {
-        CapabilityLocator locator = locatorProvider.get();
+    public SecurityClient getSecurityClient() {
+        SecurityCapabilityLocator locator = locatorProvider.get();
         if (locator == null) {
-            LOG.warn("Client cannot be built because CapabilityLocator is null");
+            LOG.warn("SecurityClient cannot be built because SecurityCapabilityLocator is null");
             return null;
         }
         try {
-            return new Client(locator.getCapabilityConfiguration());
+            return new SecurityClient(locator.getCapabilityConfiguration());
         } catch (Exception exception) {
-            LOG.error("Client could not be created", exception);
+            LOG.error("SecurityClient could not be created", exception);
             return null;
         }
 
     }
 
-    public boolean isCapabilityEnabled() {
-        CapabilityLocator locator = locatorProvider.get();
+    public boolean isCapabilityActive() {
+        SecurityCapabilityLocator locator = locatorProvider.get();
         return locator != null && locator.isCapabilityActive();
     }
 }

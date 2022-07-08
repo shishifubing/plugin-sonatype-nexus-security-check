@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-import com.kongrentian.plugins.nexus.api.Client;
+import com.kongrentian.plugins.nexus.api.SecurityClient;
 import com.kongrentian.plugins.nexus.model.CheckRequest;
 import com.kongrentian.plugins.nexus.model.ScanResult;
 import org.slf4j.Logger;
@@ -40,7 +40,7 @@ public class Scanner {
 
     ScanResult scan(@Nonnull org.sonatype.nexus.repository.view.Response response,
                     @Nonnull Repository repository,
-                    Client client,
+                    SecurityClient securityClient,
                     String userId) throws Exception {
         Payload payload = response.getPayload();
         if (!(payload instanceof Content)) {
@@ -53,17 +53,17 @@ public class Scanner {
             return null;
         }
         NestedAttributesMap securityAttributes = asset.attributes().child("Security");
-        if (skipScan(securityAttributes, client.getConfiguration().getScanInterval())) {
+        if (skipScan(securityAttributes, securityClient.getConfiguration().getScanInterval())) {
             return null;
         }
         Component component = componentStore.read(asset.componentId());
         CheckRequest request = new CheckRequest(
                 userId, repository, content, asset, component);
         LOG.info("Security check request - {}",
-                client.getMapper().writeValueAsString(request));
+                securityClient.getMapper().writeValueAsString(request));
         ScanResult scanResult;
         try {
-            Response<ScanResult> responseCheck = client
+            Response<ScanResult> responseCheck = securityClient
                     .getApi().check(request).execute();
             String message = responseCheck.message();
             LOG.info("Security check response: {}", message);
@@ -73,7 +73,7 @@ public class Scanner {
                         + responseCheck.code() + ": " + message);
             }
         } catch (IOException | RuntimeException exception) {
-            if (client.getConfiguration().getFailOnRequestErrors()) {
+            if (securityClient.getConfiguration().getFailOnRequestErrors()) {
                 throw exception;
             }
             LOG.error("Could not check asset '{}' because of '{}'",

@@ -10,15 +10,15 @@ import org.sonatype.nexus.capability.CapabilityRegistry;
 
 
 @Named
-public class CapabilityLocator {
-  private static final Logger LOG = LoggerFactory.getLogger(CapabilityLocator.class);
+public class SecurityCapabilityLocator {
+  private static final Logger LOG = LoggerFactory.getLogger(SecurityCapabilityLocator.class);
 
-  private static final String capabilityClassName = Capability.class.getSimpleName();
+  private static final String capabilityClassName = SecurityCapability.class.getSimpleName();
 
   private final CapabilityRegistry capabilityRegistry;
 
   @Inject
-  public CapabilityLocator(final CapabilityRegistry capabilityRegistry) {
+  public SecurityCapabilityLocator(final CapabilityRegistry capabilityRegistry) {
     this.capabilityRegistry = capabilityRegistry;
   }
 
@@ -27,8 +27,8 @@ public class CapabilityLocator {
     return reference != null && reference.context().isActive();
   }
 
-  public CapabilityConfiguration getCapabilityConfiguration() {
-    return getCapabilityReference().capabilityAs(Capability.class).getConfig();
+  public SecurityCapabilityConfiguration getCapabilityConfiguration() {
+    return getCapabilityReference().capabilityAs(SecurityCapability.class).getConfig();
   }
 
   private boolean isCapability(CapabilityReference reference) {
@@ -42,8 +42,11 @@ public class CapabilityLocator {
             .filter(this::isCapability)
             .findFirst()
             .orElse(null);
+
     if (reference == null) {
       LOG.debug("Security Configuration capability does not exist.");
+    } else {
+      LOG.info("REFERENCE "  + reference.context().id().toString());
     }
     return reference;
   }

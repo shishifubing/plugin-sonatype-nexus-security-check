@@ -5,7 +5,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import com.kongrentian.plugins.nexus.api.Client;
+import com.kongrentian.plugins.nexus.api.SecurityClient;
 import com.kongrentian.plugins.nexus.model.ScanResult;
 import org.sonatype.nexus.repository.Repository;
 import org.sonatype.nexus.repository.types.ProxyType;
@@ -25,21 +25,21 @@ public class ScannerHandler implements ContributedHandler {
     private final ConfigurationHelper configurationHelper;
     private final Scanner scanner;
 
-    private final Client client;
+    private final SecurityClient securityClient;
 
     @Inject
     public ScannerHandler(ConfigurationHelper configurationHelper,
                           Scanner scanner) {
         this.configurationHelper = configurationHelper;
         this.scanner = scanner;
-        this.client = configurationHelper.getSecurityClient();
+        this.securityClient = configurationHelper.getSecurityClient();
     }
 
     @Nonnull
     @Override
     public Response handle(@Nonnull Context context) throws Exception {
         Response response = context.proceed();
-        if (!configurationHelper.isCapabilityEnabled()) {
+        if (!configurationHelper.isCapabilityActive()) {
             return response;
         }
         Repository repository = context.getRepository();
@@ -50,7 +50,7 @@ public class ScannerHandler implements ContributedHandler {
         String user = (String) request.getAttributes()
                 .get(SecurityFilter.ATTR_USER_ID);
         ScanResult scanResult = scanner.scan(response, repository,
-                client, user);
+                securityClient, user);
         if (scanResult == null || scanResult.allowed) {
             return response;
         }

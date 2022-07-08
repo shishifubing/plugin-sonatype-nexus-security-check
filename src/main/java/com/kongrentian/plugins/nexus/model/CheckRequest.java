@@ -1,26 +1,22 @@
 package com.kongrentian.plugins.nexus.model;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.joda.time.DateTime;
-import org.sonatype.nexus.repository.Format;
 import org.sonatype.nexus.repository.Repository;
-import org.sonatype.nexus.repository.Type;
 import org.sonatype.nexus.repository.storage.Asset;
 import org.sonatype.nexus.repository.storage.Component;
 import org.sonatype.nexus.repository.view.Content;
-import org.sonatype.nexus.repository.view.Response;
 
 public class CheckRequest implements Serializable {
 
     @JsonProperty
-    public CheckRequestRepository repository;
+    private final CheckRequestRepository repository;
     @JsonProperty
-    public CheckRequestComponent component;
+    private final CheckRequestComponent component;
     @JsonProperty
-    public String userId;
+    private final String userId;
 
     public CheckRequest(String userId, Repository repository, Content content,
                         Asset asset, Component component) {
@@ -28,36 +24,58 @@ public class CheckRequest implements Serializable {
         this.component = new CheckRequestComponent(content, asset, component);
         this.userId = userId;
     }
+
+    public CheckRequestRepository getRepository() {
+        return repository;
+    }
+
+    public CheckRequestComponent getComponent() {
+        return component;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
 }
 
 class CheckRequestRepository implements Serializable {
     @JsonProperty
-    public String name;
+    private final String name;
     @JsonProperty
-    public String type;
+    private final String type;
     @JsonProperty
-    public String format;
+    private final String format;
 
     public CheckRequestRepository(Repository repository) {
         this.name = repository.getName();
         this.type = repository.getType().getValue();
         this.format = repository.getFormat().getValue();
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getFormat() {
+        return format;
+    }
 }
 
 class CheckRequestComponent implements  Serializable {
     @JsonProperty
-    public String name;
+    private final String name;
     @JsonProperty
-    public String group;
+    private final String group;
     @JsonProperty
-    public String version;
+    private final String version;
     @JsonProperty("last_modified")
-    public DateTime lastModified;
-    @JsonProperty("last_updated")
-    public DateTime lastUpdated;
+    private final DateTime lastModified;
     @JsonProperty
-    public String asset;
+    private final String asset;
 
     public CheckRequestComponent(Content content, Asset asset,
                                  Component component) {
@@ -66,7 +84,27 @@ class CheckRequestComponent implements  Serializable {
         this.name = component.name();
         this.group = component.group();
         this.version = component.version();
-        this.lastUpdated = asset.lastUpdated();
         this.asset = asset.name();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public DateTime getLastModified() {
+        return lastModified;
+    }
+
+
+    public String getAsset() {
+        return asset;
     }
 }
