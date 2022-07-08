@@ -1,7 +1,5 @@
 package com.kongrentian.plugins.nexus.capability;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.kongrentian.plugins.nexus.model.WhiteList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,11 +57,12 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
 
         String lastModified = (String) get(SCAN_LOCAL_LAST_MODIFIED);
         try {
-            scanLocalLastModifiedTemp = Instant.parse(lastModified);
+            scanLocalLastModifiedTemp = SecurityCapabilityField.parseTime(lastModified);
         } catch (Exception exception) {
             LOG.error("Could not parse last_modified date: {}",
                     lastModified, exception);
-            scanLocalLastModifiedTemp = Instant.parse(SCAN_LOCAL_LAST_MODIFIED.defaultValue());
+            scanLocalLastModifiedTemp = SecurityCapabilityField.parseTime(
+                    SCAN_LOCAL_LAST_MODIFIED.defaultValue());
         }
         scanLocalLastModified = scanLocalLastModifiedTemp;
         String whiteList = (String) get(SCAN_LOCAL_WHITE_LIST);

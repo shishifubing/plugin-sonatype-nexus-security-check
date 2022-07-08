@@ -4,6 +4,9 @@ import org.sonatype.nexus.formfields.AbstractFormField;
 import org.sonatype.nexus.formfields.FormField;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -12,6 +15,10 @@ import java.util.stream.Collectors;
 import static com.kongrentian.plugins.nexus.capability.SecurityCapabilityKey.values;
 
 public final class SecurityCapabilityField<TEMPLATE> {
+    private static final DateTimeFormatter dateTimeFormatter =
+            DateTimeFormatter
+                    .ofPattern("yyyy-MM-dd")
+                    .withZone(ZoneId.systemDefault());
 
     private final Class<? extends AbstractFormField<TEMPLATE>> formField;
     private final Function<String, TEMPLATE> convertFunction;
@@ -31,6 +38,10 @@ public final class SecurityCapabilityField<TEMPLATE> {
         this.description = description;
         this.formField = formField;
         this.convertFunction = convertFunction;
+    }
+
+    public static Instant parseTime(String text) {
+        return Instant.from(dateTimeFormatter.parse(text));
     }
 
     public static List<FormField> createFields() throws RuntimeException {
