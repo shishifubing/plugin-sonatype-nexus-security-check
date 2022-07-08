@@ -1,81 +1,171 @@
 package com.kongrentian.plugins.nexus.capability;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.kongrentian.plugins.nexus.model.WhiteList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonatype.nexus.capability.CapabilityConfigurationSupport;
 
+import java.time.Instant;
 import java.util.Map;
 
 import static com.kongrentian.plugins.nexus.capability.SecurityCapabilityKey.*;
 
 public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupport {
-    private final String apiUrl;
-    private final String apiAuth;
+
+    private static final Logger LOG = LoggerFactory.getLogger(SecurityCapabilityLocator.class);
+    private final boolean enableScanRemote;
+    private final boolean enableMonitoring;
+    private final boolean enableScanLocal;
+
+    private final boolean failOnScanErrors;
+
+    private final String monitoringUrl;
+    private final String monitoringLogin;
+    private final String monitoringPassword;
+
+    private final Instant scanLocalLastModified;
+    private final WhiteList scanLocalWhiteList;
+
+    private final String scanRemoteUrl;
+    private final String scanRemoteToken;
+    private final long scanRemoteInterval;
+
     private final boolean httpSSLVerify;
-    private final long scanInterval;
-    private final boolean failOnRequestErrors;
-    private final String userAgent;
-    private final long connectionTimeout;
-    private final long readTimeout;
-    private final long writeTimeout;
+    private final String httpUserAgent;
+    private final long httpConnectionTimeout;
+    private final long httpReadTimeout;
+    private final long httpWriteTimeout;
 
     private final Map<String, String> properties;
 
     public SecurityCapabilityConfiguration(Map<String, String> properties) {
-        /*
-         you cannot use just `get`, because properties can be null sometimes
-
-         if some of them are null, an exception will be thrown and nexus will not boot up
-        */
+        Instant scanLocalLastModifiedTemp;
+        WhiteList scanLocalWhiteListTemp;
         this.properties = properties;
 
-        apiUrl = get(SCAN_REMOTE_URL);
-        apiAuth = get(SCAN_REMOTE_TOKEN);
-        httpSSLVerify = Boolean.parseBoolean(get(HTTP_SSL_VERIFY));
-        userAgent = get(HTTP_USER_AGENT);
-        connectionTimeout = Long.parseLong(get(HTTP_CONNECTION_TIMEOUT));
-        readTimeout = Long.parseLong(get(HTTP_READ_TIMEOUT));
-        writeTimeout = Long.parseLong(get(HTTP_WRITE_TIMEOUT));
-        scanInterval = Long.parseLong(get(SCAN_REMOTE_INTERVAL_MINUTES));
-        failOnRequestErrors = Boolean.parseBoolean(get(HTTP_FAIL_ON_REQUEST_ERRORS));
+        enableMonitoring = (boolean) get(ENABLE_MONITORING);
+        enableScanRemote = (boolean) get(ENABLE_SCAN_REMOTE);
+        enableScanLocal = (boolean) get(ENABLE_SCAN_LOCAL);
+
+        monitoringUrl = (String) get(MONITORING_URL);
+        monitoringLogin = (String) get(MONITORING_LOGIN);
+        monitoringPassword = (String) get(MONITORING_PASSWORD);
+
+        scanRemoteUrl = (String) get(SCAN_REMOTE_URL);
+        scanRemoteToken = (String) get(SCAN_REMOTE_TOKEN);
+        scanRemoteInterval = (long) get(SCAN_REMOTE_INTERVAL);
+
+        String lastModified = (String) get(SCAN_LOCAL_LAST_MODIFIED);
+        try {
+            scanLocalLastModifiedTemp = Instant.parse(lastModified);
+        } catch (Exception exception) {
+            LOG.error("Could not parse last_modified date: {}",
+                    lastModified, exception);
+            scanLocalLastModifiedTemp = Instant.parse(SCAN_LOCAL_LAST_MODIFIED.defaultValue());
+        }
+        scanLocalLastModified = scanLocalLastModifiedTemp;
+        String whiteList = (String) get(SCAN_LOCAL_WHITE_LIST);
+        try {
+            scanLocalWhiteListTemp = WhiteList.fromYAML(whiteList);
+        } catch (Exception exception) {
+            LOG.error("Could not parse white list: {}",
+                    whiteList, exception);
+            scanLocalWhiteListTemp = new WhiteList();
+        }
+        scanLocalWhiteList = scanLocalWhiteListTemp;
+        failOnScanErrors = (boolean) get(FAIL_ON_SCAN_ERRORS);
+
+        httpSSLVerify = (boolean) get(HTTP_SSL_VERIFY);
+        httpUserAgent = (String) get(HTTP_USER_AGENT);
+        httpConnectionTimeout = (Long) get(HTTP_CONNECTION_TIMEOUT);
+        httpReadTimeout = (long) get(HTTP_READ_TIMEOUT);
+        httpWriteTimeout = (long) get(HTTP_WRITE_TIMEOUT);
     }
 
-    private String get(SecurityCapabilityKey capabilityKey) {
-        return properties.getOrDefault(
-                capabilityKey.propertyKey(),
-                capabilityKey.defaultValue());
+    private Object get(SecurityCapabilityKey securityCapabilityKey) {
+        String defaultValue = securityCapabilityKey.defaultValue();
+        String property = properties.get(securityCapabilityKey.propertyKey());
+        try {
+            return securityCapabilityKey.field().convert(property);
+        } catch (Exception exception) {
+            LOG.error("Could not convert property {}, falling back to default - {}",
+                    securityCapabilityKey.name(),
+                    securityCapabilityKey.defaultValue(),
+                    exception);
+
+        }
+        return securityCapabilityKey.field().convert(defaultValue);
     }
 
-    public String getApiUrl() {
-        return apiUrl;
+    public boolean isEnableScanRemote() {
+        return enableScanRemote;
     }
 
-    public String getApiAuth() {
-        return apiAuth;
+    public boolean isEnableMonitoring() {
+        return enableMonitoring;
     }
 
-    public boolean getHttpSSLVerify() {
+    public boolean isEnableScanLocal() {
+        return enableScanLocal;
+    }
+
+    public boolean isFailOnScanErrors() {
+        return failOnScanErrors;
+    }
+
+    public String getMonitoringUrl() {
+        return monitoringUrl;
+    }
+
+    public String getMonitoringLogin() {
+        return monitoringLogin;
+    }
+
+    public String getMonitoringPassword() {
+        return monitoringPassword;
+    }
+
+    public Instant getScanLocalLastModified() {
+        return scanLocalLastModified;
+    }
+
+    public WhiteList getScanLocalWhiteList() {
+        return scanLocalWhiteList;
+    }
+
+    public String getScanRemoteUrl() {
+        return scanRemoteUrl;
+    }
+
+    public String getScanRemoteToken() {
+        return scanRemoteToken;
+    }
+
+    public long getScanRemoteInterval() {
+        return scanRemoteInterval;
+    }
+
+    public boolean isHttpSSLVerify() {
         return httpSSLVerify;
     }
 
-    public long getReadTimeout() {
-        return readTimeout;
+    public String getHttpUserAgent() {
+        return httpUserAgent;
     }
 
-    public String getUserAgent() {
-        return userAgent;
+    public long getHttpConnectionTimeout() {
+        return httpConnectionTimeout;
     }
 
-    public long getConnectionTimeout() {
-        return connectionTimeout;
+    public long getHttpReadTimeout() {
+        return httpReadTimeout;
     }
 
-    public long getWriteTimeout() {
-        return writeTimeout;
+    public long getHttpWriteTimeout() {
+        return httpWriteTimeout;
     }
 
-    public long getScanInterval() {
-        return scanInterval;
-    }
-
-    public boolean getFailOnRequestErrors(){ return failOnRequestErrors; }
 }
 

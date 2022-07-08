@@ -9,27 +9,27 @@ import org.sonatype.nexus.repository.storage.Asset;
 import org.sonatype.nexus.repository.storage.Component;
 import org.sonatype.nexus.repository.view.Content;
 
-public class CheckRequest implements Serializable {
+public class RequestInfo implements Serializable {
 
     @JsonProperty
-    private final CheckRequestRepository repository;
+    private final RequestInfoRepository repository;
     @JsonProperty
-    private final CheckRequestComponent component;
+    private final RequestInfoComponent component;
     @JsonProperty
     private final String userId;
 
-    public CheckRequest(String userId, Repository repository, Content content,
-                        Asset asset, Component component) {
-        this.repository = new CheckRequestRepository(repository);
-        this.component = new CheckRequestComponent(content, asset, component);
+    public RequestInfo(String userId, Repository repository, Content content,
+                       Asset asset, Component component) {
+        this.repository = new RequestInfoRepository(repository);
+        this.component = new RequestInfoComponent(content, asset, component);
         this.userId = userId;
     }
 
-    public CheckRequestRepository getRepository() {
+    public RequestInfoRepository getRepository() {
         return repository;
     }
 
-    public CheckRequestComponent getComponent() {
+    public RequestInfoComponent getComponent() {
         return component;
     }
 
@@ -38,7 +38,7 @@ public class CheckRequest implements Serializable {
     }
 }
 
-class CheckRequestRepository implements Serializable {
+class RequestInfoRepository implements Serializable {
     @JsonProperty
     private final String name;
     @JsonProperty
@@ -46,7 +46,7 @@ class CheckRequestRepository implements Serializable {
     @JsonProperty
     private final String format;
 
-    public CheckRequestRepository(Repository repository) {
+    public RequestInfoRepository(Repository repository) {
         this.name = repository.getName();
         this.type = repository.getType().getValue();
         this.format = repository.getFormat().getValue();
@@ -65,7 +65,7 @@ class CheckRequestRepository implements Serializable {
     }
 }
 
-class CheckRequestComponent implements  Serializable {
+class RequestInfoComponent implements  Serializable {
     @JsonProperty
     private final String name;
     @JsonProperty
@@ -77,8 +77,8 @@ class CheckRequestComponent implements  Serializable {
     @JsonProperty
     private final String asset;
 
-    public CheckRequestComponent(Content content, Asset asset,
-                                 Component component) {
+    public RequestInfoComponent(Content content, Asset asset,
+                                Component component) {
         this.lastModified = (DateTime) content
                 .getAttributes().get("last_modified");
         this.name = component.name();

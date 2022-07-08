@@ -1,9 +1,15 @@
 package com.kongrentian.plugins.nexus.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,14 +39,26 @@ public class WhiteList implements Serializable {
         this.users = users;
         this.packages = packages;
     }
+    public WhiteList() {
+        users = new ArrayList<>();
+        packages = new HashMap<>();
+    }
+
+    public static WhiteList fromYAML(String yaml) throws JsonProcessingException {
+        return new ObjectMapper(
+                new YAMLFactory().disable(
+                        YAMLGenerator.Feature.WRITE_DOC_START_MARKER))
+                .readValue(yaml, WhiteList.class);
+
+    }
 
     public boolean isUserIn(String user) {
         return users.contains(user);
     }
 
-    public boolean isComponentIn(CheckRequest checkRequest) {
-        return getVersion(checkRequest.getRepository().getFormat(),
-                checkRequest.getComponent()) != null;
+    public boolean isComponentIn(RequestInfo requestInfo) {
+        return getVersion(requestInfo.getRepository().getFormat(),
+                requestInfo.getComponent()) != null;
 
     }
 
@@ -57,7 +75,7 @@ public class WhiteList implements Serializable {
 
     @Nullable
     public WhiteListPackageVersion getVersion(
-            String repositoryFormat, CheckRequestComponent component) {
+            String repositoryFormat, RequestInfoComponent component) {
         String[] names = new String[]{
                 format("%s:%s", component.getGroup(), component.getName()),
                 component.getName()

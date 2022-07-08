@@ -45,8 +45,6 @@ public class SecurityCapabilityLocator {
 
     if (reference == null) {
       LOG.debug("Security Configuration capability does not exist.");
-    } else {
-      LOG.info("REFERENCE "  + reference.context().id().toString());
     }
     return reference;
   }

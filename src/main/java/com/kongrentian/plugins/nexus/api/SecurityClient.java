@@ -9,8 +9,6 @@ import java.security.SecureRandom;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityConfiguration;
 import okhttp3.OkHttpClient;
@@ -24,15 +22,13 @@ public class SecurityClient {
     private final SecurityClientAPI api;
     private final SecurityCapabilityConfiguration configuration;
     private final ObjectMapper mapper;
-    private final ObjectMapper mapperYAML;
-
     public SecurityClient(SecurityCapabilityConfiguration config) throws Exception {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .connectTimeout(config.getConnectionTimeout(), MILLISECONDS)
-                .readTimeout(config.getReadTimeout(), MILLISECONDS)
-                .writeTimeout(config.getWriteTimeout(), MILLISECONDS);
+                .connectTimeout(config.getHttpConnectionTimeout(), MILLISECONDS)
+                .readTimeout(config.getHttpReadTimeout(), MILLISECONDS)
+                .writeTimeout(config.getHttpWriteTimeout(), MILLISECONDS);
 
-        if (!config.getHttpSSLVerify()) {
+        if (!config.isHttpSSLVerify()) {
             SSLContext sslContext = SSLContext.getInstance("TLS");
             TrustManager[] trustManagers = SSLConfiguration.buildUnsafeTrustManager();
             sslContext.init(null, trustManagers, new SecureRandom());
@@ -40,19 +36,16 @@ public class SecurityClient {
             builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustManagers[0]);
         }
 
-        builder.addInterceptor(new ServiceInterceptor(config.getApiAuth(),
-                config.getUserAgent()));
+        builder.addInterceptor(new ServiceInterceptor(config.getScanRemoteToken(),
+                config.getHttpUserAgent()));
         mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         // to deserialize joda datetime
         mapper.registerModule(new JodaModule());
 
-        mapperYAML = new ObjectMapper(
-                new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
-
         Retrofit retrofit = new Retrofit.Builder().client(builder.build())
-                .baseUrl(config.getApiUrl())
+                .baseUrl(config.getScanRemoteUrl())
                 .addConverterFactory(JacksonConverterFactory.create(mapper))
                 .build();
 
