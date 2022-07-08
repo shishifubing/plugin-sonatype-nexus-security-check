@@ -12,16 +12,22 @@ import org.sonatype.nexus.capability.CapabilitySupport;
 public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConfiguration> {
 
   private final SecurityCapabilityHelper securityCapabilityHelper;
+
   @Inject
   public SecurityCapability(SecurityCapabilityHelper securityCapabilityHelper) {
     this.securityCapabilityHelper = securityCapabilityHelper;
-    securityCapabilityHelper.setCapabilityReference(context().id());
   }
 
   @Override
-  protected SecurityCapabilityConfiguration createConfig(
-          Map<String, String> properties) throws JsonProcessingException {
+  protected SecurityCapabilityConfiguration createConfig(Map<String, String> properties) {
     return new SecurityCapabilityConfiguration(properties);
+  }
+
+  private void set() {
+    securityCapabilityHelper.setCapabilityReference(context().id());
+  }
+  private void unset() {
+    securityCapabilityHelper.setCapabilityReference(null);
   }
 
   @Nullable
@@ -33,22 +39,19 @@ public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConf
   @Override
   public void onCreate() throws Exception {
     super.onCreate();
-    securityCapabilityHelper.setCapabilityReference(context().id());
+    set();
   }
 
   @Override
   public void onRemove() throws Exception {
-    securityCapabilityHelper.setCapabilityReference(null);
+    unset();
     super.onRemove();
   }
 
   @Override
-  protected void onActivate(SecurityCapabilityConfiguration config) throws Exception {
-    super.onActivate(config);
+  public void onActivate() throws Exception {
+    super.onActivate();
+    set();
   }
 
-  @Override
-  public void onPassivate() throws Exception {
-    super.onPassivate();
-  }
 }
