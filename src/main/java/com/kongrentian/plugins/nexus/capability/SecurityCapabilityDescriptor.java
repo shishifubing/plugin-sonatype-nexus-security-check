@@ -17,7 +17,7 @@ import static com.kongrentian.plugins.nexus.capability.SecurityCapabilityKey.*;
 public class SecurityCapabilityDescriptor
         extends CapabilityDescriptorSupport<SecurityCapabilityConfiguration>
         implements Taggable {
-    static final String CAPABILITY_ID = "security.capability.id";
+    static final String CAPABILITY_ID = "kongrentian.security";
     private static final String CAPABILITY_NAME = "Security and monitoring of assets";
     private static final String CAPABILITY_DESCRIPTION = "Security and monitoring of assets";
 
