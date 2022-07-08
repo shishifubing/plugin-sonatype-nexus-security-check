@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonatype.nexus.capability.CapabilityConfigurationSupport;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Map;
 
 import static com.kongrentian.plugins.nexus.capability.SecurityCapabilityKey.*;
@@ -23,7 +23,7 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
     private final String monitoringLogin;
     private final String monitoringPassword;
 
-    private final Instant scanLocalLastModified;
+    private final LocalDate scanLocalLastModified;
     private final WhiteList scanLocalWhiteList;
 
     private final String scanRemoteUrl;
@@ -39,7 +39,7 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
     private final Map<String, String> properties;
 
     public SecurityCapabilityConfiguration(Map<String, String> properties) {
-        Instant scanLocalLastModifiedTemp;
+        LocalDate scanLocalLastModifiedTemp;
         WhiteList scanLocalWhiteListTemp;
         this.properties = properties;
 
@@ -126,7 +126,7 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         return monitoringPassword;
     }
 
-    public Instant getScanLocalLastModified() {
+    public LocalDate getScanLocalLastModified() {
         return scanLocalLastModified;
     }
 
