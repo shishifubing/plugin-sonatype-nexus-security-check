@@ -1,23 +1,20 @@
 package com.kongrentian.plugins.nexus.capability;
 
 import com.kongrentian.plugins.nexus.api.SecurityClient;
-import org.sonatype.nexus.capability.CapabilityIdentity;
 import org.sonatype.nexus.capability.CapabilityReference;
 import org.sonatype.nexus.capability.CapabilityRegistry;
-import org.sonatype.nexus.capability.CapabilityType;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
 
 
 @Named
 public class SecurityCapabilityHelper {
     private final CapabilityRegistry capabilityRegistry;
     private CapabilityReference securityCapabilityReference;
+    private SecurityClient securityClient;
 
     @Inject
     public SecurityCapabilityHelper(final CapabilityRegistry capabilityRegistry) {
@@ -29,24 +26,33 @@ public class SecurityCapabilityHelper {
                 .equals(reference.context().type());
     }
 
+    protected static String errorMessage(@Nullable Exception exception) {
+        return exception == null ?
+                " is valid\n" :
+                " is not valid\n" + exception.getMessage();
+    }
+
     @Nonnull
     public SecurityCapabilityConfiguration getCapabilityConfiguration() {
         return getSecurityCapabilityReference().capabilityAs(SecurityCapability.class).getConfig();
     }
 
     @Nonnull
-    public CapabilityReference getSecurityCapabilityReference() {
+    private CapabilityReference getSecurityCapabilityReference() {
         if (securityCapabilityReference != null) {
             return securityCapabilityReference;
         }
-        CapabilityReference capabilityReference = capabilityRegistry.get(
-                        SecurityCapabilityHelper::isTypeEqual)
-                .stream().findFirst().orElse(null);
+        CapabilityReference capabilityReference =
+                capabilityRegistry
+                        .get(SecurityCapabilityHelper::isTypeEqual)
+                        .stream()
+                        .findFirst()
+                        .orElse(null);
         if (capabilityReference == null) {
             securityCapabilityReference = capabilityRegistry.add(
-                    CapabilityType.capabilityType(SecurityCapabilityDescriptor.CAPABILITY_ID),
+                    SecurityCapabilityDescriptor.CAPABILITY_TYPE,
                     false,
-                    null,
+                    "Automatically created at " + Instant.now().toString(),
                     null);
         } else {
             securityCapabilityReference = capabilityReference;
@@ -54,22 +60,24 @@ public class SecurityCapabilityHelper {
         return securityCapabilityReference;
     }
 
-    public void setSecurityCapabilityReference(CapabilityIdentity capabilityIdentity) {
-        securityCapabilityReference = capabilityRegistry.get(capabilityIdentity);
+    protected void unsetCapabilityReference() {
+        securityCapabilityReference = null;
+        securityClient = null;
+    }
+
+    protected void recreateSecurityClient() {
+        securityClient = new SecurityClient(getCapabilityConfiguration());
     }
 
     public boolean isCapabilityActive() {
         return getSecurityCapabilityReference().context().isActive();
     }
 
-    public SecurityClient createClient() throws NoSuchAlgorithmException, KeyManagementException {
-        return new SecurityClient(getCapabilityConfiguration());
-    }
-
-    protected static String errorMessage(@Nullable Exception exception) {
-        return exception == null ?
-                " is valid\n" :
-                " is not valid\n" + exception.getMessage();
+    public SecurityClient getClient() {
+        if (securityClient == null) {
+            recreateSecurityClient();
+        }
+        return securityClient;
     }
 
 }

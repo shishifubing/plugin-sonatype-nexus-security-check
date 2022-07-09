@@ -32,14 +32,6 @@ public enum SecurityCapabilityKey {
             Boolean::parseBoolean
     )),
 
-    FAIL_ON_SCAN_ERRORS(new SecurityCapabilityField<>(
-            "security.fail.on_scan_errors",
-            "true",
-            "Whether to fail the request on errors",
-            CheckboxFormField.class,
-            Boolean::parseBoolean
-    )),
-
     HTTP_SSL_VERIFY(new SecurityCapabilityField<>(
             "security.http.ssl.verify",
             "false",
@@ -76,6 +68,13 @@ public enum SecurityCapabilityKey {
             Long::parseLong
     )),
 
+    SCAN_REMOTE_FAIL_ON_ERRORS(new SecurityCapabilityField<>(
+            "security.scan.remote.fail.on_scan_errors",
+            "true",
+            "Whether to fail the request on errors",
+            CheckboxFormField.class,
+            Boolean::parseBoolean
+    )),
     SCAN_REMOTE_URL(new SecurityCapabilityField<>(
             "security.scan.remote.url",
             "https://localhost",
@@ -98,6 +97,13 @@ public enum SecurityCapabilityKey {
             Long::parseLong
     )),
 
+    SCAN_LOCAL_FAIL_ON_ERRORS(new SecurityCapabilityField<>(
+            "security.scan.local.fail.on_scan_errors",
+            "true",
+            "Whether to fail the request on errors",
+            CheckboxFormField.class,
+            Boolean::parseBoolean
+    )),
     SCAN_LOCAL_LAST_MODIFIED(new SecurityCapabilityField<>(
             "security.scan.local.last_modified",
             "2022-02-20",

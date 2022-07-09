@@ -1,12 +1,13 @@
 package com.kongrentian.plugins.nexus.capability;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.sonatype.nexus.formfields.AbstractFormField;
 import org.sonatype.nexus.formfields.FormField;
 
 import java.lang.reflect.InvocationTargetException;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -16,9 +17,9 @@ import static com.kongrentian.plugins.nexus.capability.SecurityCapabilityKey.val
 
 public final class SecurityCapabilityField<TEMPLATE> {
     private static final DateTimeFormatter dateTimeFormatter =
-            DateTimeFormatter
-                    .ofPattern("yyyy-MM-dd")
-                    .withZone(ZoneId.systemDefault());
+            DateTimeFormat
+                    .forPattern("yyyy-MM-dd")
+                    .withZone(DateTimeZone.UTC);
 
     private final Class<? extends AbstractFormField<TEMPLATE>> formField;
     private final Function<String, TEMPLATE> convertFunction;
@@ -40,8 +41,8 @@ public final class SecurityCapabilityField<TEMPLATE> {
         this.convertFunction = convertFunction;
     }
 
-    public static LocalDate parseTime(String text) {
-        return LocalDate.parse(text, dateTimeFormatter);
+    public static DateTime parseTime(String text) {
+        return DateTime.parse(text, dateTimeFormatter);
     }
 
     public static List<FormField> createFields() throws RuntimeException {

@@ -17,18 +17,22 @@ import static java.lang.String.format;
 
 /**
  * <pre>
+ * extensions:
+ *   - json
  * users:
- *   - user
+ *   - admin
  * packages:
- *   format:
- *     package:
- *       version:
+ *   pypi:
+ *     pip:
+ *       22.1.1:
  *         allowed_date: 2022-07-07
  *         allowed: true
  * </pre>
  */
 public class WhiteList implements Serializable {
 
+    @JsonProperty
+    private final List<String> extensions;
     @JsonProperty
     private final List<String> users;
     @JsonProperty
@@ -37,6 +41,7 @@ public class WhiteList implements Serializable {
     public WhiteList() {
         users = new ArrayList<>();
         packages = new HashMap<>();
+        extensions = new ArrayList<>();
     }
 
     public static WhiteList fromYAML(String yaml) throws JsonProcessingException {
@@ -44,16 +49,6 @@ public class WhiteList implements Serializable {
                 new YAMLFactory().disable(
                         YAMLGenerator.Feature.WRITE_DOC_START_MARKER))
                 .readValue(yaml, WhiteList.class);
-
-    }
-
-    public boolean isUserIn(String user) {
-        return users.contains(user);
-    }
-
-    public boolean isComponentIn(RequestInfo requestInfo) {
-        return getVersion(requestInfo.getRepository().getFormat(),
-                requestInfo.getComponent()) != null;
 
     }
 
@@ -70,7 +65,7 @@ public class WhiteList implements Serializable {
 
     @Nullable
     public WhiteListPackageVersion getVersion(
-            String repositoryFormat, RequestInfoComponent component) {
+            String repositoryFormat, RequestInformationComponent component) {
         String[] names = new String[]{
                 format("%s:%s", component.getGroup(), component.getName()),
                 component.getName()
@@ -90,8 +85,19 @@ public class WhiteList implements Serializable {
         return null;
     }
 
-    public List<String> getUsers() {
-        return users;
+    public boolean isAllowed(RequestInformation requestInformation) {
+        RequestInformationComponent component = requestInformation.getComponent();
+        RequestInformationRepository repository = requestInformation.getRepository();
+        if (extensions.contains(component.getExtension())
+                || users.contains(requestInformation.getUserId())) {
+            return true;
+        }
+        WhiteListPackageVersion version = getVersion(
+                repository.getFormat(), component);
+        if (version == null) {
+            return false;
+        }
+        return version.isAllowed();
     }
 
 }

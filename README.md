@@ -11,7 +11,7 @@ hashCodesMap: (class java.util.HashMap)
     org.sonatype.nexus.common.hash.HashAlgorithm@5b0c0740: c849a44121f823c806f604d6568d9e89
 org.sonatype.nexus.repository.storage.Asset: 
   metadata: (AttachedEntityMetadata)
-    schema: asset
+    schema: assetPath
     document:  
       "#74:0": >-
         bucket:#57:1,format:pypi,last_updated:Fri Jul 01 12:46:21 UTC 2022,attributes:[5],component:#65:0,
@@ -100,7 +100,7 @@ hashCodesMap: (class java.util.HashMap)
   org.sonatype.nexus.common.hash.HashAlgorithm@67bcbee7: bcbb583a5a4b4767de8ac020dea3d54011fee961
   org.sonatype.nexus.repository.storage.Asset: (class org.sonatype.nexus.repository.storage.Asset) 
     metadata: (AttachedEntityMetadata)
-      schema: asset
+      schema: assetPath
       document: (#74:0)
         bucket: #57:1
         format: pypi

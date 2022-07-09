@@ -1,12 +1,11 @@
 package com.kongrentian.plugins.nexus.capability;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kongrentian.plugins.nexus.model.WhiteList;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonatype.nexus.capability.CapabilityConfigurationSupport;
 
-import java.time.LocalDate;
 import java.util.Map;
 
 import static com.kongrentian.plugins.nexus.capability.SecurityCapabilityKey.*;
@@ -18,17 +17,18 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
     private final boolean enableMonitoring;
     private final boolean enableScanLocal;
 
-    private final boolean failOnScanErrors;
 
     private final String monitoringUrl;
     private final String monitoringLogin;
     private final String monitoringPassword;
 
-    private final LocalDate scanLocalLastModified;
+    private final boolean scanLocalFailOnScanErrors;
+    private final DateTime scanLocalLastModified;
     private Exception scanLocalLastModifiedException = null;
     private final WhiteList scanLocalWhiteList;
     private Exception scanLocalWhiteListException = null;
 
+    private final boolean scanRemoteFailOnScanErrors;
     private final String scanRemoteUrl;
     private final String scanRemoteToken;
     private final long scanRemoteInterval;
@@ -42,7 +42,7 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
     private final Map<String, String> properties;
 
     public SecurityCapabilityConfiguration(Map<String, String> properties) {
-        LocalDate scanLocalLastModifiedTemp;
+        DateTime scanLocalLastModifiedTemp;
         WhiteList scanLocalWhiteListTemp;
         this.properties = properties;
 
@@ -54,10 +54,12 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         monitoringLogin = (String) get(MONITORING_LOGIN);
         monitoringPassword = (String) get(MONITORING_PASSWORD);
 
+        scanRemoteFailOnScanErrors = (boolean) get(SCAN_REMOTE_FAIL_ON_ERRORS);
         scanRemoteUrl = (String) get(SCAN_REMOTE_URL);
         scanRemoteToken = (String) get(SCAN_REMOTE_TOKEN);
         scanRemoteInterval = (long) get(SCAN_REMOTE_INTERVAL);
 
+        scanLocalFailOnScanErrors = (boolean) get(SCAN_LOCAL_FAIL_ON_ERRORS);
         String lastModified = (String) get(SCAN_LOCAL_LAST_MODIFIED);
         try {
             scanLocalLastModifiedTemp = SecurityCapabilityField.parseTime(lastModified);
@@ -79,7 +81,6 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
             scanLocalWhiteListTemp = new WhiteList();
         }
         scanLocalWhiteList = scanLocalWhiteListTemp;
-        failOnScanErrors = (boolean) get(FAIL_ON_SCAN_ERRORS);
 
         httpSSLVerify = (boolean) get(HTTP_SSL_VERIFY);
         httpUserAgent = (String) get(HTTP_USER_AGENT);
@@ -88,12 +89,12 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         httpWriteTimeout = (long) get(HTTP_WRITE_TIMEOUT);
     }
 
-    private Object get(SecurityCapabilityKey securityCapabilityKey) {
+    public Object get(SecurityCapabilityKey securityCapabilityKey) {
         String defaultValue = securityCapabilityKey.defaultValue();
         String property = properties.get(securityCapabilityKey.propertyKey());
         try {
             return securityCapabilityKey.field().convert(property);
-        } catch (Exception exception) {
+        } catch (Throwable exception) {
             LOG.error("Could not convert property {}, falling back to default - {}",
                     securityCapabilityKey.name(),
                     securityCapabilityKey.defaultValue(),
@@ -115,8 +116,8 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         return enableScanLocal;
     }
 
-    public boolean isFailOnScanErrors() {
-        return failOnScanErrors;
+    public boolean isScanRemoteFailOnScanErrors() {
+        return scanRemoteFailOnScanErrors;
     }
 
     public String getMonitoringUrl() {
@@ -131,7 +132,7 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         return monitoringPassword;
     }
 
-    public LocalDate getScanLocalLastModified() {
+    public DateTime getScanLocalLastModified() {
         return scanLocalLastModified;
     }
 
@@ -169,6 +170,10 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
 
     public long getHttpWriteTimeout() {
         return httpWriteTimeout;
+    }
+
+    public boolean isScanLocalFailOnScanErrors() {
+        return scanLocalFailOnScanErrors;
     }
 
     public Exception getScanLocalLastModifiedException() {

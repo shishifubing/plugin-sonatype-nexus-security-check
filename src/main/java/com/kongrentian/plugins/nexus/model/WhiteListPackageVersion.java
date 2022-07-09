@@ -7,23 +7,21 @@ import java.time.LocalDate;
 
 public class WhiteListPackageVersion implements Serializable {
     @JsonProperty("allowed_date")
-    private LocalDate allowedDate;
+    public LocalDate allowedDate;
     @JsonProperty
-    private boolean allowed;
-
-    public WhiteListPackageVersion(LocalDate allowedDate, boolean allowed) {
-        this.allowedDate = allowedDate;
-        this.allowed = allowed;
-    }
+    public boolean allowed = false;
 
     public WhiteListPackageVersion() {
     }
 
-    public LocalDate getAllowedDate() {
-        return allowedDate;
+    public boolean isAllowed() {
+        if (allowed) {
+            return true;
+        }
+        if (allowedDate == null) {
+            return false;
+        }
+        return allowedDate.isAfter(LocalDate.now());
     }
 
-    public boolean isAllowed() {
-        return allowed;
-    }
 }
