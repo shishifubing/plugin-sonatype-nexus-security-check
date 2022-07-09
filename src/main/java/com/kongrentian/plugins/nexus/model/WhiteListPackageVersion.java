@@ -9,7 +9,7 @@ import java.time.LocalDate;
 public class WhiteListPackageVersion implements Serializable {
     @JsonProperty("allowed_date")
     private final LocalDate allowedDate;
-    @JsonProperty
+    @JsonProperty("allowed")
     private final boolean allowed;
 
     public WhiteListPackageVersion(LocalDate allowedDate, boolean allowed) {
