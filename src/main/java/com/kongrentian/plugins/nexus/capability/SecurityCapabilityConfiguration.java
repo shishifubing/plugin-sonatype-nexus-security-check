@@ -13,7 +13,7 @@ import static com.kongrentian.plugins.nexus.capability.SecurityCapabilityKey.*;
 
 public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupport {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SecurityCapabilityHelper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SecurityCapabilityConfiguration.class);
     private final boolean enableScanRemote;
     private final boolean enableMonitoring;
     private final boolean enableScanLocal;

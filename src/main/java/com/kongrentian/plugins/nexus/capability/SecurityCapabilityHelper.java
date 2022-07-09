@@ -1,64 +1,68 @@
 package com.kongrentian.plugins.nexus.capability;
 
-import javax.annotation.Nonnull;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import com.kongrentian.plugins.nexus.api.SecurityClient;
 import org.sonatype.nexus.capability.CapabilityIdentity;
 import org.sonatype.nexus.capability.CapabilityReference;
 import org.sonatype.nexus.capability.CapabilityRegistry;
 import org.sonatype.nexus.capability.CapabilityType;
 
+import javax.annotation.Nonnull;
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 
 
 @Named
 public class SecurityCapabilityHelper {
-  private final CapabilityRegistry capabilityRegistry;
-  private CapabilityReference securityCapabilityReference;
+    private final CapabilityRegistry capabilityRegistry;
+    private CapabilityReference securityCapabilityReference;
 
-  @Inject
-  public SecurityCapabilityHelper(final CapabilityRegistry capabilityRegistry) {
-    this.capabilityRegistry = capabilityRegistry;
-  }
-
-  @Nonnull
-  public SecurityCapabilityConfiguration getCapabilityConfiguration() {
-    return getSecurityCapabilityReference().capabilityAs(SecurityCapability.class).getConfig();
-  }
-
-  public void setSecurityCapabilityReference(CapabilityIdentity capabilityIdentity) {
-    securityCapabilityReference = capabilityRegistry.get(capabilityIdentity);
-  }
-
-  @Nonnull
-  public CapabilityReference getSecurityCapabilityReference() {
-    if (securityCapabilityReference != null) {
-      return securityCapabilityReference;
+    @Inject
+    public SecurityCapabilityHelper(final CapabilityRegistry capabilityRegistry) {
+        this.capabilityRegistry = capabilityRegistry;
     }
-    CapabilityReference capabilityReference = capabilityRegistry.get(
-            SecurityCapabilityDescriptor.CAPABILITY_IDENTITY);
-    if (capabilityReference == null) {
-      securityCapabilityReference = capabilityRegistry.add(
-              CapabilityType.capabilityType(SecurityCapabilityDescriptor.CAPABILITY_ID),
-              false,
-              null,
-              null);
-    } else {
-      securityCapabilityReference = capabilityReference;
+
+    private static boolean isTypeEqual(CapabilityReference reference) {
+        return SecurityCapabilityDescriptor.CAPABILITY_TYPE
+                .equals(reference.context().type());
     }
-    return securityCapabilityReference;
-  }
 
+    @Nonnull
+    public SecurityCapabilityConfiguration getCapabilityConfiguration() {
+        return getSecurityCapabilityReference().capabilityAs(SecurityCapability.class).getConfig();
+    }
 
-  public boolean isCapabilityActive() {
-    return getSecurityCapabilityReference().context().isActive();
-  }
+    @Nonnull
+    public CapabilityReference getSecurityCapabilityReference() {
+        if (securityCapabilityReference != null) {
+            return securityCapabilityReference;
+        }
+        CapabilityReference capabilityReference = capabilityRegistry.get(
+                        SecurityCapabilityHelper::isTypeEqual)
+                .stream().findFirst().orElse(null);
+        if (capabilityReference == null) {
+            securityCapabilityReference = capabilityRegistry.add(
+                    CapabilityType.capabilityType(SecurityCapabilityDescriptor.CAPABILITY_ID),
+                    false,
+                    null,
+                    null);
+        } else {
+            securityCapabilityReference = capabilityReference;
+        }
+        return securityCapabilityReference;
+    }
 
-  public SecurityClient createClient() throws NoSuchAlgorithmException, KeyManagementException {
-    return new SecurityClient(getCapabilityConfiguration());
-  }
+    public void setSecurityCapabilityReference(CapabilityIdentity capabilityIdentity) {
+        securityCapabilityReference = capabilityRegistry.get(capabilityIdentity);
+    }
+
+    public boolean isCapabilityActive() {
+        return getSecurityCapabilityReference().context().isActive();
+    }
+
+    public SecurityClient createClient() throws NoSuchAlgorithmException, KeyManagementException {
+        return new SecurityClient(getCapabilityConfiguration());
+    }
 
 }

@@ -18,8 +18,7 @@ public class SecurityCapabilityDescriptor
         extends CapabilityDescriptorSupport<SecurityCapabilityConfiguration>
         implements Taggable {
     static final String CAPABILITY_ID = "kongrentian.security";
-    static final CapabilityIdentity CAPABILITY_IDENTITY =
-            CapabilityIdentity.capabilityIdentity(CAPABILITY_ID);
+    static final CapabilityType CAPABILITY_TYPE = CapabilityType.capabilityType(CAPABILITY_ID);
     private static final String CAPABILITY_NAME = "Security and monitoring of assets";
     private static final String CAPABILITY_DESCRIPTION = "Security and monitoring of assets";
     private static final Messages messages = I18N.create(Messages.class);
@@ -31,7 +30,7 @@ public class SecurityCapabilityDescriptor
 
     @Override
     public CapabilityType type() {
-        return CapabilityType.capabilityType(CAPABILITY_ID);
+        return CAPABILITY_TYPE;
     }
 
     @Override
