@@ -7,6 +7,7 @@ import org.sonatype.nexus.capability.CapabilityRegistry;
 import org.sonatype.nexus.capability.CapabilityType;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.security.KeyManagementException;
@@ -63,6 +64,12 @@ public class SecurityCapabilityHelper {
 
     public SecurityClient createClient() throws NoSuchAlgorithmException, KeyManagementException {
         return new SecurityClient(getCapabilityConfiguration());
+    }
+
+    protected static String errorMessage(@Nullable Exception exception) {
+        return exception == null ?
+                " is valid\n" :
+                " is not valid\n" + exception.getMessage();
     }
 
 }

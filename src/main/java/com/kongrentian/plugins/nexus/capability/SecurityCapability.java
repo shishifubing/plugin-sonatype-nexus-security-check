@@ -24,13 +24,21 @@ public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConf
 
   @Nullable
   @Override
-  protected String renderStatus() throws Exception {
-    return super.renderStatus();
+  protected String renderStatus() {
+    SecurityCapabilityConfiguration config = getConfig();
+    StringBuilder builder = new StringBuilder();
+    Exception lastModified = config.getScanLocalLastModifiedException();
+    Exception whiteList = config.getScanLocalLastModifiedException();
+    builder.append(SecurityCapabilityKey.SCAN_LOCAL_LAST_MODIFIED.propertyKey());
+    builder.append(SecurityCapabilityHelper.errorMessage(lastModified));
+    builder.append("\n===================================\n");
+    builder.append(SecurityCapabilityKey.SCAN_LOCAL_WHITE_LIST.propertyKey());
+    builder.append(SecurityCapabilityHelper.errorMessage(whiteList));
+    return builder.toString();
   }
 
   /**
    * in case the capability gets removed
-   * @throws Exception
    */
   @Override
   public void onRemove() throws Exception {

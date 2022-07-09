@@ -25,7 +25,9 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
     private final String monitoringPassword;
 
     private final LocalDate scanLocalLastModified;
+    private Exception scanLocalLastModifiedException = null;
     private final WhiteList scanLocalWhiteList;
+    private Exception scanLocalWhiteListException = null;
 
     private final String scanRemoteUrl;
     private final String scanRemoteToken;
@@ -62,6 +64,7 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         } catch (Exception exception) {
             LOG.error("Could not parse last_modified date: {}",
                     lastModified, exception);
+            scanLocalLastModifiedException = exception;
             scanLocalLastModifiedTemp = SecurityCapabilityField.parseTime(
                     SCAN_LOCAL_LAST_MODIFIED.defaultValue());
         }
@@ -72,6 +75,7 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         } catch (Exception exception) {
             LOG.error("Could not parse white list: {}",
                     whiteList, exception);
+            scanLocalWhiteListException = exception;
             scanLocalWhiteListTemp = new WhiteList();
         }
         scanLocalWhiteList = scanLocalWhiteListTemp;
@@ -167,5 +171,12 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         return httpWriteTimeout;
     }
 
+    public Exception getScanLocalLastModifiedException() {
+        return scanLocalLastModifiedException;
+    }
+
+    public Exception getScanLocalWhiteListException() {
+        return scanLocalWhiteListException;
+    }
 }
 

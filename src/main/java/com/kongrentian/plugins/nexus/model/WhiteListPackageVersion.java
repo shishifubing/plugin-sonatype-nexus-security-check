@@ -4,18 +4,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.time.LocalDate;
 
 public class WhiteListPackageVersion implements Serializable {
     @JsonProperty("allowed_date")
-    private final Instant allowedDate;
+    private final LocalDate allowedDate;
+    @JsonProperty
     private final boolean allowed;
 
-    public WhiteListPackageVersion(Instant allowedDate, boolean allowed) {
+    public WhiteListPackageVersion(LocalDate allowedDate, boolean allowed) {
         this.allowedDate = allowedDate;
         this.allowed = allowed;
     }
 
-    public Instant getAllowedDate() {
+    public LocalDate getAllowedDate() {
         return allowedDate;
     }
 
