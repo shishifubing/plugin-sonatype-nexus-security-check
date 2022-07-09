@@ -34,11 +34,6 @@ public class WhiteList implements Serializable {
     @JsonProperty
     private final Map<String, Map<String, Map<String, WhiteListPackageVersion>>> packages;
 
-    public WhiteList(List<String> users,
-                     Map<String, Map<String, Map<String, WhiteListPackageVersion>>> packages) {
-        this.users = users;
-        this.packages = packages;
-    }
     public WhiteList() {
         users = new ArrayList<>();
         packages = new HashMap<>();

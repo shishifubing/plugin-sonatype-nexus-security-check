@@ -28,10 +28,10 @@ public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConf
     SecurityCapabilityConfiguration config = getConfig();
     StringBuilder builder = new StringBuilder();
     Exception lastModified = config.getScanLocalLastModifiedException();
-    Exception whiteList = config.getScanLocalLastModifiedException();
+    Exception whiteList = config.getScanLocalWhiteListException();
     builder.append(SecurityCapabilityKey.SCAN_LOCAL_LAST_MODIFIED.propertyKey());
     builder.append(SecurityCapabilityHelper.errorMessage(lastModified));
-    builder.append("\n===================================\n");
+    builder.append("\n\r\n\r===================================\n\r\n\r");
     builder.append(SecurityCapabilityKey.SCAN_LOCAL_WHITE_LIST.propertyKey());
     builder.append(SecurityCapabilityHelper.errorMessage(whiteList));
     return builder.toString();
