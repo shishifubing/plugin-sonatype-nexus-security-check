@@ -5,7 +5,7 @@
 
     <properties>
         <version.retrofit2>2.9.0</version.retrofit2>
-        <version.jackson>2.13.3</version.jackson>
+        <version.jackson>2.12.3</version.jackson>
         <version.snakeyaml>1.30</version.snakeyaml>
         <version.velocity>1.7</version.velocity>
         <version.karaf-maven-plugin>4.4.0</version.karaf-maven-plugin>
@@ -28,73 +28,17 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.0.0-M5</version>
+                    <groupId>org.apache.karaf.tooling</groupId>
+                    <artifactId>karaf-maven-plugin</artifactId>
+                    <version>${version.karaf-maven-plugin}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <compilerArgs>
-                        <arg>-Xlint:all</arg>
-                    </compilerArgs>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.karaf.tooling</groupId>
                 <artifactId>karaf-maven-plugin</artifactId>
                 <version>${version.karaf-maven-plugin}</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>${version.maven-bundle-plugin}</version>
-                <executions>
-                    <execution>
-                        <id>default-bundle</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>bundle</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <instructions>
-                        <Bundle-SymbolicName>${artifactId}</Bundle-SymbolicName>
-                        <Bundle-Description>${artifactId}</Bundle-Description>
-                        <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
-                        <Embed-Transitive>true</Embed-Transitive>
-                        <Export-Package>
-                            retrofit2,
-                            retrofit2.http,
-                            okhttp3,
-                            okio
-                        </Export-Package>
-                        <Import-Package>
-                            retrofit2,
-                            retrofit2.http,
-                            com.fasterxml.jackson.*,
-                            javax.inject,
-                            javax.net,
-                            javax.net.ssl,
-                            org.slf4j,
-                            org.osgi.framework,
-                            org.sonatype.nexus.*
-                        </Import-Package>
-                        <Include-Resource>target/classes,{maven-resources}</Include-Resource>
-                    </instructions>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <useSystemClassLoader>false</useSystemClassLoader>
-                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -116,17 +60,11 @@
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-joda</artifactId>
-            <version>${version.jackson}</version>
+
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-yaml</artifactId>
-            <version>${version.jackson}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>${version.jackson}</version>
         </dependency>
         <dependency>
             <groupId>org.yaml</groupId>
