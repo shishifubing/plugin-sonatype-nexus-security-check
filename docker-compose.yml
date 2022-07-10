@@ -2,7 +2,7 @@ version: "2"
 
 services:
   nexus:
-    image: sonatype/nexus3
+    image: sonatype/nexus3:${NEXUS_VERSION}
     container_name: nexus
     volumes:
       - "${DIRECTORY_DATA}:/nexus-data"

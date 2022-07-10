@@ -4,13 +4,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
-        <revision>3.40.1-01</revision>
+        <revision>3.37.3-02</revision>
     </properties>
 
     <parent>
         <groupId>org.sonatype.nexus.plugins</groupId>
         <artifactId>nexus-plugins</artifactId>
-        <version>3.40.1-01</version>
+        <version>3.37.3-02</version>
     </parent>
 
     <groupId>kongrentian</groupId>
@@ -56,6 +56,11 @@
             <artifactId>snakeyaml</artifactId>
             <version>1.30</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity</artifactId>
+            <version>1.7</version>
+        </dependency>
         <!--
         cannot use elastic client
         it has commons-logging:commons-logging library
@@ -96,11 +101,6 @@
             <groupId>org.sonatype.nexus</groupId>
             <artifactId>nexus-security</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.velocity</groupId>
-            <artifactId>velocity</artifactId>
-            <version>1.7</version>
         </dependency>
     </dependencies>
 </project>
