@@ -1,5 +1,8 @@
 package com.kongrentian.plugins.nexus.monitoring;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.kongrentian.plugins.nexus.api.MonitoringApi;
+import com.kongrentian.plugins.nexus.capability.SecurityCapabilityConfiguration;
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityHelper;
 import com.kongrentian.plugins.nexus.model.MonitoringInformation;
 import org.slf4j.Logger;
@@ -22,17 +25,28 @@ public class Monitoring {
     }
 
     public void send(MonitoringInformation information) {
-        if (!securityCapabilityHelper.getCapabilityConfiguration().isEnableMonitoring()) {
+        SecurityCapabilityConfiguration config = securityCapabilityHelper
+                .getCapabilityConfiguration();
+        if (!config.isEnableMonitoring()) {
             return;
         }
         try {
-            sendImpl(information);
+            sendImpl(information, config);
         } catch (Throwable exception) {
             LOG.error("Could not send monitoring information", exception);
         }
     }
 
-    public void sendImpl(MonitoringInformation information) {
-
+    public void sendImpl(MonitoringInformation information,
+                         SecurityCapabilityConfiguration config) throws JsonProcessingException {
+        MonitoringApi api = securityCapabilityHelper.getMonitoringApi();
+        StringBuilder builder = new StringBuilder(
+                SecurityCapabilityHelper.jsonMapper
+                        .writeValueAsString(information));
+        builder.insert(0, "{\"index\":{ } }\n");
+        api.bulk(builder.toString(),
+                config.getMonitoringPipeline(),
+                config.getMonitoringIndex(),
+                SecurityCapabilityHelper.todayDate());
     }
 }

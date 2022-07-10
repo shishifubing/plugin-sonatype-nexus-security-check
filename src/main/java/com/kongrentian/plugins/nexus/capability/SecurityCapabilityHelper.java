@@ -6,7 +6,13 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.kongrentian.plugins.nexus.api.MonitoringApi;
+import com.kongrentian.plugins.nexus.api.RemoteScanApi;
 import com.kongrentian.plugins.nexus.api.SecurityClient;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.sonatype.nexus.capability.CapabilityReference;
 import org.sonatype.nexus.capability.CapabilityRegistry;
 
@@ -27,9 +33,14 @@ public class SecurityCapabilityHelper {
     public final static ObjectMapper yamlMapper = new ObjectMapper(
             new YAMLFactory().disable(
                     YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
+    private static final DateTimeFormatter dateTimeFormatter =
+            DateTimeFormat
+                    .forPattern("yyyy-MM-dd")
+                    .withZone(DateTimeZone.UTC);
     private final CapabilityRegistry capabilityRegistry;
     private CapabilityReference securityCapabilityReference;
-    private SecurityClient securityClient;
+    private RemoteScanApi remoteScanApi;
+    private MonitoringApi monitoringApi;
 
     @Inject
     public SecurityCapabilityHelper(final CapabilityRegistry capabilityRegistry) {
@@ -41,9 +52,19 @@ public class SecurityCapabilityHelper {
                 .equals(reference.context().type());
     }
 
+    public static DateTime parseTime(String text) {
+        return DateTime.parse(text, dateTimeFormatter);
+    }
+
+    public static String todayDate() {
+        return DateTime.now().toString(dateTimeFormatter);
+    }
+
     @Nonnull
     public SecurityCapabilityConfiguration getCapabilityConfiguration() {
-        return getSecurityCapabilityReference().capabilityAs(SecurityCapability.class).getConfig();
+        return getSecurityCapabilityReference()
+                .capabilityAs(SecurityCapability.class)
+                .getConfig();
     }
 
     @Nonnull
@@ -71,22 +92,38 @@ public class SecurityCapabilityHelper {
 
     protected void unsetCapabilityReference() {
         securityCapabilityReference = null;
-        securityClient = null;
+        remoteScanApi = null;
+        monitoringApi = null;
     }
 
-    protected void recreateSecurityClient() {
-        securityClient = new SecurityClient(getCapabilityConfiguration());
+    protected void recreateSecurityClientApi() {
+        remoteScanApi = SecurityClient
+                .createSecurityClientApi(getCapabilityConfiguration());
+    }
+
+    protected void recreateMonitoringApi() {
+        monitoringApi = SecurityClient
+                .createMonitoringApi(getCapabilityConfiguration());
     }
 
     public boolean isCapabilityActive() {
-        return getSecurityCapabilityReference().context().isActive();
+        return getSecurityCapabilityReference()
+                .context()
+                .isActive();
     }
 
-    public SecurityClient getClient() {
-        if (securityClient == null) {
-            recreateSecurityClient();
+    public RemoteScanApi getSecurityClientApi() {
+        if (remoteScanApi == null) {
+            recreateSecurityClientApi();
         }
-        return securityClient;
+        return remoteScanApi;
+    }
+
+    public MonitoringApi getMonitoringApi() {
+        if (monitoringApi == null) {
+            recreateMonitoringApi();
+        }
+        return monitoringApi;
     }
 
 }

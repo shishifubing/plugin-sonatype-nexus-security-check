@@ -5,6 +5,7 @@ import com.kongrentian.plugins.nexus.capability.SecurityCapabilityKey;
 import com.kongrentian.plugins.nexus.model.MonitoringInformationScanResult;
 import com.kongrentian.plugins.nexus.model.RequestInformation;
 import com.kongrentian.plugins.nexus.model.ScanResult;
+import com.kongrentian.plugins.nexus.model.ScanResultType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonatype.nexus.repository.storage.AssetStore;
@@ -22,21 +23,27 @@ abstract public class AbstractScanner {
     }
 
     public ScanResult scan(RequestInformation information) {
-        Boolean allowed = (Boolean) securityCapabilityHelper
-                .getCapabilityConfiguration()
-                .get(getFailKey());
-        String message = "There was an exception and "
-                + getFailKey().propertyKey() + " is " + !allowed;
         try {
             return scanImpl(information);
         } catch (Throwable exception) {
-            return new ScanResult(allowed, message, exception);
+            boolean fail = failOnErrors();
+            return new ScanResult(
+                    !fail,
+                    fail ? ScanResultType.EXCEPTION
+                            : ScanResultType.EXCEPTION_IGNORED)
+                    .setException(exception);
         }
     }
 
     abstract ScanResult scanImpl(RequestInformation information) throws Throwable;
 
     abstract public SecurityCapabilityKey getFailKey();
+
+    public boolean failOnErrors() {
+        return (Boolean) securityCapabilityHelper
+                .getCapabilityConfiguration()
+                .get(getFailKey());
+    }
 
     public MonitoringInformationScanResult convertToMonitoringScanResult(ScanResult result) {
         return new MonitoringInformationScanResult(getClass(), result);

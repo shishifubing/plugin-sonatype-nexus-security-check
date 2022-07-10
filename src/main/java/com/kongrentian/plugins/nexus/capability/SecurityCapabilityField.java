@@ -1,9 +1,5 @@
 package com.kongrentian.plugins.nexus.capability;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.sonatype.nexus.formfields.AbstractFormField;
 import org.sonatype.nexus.formfields.FormField;
 
@@ -16,10 +12,6 @@ import java.util.stream.Collectors;
 import static com.kongrentian.plugins.nexus.capability.SecurityCapabilityKey.values;
 
 public final class SecurityCapabilityField<TEMPLATE> {
-    private static final DateTimeFormatter dateTimeFormatter =
-            DateTimeFormat
-                    .forPattern("yyyy-MM-dd")
-                    .withZone(DateTimeZone.UTC);
 
     private final Class<? extends AbstractFormField<TEMPLATE>> formField;
     private final Function<String, TEMPLATE> convertFunction;
@@ -28,6 +20,12 @@ public final class SecurityCapabilityField<TEMPLATE> {
     private final String defaultValue;
     private final String description;
 
+
+    // always have to specify convertFunction, even if
+    // it is useless,
+    // otherwise you will not be able to use `convert`
+    // you can do it if you remove templating, but
+    // then you will not be able to generate fields
     public SecurityCapabilityField(
             String propertyKey,
             String defaultValue,
@@ -39,10 +37,6 @@ public final class SecurityCapabilityField<TEMPLATE> {
         this.description = description;
         this.formField = formField;
         this.convertFunction = convertFunction;
-    }
-
-    public static DateTime parseTime(String text) {
-        return DateTime.parse(text, dateTimeFormatter);
     }
 
     public static List<FormField> createFields() throws RuntimeException {
@@ -85,10 +79,6 @@ public final class SecurityCapabilityField<TEMPLATE> {
 
     public String defaultValue() {
         return defaultValue;
-    }
-
-    public String description() {
-        return description;
     }
 
 }

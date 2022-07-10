@@ -19,10 +19,12 @@ import java.security.SecureRandom;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public class SecurityClient {
-    private static final Logger LOG = LoggerFactory.getLogger(SecurityCapabilityConfiguration.class);
-    private final SecurityClientAPI api;
+    private static final Logger LOG = LoggerFactory.getLogger(SecurityClient.class);
 
-    public SecurityClient(SecurityCapabilityConfiguration config) {
+    private static <TEMPLATE> TEMPLATE create(Class<TEMPLATE> api,
+                                              SecurityCapabilityConfiguration config,
+                                              String baseUrl,
+                                              String auth) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .connectTimeout(config.getHttpConnectionTimeout(), MILLISECONDS)
                 .readTimeout(config.getHttpReadTimeout(), MILLISECONDS)
@@ -36,22 +38,34 @@ public class SecurityClient {
             LOG.error("Could not build unsafe trust manager", exception);
         }
 
-        builder.addInterceptor(
-                new ServiceInterceptor(config.getScanRemoteAuth(),
-                        config.getHttpUserAgent()));
+        builder.addInterceptor(new ServiceInterceptor(auth, config.getHttpUserAgent()));
 
-        api = new Retrofit
+        return new Retrofit
                 .Builder()
                 .client(builder.build())
-                .baseUrl(config.getScanRemoteUrl())
+                .baseUrl(baseUrl)
                 .addConverterFactory(
                         JacksonConverterFactory.create(
                                 SecurityCapabilityHelper.jsonMapper))
                 .build()
-                .create(SecurityClientAPI.class);
+                .create(api);
     }
 
-    private void buildUnsafeTrustManager(OkHttpClient.Builder builder)
+    public static MonitoringApi createMonitoringApi(SecurityCapabilityConfiguration config) {
+        return create(MonitoringApi.class,
+                config,
+                config.getMonitoringUrl(),
+                config.getMonitoringAuth());
+    }
+
+    public static RemoteScanApi createSecurityClientApi(SecurityCapabilityConfiguration config) {
+        return create(RemoteScanApi.class,
+                config,
+                config.getScanRemoteUrl(),
+                config.getScanRemoteAuth());
+    }
+
+    private static void buildUnsafeTrustManager(OkHttpClient.Builder builder)
             throws NoSuchAlgorithmException, KeyManagementException {
         SSLContext sslContext = SSLContext.getInstance("TLS");
         TrustManager[] trustManagers = SSLConfiguration.buildUnsafeTrustManager();
@@ -59,10 +73,5 @@ public class SecurityClient {
         SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
         builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustManagers[0]);
     }
-
-    public SecurityClientAPI getApi() {
-        return api;
-    }
-
 
 }

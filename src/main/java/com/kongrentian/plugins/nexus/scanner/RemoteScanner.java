@@ -1,6 +1,6 @@
 package com.kongrentian.plugins.nexus.scanner;
 
-import com.kongrentian.plugins.nexus.api.SecurityClient;
+import com.kongrentian.plugins.nexus.api.RemoteScanApi;
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityHelper;
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityKey;
 import com.kongrentian.plugins.nexus.model.RequestInformation;
@@ -34,12 +34,11 @@ public class RemoteScanner extends AbstractScanner {
         if (lastScan != null) {
             return lastScan;
         }
-        SecurityClient securityClient = securityCapabilityHelper.getClient();
+        RemoteScanApi securityClient = securityCapabilityHelper.getSecurityClientApi();
 
         LOG.info("Security check requestInformation - {}",
                 SecurityCapabilityHelper.jsonMapper.writeValueAsString(information));
         Response<ScanResult> responseCheck = securityClient
-                .getApi()
                 .check(information)
                 .execute();
         String message = responseCheck.message();

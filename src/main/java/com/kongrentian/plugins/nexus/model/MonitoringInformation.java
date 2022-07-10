@@ -27,8 +27,8 @@ public class MonitoringInformation implements Serializable {
     }
 
     @JsonIgnore
-    public String getLastReason() {
-        return scans.get(scans.size() - 1).getResult().getReason();
+    public ScanResultType getLastReason() {
+        return scans.get(scans.size() - 1).getResult().getType();
     }
 
     public boolean isAllowed() {

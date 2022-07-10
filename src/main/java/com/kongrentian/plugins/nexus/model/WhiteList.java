@@ -91,21 +91,21 @@ public class WhiteList implements Serializable {
     }
 
     @Nullable
-    public WhiteListContains contains(RequestInformation requestInformation) {
+    public ScanResultType contains(RequestInformation requestInformation) {
         RequestInformationComponent component = requestInformation.getComponent();
         RequestInformationRepository repository = requestInformation.getRepository();
 
         if (users.contains(requestInformation.getRequest().getUserId())) {
-            return WhiteListContains.USER;
+            return ScanResultType.WHITE_LIST_CONTAINS_USER;
         }
         if (formats.contains(repository.getFormat())) {
-            return WhiteListContains.FORMAT;
+            return ScanResultType.WHITE_LIST_CONTAINS_FORMAT;
         }
         if (repositories.contains(repository.getName())) {
-            return WhiteListContains.REPOSITORY;
+            return ScanResultType.WHITE_LIST_CONTAINS_REPOSITORY;
         }
         if (extensions.contains(component.getExtension())) {
-            return WhiteListContains.EXTENSION;
+            return ScanResultType.WHITE_LIST_CONTAINS_EXTENSION;
         }
         WhiteListPackageVersion version = getVersion(
                 repository.getFormat(), component);
@@ -113,7 +113,7 @@ public class WhiteList implements Serializable {
                 || !version.isAllowed(component.getLastModified())) {
             return null;
         }
-        return WhiteListContains.PACKAGE_VERSION;
+        return ScanResultType.WHITE_LIST_CONTAINS_PACKAGE_VERSION;
     }
 
 }

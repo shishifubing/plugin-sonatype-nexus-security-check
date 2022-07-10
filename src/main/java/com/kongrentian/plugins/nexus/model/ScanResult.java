@@ -2,6 +2,7 @@ package com.kongrentian.plugins.nexus.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.sonatype.nexus.common.collect.NestedAttributesMap;
 
 import javax.annotation.Nullable;
@@ -12,41 +13,39 @@ import java.time.temporal.ChronoUnit;
 public class ScanResult implements Serializable {
     public static final long NO_LAST_SCAN = -1;
     @JsonProperty
-    private boolean allowed;
+    private final boolean allowed;
     @JsonProperty
-    private String reason;
+    private final ScanResultType type;
     @JsonProperty
     private String exception = null;
     @JsonIgnore
     private Instant scanDate;
 
-    public ScanResult() {
-    }
-
-    public ScanResult(boolean allowed, String reason) {
+    public ScanResult(boolean allowed, ScanResultType type) {
         this.allowed = allowed;
-        this.reason = reason;
-    }
-
-    public ScanResult(boolean allowed, String reason, Throwable exception) {
-        this(allowed, reason);
-        this.exception = exception.getMessage();
-    }
-
-    public ScanResult(boolean allowed, String reason, Instant scanDate) {
-        this(allowed, reason);
-        this.scanDate = scanDate;
+        this.type = type;
     }
 
     @Nullable
     public static ScanResult fromAttributes(NestedAttributesMap attributes) {
         Boolean allowed = (Boolean) attributes.get("security_allowed");
-        String reason = (String) attributes.get("security_reason");
+        ScanResultType type = (ScanResultType) attributes.get("security_result_type");
         Instant scanDate = (Instant) attributes.get("security_scan_date");
-        if (allowed == null || reason == null || scanDate == null) {
+        if (allowed == null || type == null || scanDate == null) {
             return null;
         }
-        return new ScanResult(allowed, reason, scanDate);
+        return new ScanResult(allowed, type).setScanDate(scanDate);
+    }
+
+    public ScanResult setException(Throwable exception) {
+        this.exception = ExceptionUtils.getFullStackTrace(exception);
+        return this;
+    }
+
+
+    private ScanResult setScanDate(Instant scanDate) {
+        this.scanDate = scanDate;
+        return this;
     }
 
     @JsonIgnore
@@ -60,17 +59,16 @@ public class ScanResult implements Serializable {
     public void updateAssetAttributes(NestedAttributesMap attributes) {
         attributes.clear();
         attributes.set("security_allowed", allowed);
-        attributes.set("security_scan_date",
-                scanDate == null ? Instant.now() : scanDate);
-        attributes.set("security_reason", reason);
+        attributes.set("security_scan_date", Instant.now());
+        attributes.set("security_result_type", type);
     }
 
     public boolean isAllowed() {
         return allowed;
     }
 
-    public String getReason() {
-        return reason;
+    public ScanResultType getType() {
+        return type;
     }
 
 }

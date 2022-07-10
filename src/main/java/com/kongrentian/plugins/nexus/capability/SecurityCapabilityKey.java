@@ -6,7 +6,7 @@ import org.sonatype.nexus.formfields.*;
 /**
  * this monstrosity is created in order to
  * avoid duplication in {@link SecurityCapabilityDescriptor}
- * <p>
+ * <p></p>
  * cannot avoid duplication in {@link SecurityCapabilityConfiguration} though
  */
 public enum SecurityCapabilityKey {
@@ -131,6 +131,20 @@ public enum SecurityCapabilityKey {
             "",
             "Auth for monitoring, either login:password or token ",
             PasswordFormField.class,
+            String::format
+    )),
+    MONITORING_PIPELINE(new SecurityCapabilityField<>(
+            "security.monitoring.pipeline",
+            "timestamp",
+            "Which pipeline to use for bulk request",
+            StringTextFormField.class,
+            String::format
+    )),
+    MONITORING_INDEX(new SecurityCapabilityField<>(
+            "security.monitoring.index",
+            "nexus-assets",
+            "Which index to use for bulk request",
+            StringTextFormField.class,
             String::format
     ));
 

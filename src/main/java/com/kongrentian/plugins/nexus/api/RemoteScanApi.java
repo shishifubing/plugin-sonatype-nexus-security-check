@@ -6,7 +6,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.PUT;
 
-public interface SecurityClientAPI {
+public interface RemoteScanApi {
 
     @PUT("api/v1/check")
     Call<ScanResult> check(@Body RequestInformation body);

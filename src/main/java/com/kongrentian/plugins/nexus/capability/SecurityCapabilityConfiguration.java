@@ -41,6 +41,8 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
 
     private final Map<String, String> properties;
     private final Map<String, Object> status = new HashMap<>();
+    private final String monitoringPipeline;
+    private final String monitoringIndex;
 
 
     public SecurityCapabilityConfiguration(Map<String, String> properties) {
@@ -57,6 +59,8 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
 
         monitoringUrl = (String) get(MONITORING_URL);
         monitoringAuth = (String) get(MONITORING_AUTH);
+        monitoringPipeline = (String) get(MONITORING_PIPELINE);
+        monitoringIndex = (String) get(MONITORING_INDEX);
 
         scanRemoteFailOnScanErrors = (boolean) get(SCAN_REMOTE_FAIL_ON_ERRORS);
         scanRemoteUrl = (String) get(SCAN_REMOTE_URL);
@@ -67,13 +71,13 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         String lastModified = (String) get(SCAN_LOCAL_LAST_MODIFIED);
 
         try {
-            scanLocalLastModifiedTemp = SecurityCapabilityField.parseTime(lastModified);
+            scanLocalLastModifiedTemp = SecurityCapabilityHelper.parseTime(lastModified);
         } catch (Throwable exception) {
             LOG.error("Could not parse last_modified date: {}",
                     lastModified, exception);
             status.put(SCAN_LOCAL_LAST_MODIFIED.propertyKey(),
                     ExceptionUtils.getFullStackTrace(exception));
-            scanLocalLastModifiedTemp = SecurityCapabilityField.parseTime(
+            scanLocalLastModifiedTemp = SecurityCapabilityHelper.parseTime(
                     SCAN_LOCAL_LAST_MODIFIED.defaultValue());
         }
         scanLocalLastModified = scanLocalLastModifiedTemp;
@@ -187,6 +191,14 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
 
     public Map<String, String> getProperties() {
         return properties;
+    }
+
+    public String getMonitoringPipeline() {
+        return monitoringPipeline;
+    }
+
+    public String getMonitoringIndex() {
+        return monitoringIndex;
     }
 }
 
