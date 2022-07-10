@@ -32,13 +32,16 @@ public class SecurityCapabilityHelper {
             .registerModule(new JodaModule());
     public final static String capabilityStatusTemplate =
             // apache velocity template
+            // cannot get access to whole context
+            // (the tool is not enabled, I think)
             String.join("\n", new String[]{
-                    "#foreach( $key in $context.keys )",
-                    "<h4>$key</h4>",
+                    "#foreach( $entry in $status.entrySet() )",
+                    "<h4>$entry.getKey()</h4>",
                     "<div>",
-                    "    <pre>$context.get($key)</pre>",
+                    "    <pre>$entry.getValue()</pre>",
                     "</div>",
-                    "#end"});
+                    "#end"
+            });
     public final static ObjectMapper yamlMapper = new ObjectMapper(
             new YAMLFactory().disable(
                     YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
@@ -66,16 +69,13 @@ public class SecurityCapabilityHelper {
      * but it only works with urls - you cannot just render a random template
      */
     public String render(final TemplateParameters parameters) {
-        LOG.info("EVALUATION PARAMETERS: {}", parameters.get());
         StringWriter writer = new StringWriter();
         velocityEngine.evaluate(
                 new VelocityContext(parameters.get()),
                 writer,
-                SecurityCapability.class.getName(),
+                SecurityCapabilityHelper.class.getName(),
                 capabilityStatusTemplate);
-        String result = writer.toString();
-        LOG.info("RESULT OF EVALUATION: {}", result);
-        return result;
+        return writer.toString();
     }
 
     @Nonnull
