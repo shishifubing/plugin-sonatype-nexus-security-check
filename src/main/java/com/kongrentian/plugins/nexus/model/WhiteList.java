@@ -95,7 +95,7 @@ public class WhiteList implements Serializable {
         RequestInformationComponent component = requestInformation.getComponent();
         RequestInformationRepository repository = requestInformation.getRepository();
 
-        if (users.contains(requestInformation.getUserId())) {
+        if (users.contains(requestInformation.getRequest().getUserId())) {
             return WhiteListContains.USER;
         }
         if (formats.contains(repository.getFormat())) {

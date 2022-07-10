@@ -15,8 +15,6 @@ public class RequestInformation implements Serializable {
     private final RequestInformationRepository repository;
     @JsonProperty
     private final RequestInformationComponent component;
-    @JsonProperty
-    private final String userId;
 
     @JsonProperty
     private final RequestInformationRequest request;
@@ -26,8 +24,7 @@ public class RequestInformation implements Serializable {
                               Asset asset, Component component, Request request) {
         this.repository = new RequestInformationRepository(repository);
         this.component = new RequestInformationComponent(content, asset, component);
-        this.userId = userId;
-        this.request = new RequestInformationRequest(request);
+        this.request = new RequestInformationRequest(request, userId);
     }
 
     public RequestInformationRepository getRepository() {
@@ -36,10 +33,6 @@ public class RequestInformation implements Serializable {
 
     public RequestInformationComponent getComponent() {
         return component;
-    }
-
-    public String getUserId() {
-        return userId;
     }
 
     public RequestInformationRequest getRequest() {
