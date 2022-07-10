@@ -82,10 +82,10 @@ public enum SecurityCapabilityKey {
             UrlFormField.class,
             String::format
     )),
-    SCAN_REMOTE_TOKEN(new SecurityCapabilityField<>(
-            "security.scan.remote.token",
+    SCAN_REMOTE_AUTH(new SecurityCapabilityField<>(
+            "security.scan.remote.auth",
             "",
-            "Token for remote scans",
+            "Auth for remote scans, either login:password or token",
             PasswordFormField.class,
             String::format
     )),
@@ -126,18 +126,11 @@ public enum SecurityCapabilityKey {
             UrlFormField.class,
             String::format
     )),
-    MONITORING_LOGIN(new SecurityCapabilityField<>(
-            "security.monitoring.login",
+    MONITORING_AUTH(new SecurityCapabilityField<>(
+            "security.monitoring.auth",
             "",
-            "Login for monitoring",
+            "Auth for monitoring, either login:password or token ",
             StringTextFormField.class,
-            String::format
-    )),
-    MONITORING_PASSWORD(new SecurityCapabilityField<>(
-            "security.monitoring.password",
-            "",
-            "Password for monitoring",
-            PasswordFormField.class,
             String::format
     ));
 

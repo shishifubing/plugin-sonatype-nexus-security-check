@@ -56,7 +56,7 @@ public class RemoteScanner extends AbstractScanner {
     }
 
     @Override
-    public SecurityCapabilityKey failKey() {
+    public SecurityCapabilityKey getFailKey() {
         return SecurityCapabilityKey.SCAN_REMOTE_FAIL_ON_ERRORS;
     }
 

@@ -19,8 +19,7 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
 
 
     private final String monitoringUrl;
-    private final String monitoringLogin;
-    private final String monitoringPassword;
+    private final String monitoringAuth;
 
     private final boolean scanLocalFailOnScanErrors;
     private final DateTime scanLocalLastModified;
@@ -30,7 +29,7 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
 
     private final boolean scanRemoteFailOnScanErrors;
     private final String scanRemoteUrl;
-    private final String scanRemoteToken;
+    private final String scanRemoteAuth;
     private final long scanRemoteInterval;
 
     private final boolean httpSSLVerify;
@@ -51,12 +50,11 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         enableScanLocal = (boolean) get(ENABLE_SCAN_LOCAL);
 
         monitoringUrl = (String) get(MONITORING_URL);
-        monitoringLogin = (String) get(MONITORING_LOGIN);
-        monitoringPassword = (String) get(MONITORING_PASSWORD);
+        monitoringAuth = (String) get(MONITORING_AUTH);
 
         scanRemoteFailOnScanErrors = (boolean) get(SCAN_REMOTE_FAIL_ON_ERRORS);
         scanRemoteUrl = (String) get(SCAN_REMOTE_URL);
-        scanRemoteToken = (String) get(SCAN_REMOTE_TOKEN);
+        scanRemoteAuth = (String) get(SCAN_REMOTE_AUTH);
         scanRemoteInterval = (long) get(SCAN_REMOTE_INTERVAL);
 
         scanLocalFailOnScanErrors = (boolean) get(SCAN_LOCAL_FAIL_ON_ERRORS);
@@ -116,7 +114,7 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         return enableScanLocal;
     }
 
-    public boolean isScanRemoteFailOnScanErrors() {
+    public boolean scanRemoteFailOnScanErrors() {
         return scanRemoteFailOnScanErrors;
     }
 
@@ -124,12 +122,8 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         return monitoringUrl;
     }
 
-    public String getMonitoringLogin() {
-        return monitoringLogin;
-    }
-
-    public String getMonitoringPassword() {
-        return monitoringPassword;
+    public String getMonitoringAuth() {
+        return monitoringAuth;
     }
 
     public DateTime getScanLocalLastModified() {
@@ -144,15 +138,15 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         return scanRemoteUrl;
     }
 
-    public String getScanRemoteToken() {
-        return scanRemoteToken;
+    public String getScanRemoteAuth() {
+        return scanRemoteAuth;
     }
 
     public long getScanRemoteInterval() {
         return scanRemoteInterval;
     }
 
-    public boolean isHttpSSLVerify() {
+    public boolean httpSSLVerify() {
         return httpSSLVerify;
     }
 
@@ -172,7 +166,7 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         return httpWriteTimeout;
     }
 
-    public boolean isScanLocalFailOnScanErrors() {
+    public boolean scanLocalFailOnScanErrors() {
         return scanLocalFailOnScanErrors;
     }
 

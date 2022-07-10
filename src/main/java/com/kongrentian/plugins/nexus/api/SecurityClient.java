@@ -24,7 +24,6 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 public class SecurityClient {
     private static final Logger LOG = LoggerFactory.getLogger(SecurityCapabilityConfiguration.class);
     private final SecurityClientAPI api;
-    private final SecurityCapabilityConfiguration configuration;
     private final ObjectMapper mapper;
     public SecurityClient(SecurityCapabilityConfiguration config) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
@@ -33,14 +32,15 @@ public class SecurityClient {
                 .writeTimeout(config.getHttpWriteTimeout(), MILLISECONDS);
 
         try {
-            if (!config.isHttpSSLVerify()) {
+            if (!config.httpSSLVerify()) {
                 buildUnsafeTrustManager(builder);
             }
         } catch (KeyManagementException | NoSuchAlgorithmException exception) {
             LOG.error("Could not build unsafe trust manager", exception);
         }
 
-        builder.addInterceptor(new ServiceInterceptor(config.getScanRemoteToken(),
+        builder.addInterceptor(
+                new ServiceInterceptor(config.getScanRemoteAuth(),
                 config.getHttpUserAgent()));
         mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
@@ -48,7 +48,6 @@ public class SecurityClient {
         // to deserialize joda datetime
         mapper.registerModule(new JodaModule());
 
-        configuration = config;
         api = new Retrofit
                 .Builder()
                 .client(builder.build())
@@ -75,7 +74,4 @@ public class SecurityClient {
         return mapper;
     }
 
-    public SecurityCapabilityConfiguration getConfiguration() {
-        return configuration;
-    }
 }

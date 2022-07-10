@@ -1,12 +1,15 @@
 package com.kongrentian.plugins.nexus.api;
 
-import com.kongrentian.plugins.nexus.model.RequestInformation;
-import com.kongrentian.plugins.nexus.model.ScanResult;
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.PUT;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface SecurityClientMonitoringApi {
-    @PUT("api/v1/check")
-    Call<ScanResult> check(@Body RequestInformation body);
+    @POST("{target}-{date}/_bulk")
+    Call<?> bulk(@Body String body,
+                  @Query("pipeline") String pipeline,
+                  @Path("target") String target,
+                 @Path("date") String date);
 }

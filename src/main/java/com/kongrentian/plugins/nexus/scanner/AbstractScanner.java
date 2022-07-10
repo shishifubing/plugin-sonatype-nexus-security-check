@@ -24,9 +24,9 @@ abstract public class AbstractScanner {
     public ScanResult scan(RequestInformation information) {
         Boolean allowed = (Boolean) securityCapabilityHelper
                 .getCapabilityConfiguration()
-                .get(failKey());
+                .get(getFailKey());
         String message = "There was an exception and "
-                + failKey().propertyKey() + " is " + !allowed;
+                + getFailKey().propertyKey() + " is " + !allowed;
         try {
             return scanImpl(information);
         } catch (Throwable exception) {
@@ -36,9 +36,9 @@ abstract public class AbstractScanner {
 
     abstract ScanResult scanImpl(RequestInformation information) throws Throwable;
 
-    abstract public SecurityCapabilityKey failKey();
+    abstract public SecurityCapabilityKey getFailKey();
 
     public MonitoringInformationScanResult asResult(ScanResult result) {
-        return new MonitoringInformationScanResult(failKey(), result);
+        return new MonitoringInformationScanResult(getFailKey(), result);
     }
 }

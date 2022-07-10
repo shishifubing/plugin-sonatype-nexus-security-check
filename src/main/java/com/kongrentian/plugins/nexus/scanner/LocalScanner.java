@@ -37,7 +37,7 @@ public class LocalScanner extends AbstractScanner {
     }
 
     @Override
-    public SecurityCapabilityKey failKey() {
+    public SecurityCapabilityKey getFailKey() {
         return SecurityCapabilityKey.SCAN_LOCAL_FAIL_ON_ERRORS;
     }
 }
