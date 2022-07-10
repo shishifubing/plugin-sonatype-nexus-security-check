@@ -2,9 +2,7 @@ package com.kongrentian.plugins.nexus.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
+import com.kongrentian.plugins.nexus.capability.SecurityCapabilityHelper;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
@@ -31,9 +29,6 @@ import static java.lang.String.format;
  */
 public class WhiteList implements Serializable {
 
-    private final static ObjectMapper mapper = new ObjectMapper(
-            new YAMLFactory().disable(
-                    YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
     @JsonProperty
     private final List<String> extensions;
     @JsonProperty
@@ -48,7 +43,7 @@ public class WhiteList implements Serializable {
     }
 
     public static WhiteList fromYAML(String yaml) throws JsonProcessingException {
-        return mapper.readValue(yaml, WhiteList.class);
+        return SecurityCapabilityHelper.yamlMapper.readValue(yaml, WhiteList.class);
 
     }
 

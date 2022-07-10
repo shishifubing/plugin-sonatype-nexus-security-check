@@ -1,4 +1,4 @@
-package com.kongrentian.plugins.nexus.main;
+package com.kongrentian.plugins.nexus.monitoring;
 
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityHelper;
 import com.kongrentian.plugins.nexus.model.MonitoringInformation;

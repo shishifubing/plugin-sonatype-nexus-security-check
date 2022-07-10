@@ -1,5 +1,13 @@
 package com.kongrentian.plugins.nexus.api;
 
+import com.kongrentian.plugins.nexus.capability.SecurityCapabilityConfiguration;
+import com.kongrentian.plugins.nexus.capability.SecurityCapabilityHelper;
+import okhttp3.OkHttpClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
+
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
@@ -8,23 +16,12 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
-import com.kongrentian.plugins.nexus.capability.SecurityCapabilityConfiguration;
-import okhttp3.OkHttpClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
-
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public class SecurityClient {
     private static final Logger LOG = LoggerFactory.getLogger(SecurityCapabilityConfiguration.class);
     private final SecurityClientAPI api;
-    private final ObjectMapper mapper;
+
     public SecurityClient(SecurityCapabilityConfiguration config) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .connectTimeout(config.getHttpConnectionTimeout(), MILLISECONDS)
@@ -41,18 +38,15 @@ public class SecurityClient {
 
         builder.addInterceptor(
                 new ServiceInterceptor(config.getScanRemoteAuth(),
-                config.getHttpUserAgent()));
-        mapper = new ObjectMapper();
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        // to deserialize joda datetime
-        mapper.registerModule(new JodaModule());
+                        config.getHttpUserAgent()));
 
         api = new Retrofit
                 .Builder()
                 .client(builder.build())
                 .baseUrl(config.getScanRemoteUrl())
-                .addConverterFactory(JacksonConverterFactory.create(mapper))
+                .addConverterFactory(
+                        JacksonConverterFactory.create(
+                                SecurityCapabilityHelper.jsonMapper))
                 .build()
                 .create(SecurityClientAPI.class);
     }
@@ -70,8 +64,5 @@ public class SecurityClient {
         return api;
     }
 
-    public ObjectMapper getMapper() {
-        return mapper;
-    }
 
 }

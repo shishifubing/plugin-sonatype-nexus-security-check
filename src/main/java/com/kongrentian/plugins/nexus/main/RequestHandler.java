@@ -1,11 +1,11 @@
 package com.kongrentian.plugins.nexus.main;
 
-import com.kongrentian.plugins.nexus.api.SecurityClient;
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityConfiguration;
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityHelper;
 import com.kongrentian.plugins.nexus.model.MonitoringInformation;
 import com.kongrentian.plugins.nexus.model.RequestInformation;
 import com.kongrentian.plugins.nexus.model.ScanResult;
+import com.kongrentian.plugins.nexus.monitoring.Monitoring;
 import com.kongrentian.plugins.nexus.scanner.AbstractScanner;
 import com.kongrentian.plugins.nexus.scanner.LocalScanner;
 import com.kongrentian.plugins.nexus.scanner.RemoteScanner;
@@ -40,7 +40,6 @@ public class RequestHandler implements ContributedHandler {
     private final Monitoring monitoring;
     private final LocalScanner localScanner;
     private final ComponentStore componentStore;
-    private final SecurityClient securityClient;
 
 
     @Inject
@@ -48,14 +47,12 @@ public class RequestHandler implements ContributedHandler {
                           final RemoteScanner remoteScanner,
                           final LocalScanner localScanner,
                           final Monitoring monitoring,
-                          final ComponentStore componentStore,
-                          final SecurityClient securityClient) {
+                          final ComponentStore componentStore) {
         this.securityCapabilityHelper = securityCapabilityHelper;
         this.remoteScanner = remoteScanner;
         this.monitoring = monitoring;
         this.localScanner = localScanner;
         this.componentStore = componentStore;
-        this.securityClient = securityClient;
     }
 
     @Nonnull
@@ -95,7 +92,8 @@ public class RequestHandler implements ContributedHandler {
                 break;
             }
         }
-        LOG.info("RESULTS: " + securityClient.getMapper().writeValueAsString(results));
+        LOG.info("RESULTS: " + SecurityCapabilityHelper.jsonMapper
+                .writeValueAsString(results));
         monitoring.send(results);
         if (results.isAllowed()) {
             return response;

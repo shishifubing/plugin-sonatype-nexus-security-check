@@ -1,8 +1,15 @@
 package com.kongrentian.plugins.nexus.capability;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.kongrentian.plugins.nexus.api.SecurityClient;
 import org.sonatype.nexus.capability.CapabilityReference;
 import org.sonatype.nexus.capability.CapabilityRegistry;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -12,6 +19,14 @@ import java.time.Instant;
 
 @Named
 public class SecurityCapabilityHelper {
+    public final static ObjectMapper jsonMapper = new ObjectMapper()
+            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            // to deserialize joda datetime
+            .registerModule(new JodaModule());
+    public final static ObjectMapper yamlMapper = new ObjectMapper(
+            new YAMLFactory().disable(
+                    YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
     private final CapabilityRegistry capabilityRegistry;
     private CapabilityReference securityCapabilityReference;
     private SecurityClient securityClient;
