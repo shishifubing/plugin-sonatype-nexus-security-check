@@ -14,7 +14,7 @@ build:
     - chmod 777 target/*.kar
     - rm -f "${DIRECTORY_DEPLOY}"/*.kar
     - cp target/*.kar "${DIRECTORY_DEPLOY}/"
-    - docker up -d
+    - docker-compose up -d
     - docker restart nexus
     - sleep 120
     - curl

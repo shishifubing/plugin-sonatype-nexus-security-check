@@ -134,7 +134,7 @@ public enum SecurityCapabilityKey {
 
     MONITORING_URL(new SecurityCapabilityField<>(
             "security.monitoring.url",
-            "https://localhost:5601",
+            "https://localhost:9200",
             "Base url for monitoring",
             UrlFormField.class,
             SecurityCapabilityKey::uselessStringPlaceholder
