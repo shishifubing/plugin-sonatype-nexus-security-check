@@ -37,7 +37,7 @@ public class RemoteScanner extends AbstractScanner {
         SecurityClient securityClient = securityCapabilityHelper.getClient();
 
         LOG.info("Security check requestInformation - {}",
-                securityClient.getMapper().writeValueAsString(information));
+                SecurityCapabilityHelper.jsonMapper.writeValueAsString(information));
         Response<ScanResult> responseCheck = securityClient
                 .getApi()
                 .check(information)
