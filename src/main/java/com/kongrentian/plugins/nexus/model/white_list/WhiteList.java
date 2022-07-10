@@ -45,23 +45,16 @@ public class WhiteList implements Serializable {
             ScanResultType.WHITE_LIST_PACKAGE_VERSION_MISSING,
             ScanResultType.WHITE_LIST_LAST_MODIFIED_MISSING);
     @JsonProperty
-    private final List<String> extensions;
+    private final List<String> extensions = new ArrayList<>();
     @JsonProperty
-    private final List<String> repositories;
+    private final List<String> repositories = new ArrayList<>();
     @JsonProperty
-    private final List<String> users;
+    private final List<String> users = new ArrayList<>();
     @JsonProperty
-    private final List<String> formats;
+    private final List<String> formats = new ArrayList<>();
     @JsonProperty
-    private final Map<String, Map<String, Map<String, WhiteListPackageVersion>>> packages;
+    private final Map<String, Map<String, Map<String, WhiteListPackageVersion>>> packages = new HashMap<>();
 
-    public WhiteList() {
-        users = new ArrayList<>();
-        packages = new HashMap<>();
-        extensions = new ArrayList<>();
-        repositories = new ArrayList<>();
-        formats = new ArrayList<>();
-    }
 
     public static WhiteList fromYAML(String yaml) throws JsonProcessingException {
         return SecurityCapabilityHelper.yamlMapper.readValue(yaml, WhiteList.class);
