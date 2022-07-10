@@ -111,6 +111,10 @@ public class WhiteList implements Serializable {
         RequestInformationRepository repository = requestInformation.getRepository();
 
         LOG.info("users");
+        LOG.info(requestInformation.getRequest().toString());
+        LOG.info(requestInformation.getRequest().getUserId());
+        LOG.info(users.toString());
+
         if (users.contains(requestInformation.getRequest().getUserId())) {
             return ScanResultType.WHITE_LIST_CONTAINS_USER;
         }
