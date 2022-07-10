@@ -6,9 +6,9 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface MonitoringApi {
-    @POST("{target}-{date}/_bulk")
+    @POST("{index}-{date}/_bulk")
     void bulk(@Body String body,
-              @Query("pipeline") String pipeline,
-              @Path("target") String target,
-              @Path("date") String date);
+              @Path("index") String index,
+              @Path("date") String date,
+              @Query("pipeline") String pipeline);
 }

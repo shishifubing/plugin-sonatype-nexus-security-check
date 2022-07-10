@@ -24,11 +24,9 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
     private final String monitoringUrl;
     private final String monitoringAuth;
 
-    private final boolean scanLocalFailOnScanErrors;
     private final DateTime scanLocalLastModified;
     private final WhiteList scanLocalWhiteList;
 
-    private final boolean scanRemoteFailOnScanErrors;
     private final String scanRemoteUrl;
     private final String scanRemoteAuth;
     private final long scanRemoteInterval;
@@ -62,12 +60,10 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         monitoringPipeline = (String) get(MONITORING_PIPELINE);
         monitoringIndex = (String) get(MONITORING_INDEX);
 
-        scanRemoteFailOnScanErrors = (boolean) get(SCAN_REMOTE_FAIL_ON_ERRORS);
         scanRemoteUrl = (String) get(SCAN_REMOTE_URL);
         scanRemoteAuth = (String) get(SCAN_REMOTE_AUTH);
         scanRemoteInterval = (long) get(SCAN_REMOTE_INTERVAL);
 
-        scanLocalFailOnScanErrors = (boolean) get(SCAN_LOCAL_FAIL_ON_ERRORS);
         String lastModified = (String) get(SCAN_LOCAL_LAST_MODIFIED);
 
         try {
@@ -129,9 +125,6 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         return enableScanLocal;
     }
 
-    public boolean scanRemoteFailOnScanErrors() {
-        return scanRemoteFailOnScanErrors;
-    }
 
     public String getMonitoringUrl() {
         return monitoringUrl;
@@ -181,16 +174,9 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         return httpWriteTimeout;
     }
 
-    public boolean scanLocalFailOnScanErrors() {
-        return scanLocalFailOnScanErrors;
-    }
 
     public Map<String, Object> getStatus() {
         return status;
-    }
-
-    public Map<String, String> getProperties() {
-        return properties;
     }
 
     public String getMonitoringPipeline() {

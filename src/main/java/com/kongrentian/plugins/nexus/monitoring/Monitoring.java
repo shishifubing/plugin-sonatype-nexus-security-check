@@ -45,8 +45,8 @@ public class Monitoring {
                         .writeValueAsString(information));
         builder.insert(0, "{\"index\":{ } }\n");
         api.bulk(builder.toString(),
-                config.getMonitoringPipeline(),
                 config.getMonitoringIndex(),
-                SecurityCapabilityHelper.todayDate());
+                SecurityCapabilityHelper.todayDate(),
+                config.getMonitoringPipeline());
     }
 }
