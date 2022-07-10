@@ -24,12 +24,16 @@ build:
       --detach
       --remove-orphans
     - docker restart nexus
+    - start=$(date +%s)
     - until $(curl
       --fail
       --silent
       --output /dev/null
       "${NEXUS_URL}/service/rest/v1/status/writable"
-      ); do sleep 10; done
+      ); do
+      sleep 10;
+      [ "$(($(date +%s)-start))" -gt 120 ] && exit 1;
+      done
     - curl
       --fail
       --user "${NEXUS_LOGIN}:${NEXUS_PASSWORD}"
