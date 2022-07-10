@@ -8,8 +8,8 @@ import retrofit2.http.Query;
 
 public interface MonitoringApi {
     @POST("{index}-{date}/_bulk")
-    Call<?> bulk(@Body String body,
-                 @Path("index") String index,
-                 @Path("date") String date,
-                 @Query("pipeline") String pipeline);
+    Call<String> bulk(@Body String body,
+                      @Path("index") String index,
+                      @Path("date") String date,
+                      @Query("pipeline") String pipeline);
 }
