@@ -26,7 +26,7 @@ public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConf
             String.join("\n", new String[]{
                     "#foreach( $entry in $status.entrySet() )",
                     "<h4>$entry.getKey()</h4>",
-                    "<div><p>$entry.getValue()</p></div>",
+                    "<div><pre>$entry.getValue()</pre></div>",
                     "#end",
                     "<h4>white list</h4>",
                     "<div><pre>$white_list</pre></div>"

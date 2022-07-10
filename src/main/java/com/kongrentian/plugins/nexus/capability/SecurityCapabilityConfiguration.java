@@ -1,6 +1,7 @@
 package com.kongrentian.plugins.nexus.capability;
 
 import com.kongrentian.plugins.nexus.model.WhiteList;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +72,7 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
             LOG.error("Could not parse last_modified date: {}",
                     lastModified, exception);
             status.put(SCAN_LOCAL_LAST_MODIFIED.propertyKey(),
-                    exception);
+                    ExceptionUtils.getFullStackTrace(exception));
             scanLocalLastModifiedTemp = SecurityCapabilityField.parseTime(
                     SCAN_LOCAL_LAST_MODIFIED.defaultValue());
         }
@@ -82,7 +83,8 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         } catch (Throwable exception) {
             LOG.error("Could not parse white list: {}",
                     whiteList, exception);
-            status.put(SCAN_LOCAL_WHITE_LIST.propertyKey(), exception);
+            status.put(SCAN_LOCAL_WHITE_LIST.propertyKey(),
+                    ExceptionUtils.getFullStackTrace(exception));
             scanLocalWhiteListTemp = new WhiteList();
         }
         scanLocalWhiteList = scanLocalWhiteListTemp;
