@@ -1,15 +1,14 @@
 package com.kongrentian.plugins.nexus.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityHelper;
+import org.joda.time.DateTime;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.lang.String.format;
 
@@ -33,6 +32,11 @@ import static java.lang.String.format;
  */
 public class WhiteList implements Serializable {
 
+    @JsonIgnore
+    private final static List<ScanResultType> scanFailureTypes = Arrays.asList(
+            ScanResultType.WHITE_LIST_PACKAGE_VERSION_DATE_INVALID,
+            ScanResultType.WHITE_LIST_PACKAGE_VERSION_MISSING,
+            ScanResultType.WHITE_LIST_LAST_MODIFIED_MISSING);
     @JsonProperty
     private final List<String> extensions;
     @JsonProperty
@@ -55,6 +59,10 @@ public class WhiteList implements Serializable {
     public static WhiteList fromYAML(String yaml) throws JsonProcessingException {
         return SecurityCapabilityHelper.yamlMapper.readValue(yaml, WhiteList.class);
 
+    }
+
+    public static boolean isFailure(ScanResultType scanResultType) {
+        return scanFailureTypes.contains(scanResultType);
     }
 
     @Nullable
@@ -109,11 +117,20 @@ public class WhiteList implements Serializable {
         }
         WhiteListPackageVersion version = getVersion(
                 repository.getFormat(), component);
-        if (version == null
-                || !version.isAllowed(component.getLastModified())) {
-            return null;
+        if (version == null) {
+            return ScanResultType.WHITE_LIST_PACKAGE_VERSION_MISSING;
         }
-        return ScanResultType.WHITE_LIST_CONTAINS_PACKAGE_VERSION;
+        if (version.isAllowed()) {
+            return ScanResultType.WHITE_LIST_PACKAGE_VERSION_ALLOWED;
+        }
+        DateTime lastModified = component.getLastModified();
+        if (lastModified == null) {
+            return ScanResultType.WHITE_LIST_LAST_MODIFIED_MISSING;
+        }
+        if (version.getAllowedDate().isBefore(lastModified)) {
+            return ScanResultType.WHITE_LIST_PACKAGE_VERSION_DATE_VALID;
+        }
+        return ScanResultType.WHITE_LIST_PACKAGE_VERSION_DATE_INVALID;
     }
 
 }

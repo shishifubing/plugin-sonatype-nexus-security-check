@@ -7,6 +7,7 @@ import org.sonatype.nexus.repository.storage.Asset;
 import org.sonatype.nexus.repository.storage.Component;
 import org.sonatype.nexus.repository.view.Content;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
 
 public class RequestInformationComponent implements Serializable {
@@ -50,12 +51,9 @@ public class RequestInformationComponent implements Serializable {
         return version;
     }
 
+    @Nullable
     public DateTime getLastModified() {
         return lastModified;
-    }
-
-    public String getAssetPath() {
-        return assetPath;
     }
 
     public String getExtension() {

@@ -6,6 +6,7 @@ import com.kongrentian.plugins.nexus.capability.SecurityCapabilityKey;
 import com.kongrentian.plugins.nexus.model.RequestInformation;
 import com.kongrentian.plugins.nexus.model.ScanResult;
 import com.kongrentian.plugins.nexus.model.ScanResultType;
+import com.kongrentian.plugins.nexus.model.WhiteList;
 import org.joda.time.DateTime;
 import org.sonatype.nexus.repository.storage.AssetStore;
 
@@ -28,14 +29,15 @@ public class LocalScanner extends AbstractScanner {
         ScanResultType scanResultType = config
                 .getScanLocalWhiteList()
                 .contains(information);
-        if (scanResultType != null) {
+        if (!WhiteList.isFailure(scanResultType)) {
             return new ScanResult(true, scanResultType);
         }
         DateTime lastModified = information.getComponent().getLastModified();
+        assert lastModified != null;
         if (lastModified.isBefore(config.getScanLocalLastModified())) {
-            return new ScanResult(true, ScanResultType.VALID_LAST_MODIFIED);
+            return new ScanResult(true, ScanResultType.LAST_MODIFIED_VALID);
         }
-        return new ScanResult(false, ScanResultType.INVALID_LAST_MODIFIED);
+        return new ScanResult(false, ScanResultType.LAST_MODIFIED_INVALID);
     }
 
     @Override
