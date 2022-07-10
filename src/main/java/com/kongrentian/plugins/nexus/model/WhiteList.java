@@ -31,6 +31,9 @@ import static java.lang.String.format;
  */
 public class WhiteList implements Serializable {
 
+    private final static ObjectMapper mapper = new ObjectMapper(
+            new YAMLFactory().disable(
+                    YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
     @JsonProperty
     private final List<String> extensions;
     @JsonProperty
@@ -45,10 +48,7 @@ public class WhiteList implements Serializable {
     }
 
     public static WhiteList fromYAML(String yaml) throws JsonProcessingException {
-        return new ObjectMapper(
-                new YAMLFactory().disable(
-                        YAMLGenerator.Feature.WRITE_DOC_START_MARKER))
-                .readValue(yaml, WhiteList.class);
+        return mapper.readValue(yaml, WhiteList.class);
 
     }
 
@@ -85,7 +85,7 @@ public class WhiteList implements Serializable {
         return null;
     }
 
-    public boolean isAllowed(RequestInformation requestInformation) {
+    public boolean contains(RequestInformation requestInformation) {
         RequestInformationComponent component = requestInformation.getComponent();
         RequestInformationRepository repository = requestInformation.getRepository();
         if (extensions.contains(component.getExtension())
@@ -99,6 +99,7 @@ public class WhiteList implements Serializable {
         }
         return version.isAllowed();
     }
+
 
 }
 

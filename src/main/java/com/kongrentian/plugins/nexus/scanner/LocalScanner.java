@@ -25,7 +25,7 @@ public class LocalScanner extends AbstractScanner {
         SecurityCapabilityConfiguration config = securityCapabilityHelper.getCapabilityConfiguration();
         boolean inWhiteList = config
                 .getScanLocalWhiteList()
-                .isAllowed(information);
+                .contains(information);
         if (inWhiteList) {
             return new ScanResult(true, "white list");
         }

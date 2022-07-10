@@ -130,7 +130,7 @@ public enum SecurityCapabilityKey {
             "security.monitoring.auth",
             "",
             "Auth for monitoring, either login:password or token ",
-            StringTextFormField.class,
+            PasswordFormField.class,
             String::format
     ));
 

@@ -1,8 +1,7 @@
-package com.kongrentian.plugins.nexus.handler;
+package com.kongrentian.plugins.nexus.main;
 
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityHelper;
 import com.kongrentian.plugins.nexus.model.MonitoringInformation;
-import com.kongrentian.plugins.nexus.scanner.AbstractScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

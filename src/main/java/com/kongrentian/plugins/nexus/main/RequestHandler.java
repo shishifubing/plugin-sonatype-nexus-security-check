@@ -1,5 +1,6 @@
-package com.kongrentian.plugins.nexus.handler;
+package com.kongrentian.plugins.nexus.main;
 
+import com.kongrentian.plugins.nexus.api.SecurityClient;
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityConfiguration;
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityHelper;
 import com.kongrentian.plugins.nexus.model.MonitoringInformation;
@@ -8,6 +9,8 @@ import com.kongrentian.plugins.nexus.model.ScanResult;
 import com.kongrentian.plugins.nexus.scanner.AbstractScanner;
 import com.kongrentian.plugins.nexus.scanner.LocalScanner;
 import com.kongrentian.plugins.nexus.scanner.RemoteScanner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonatype.nexus.common.collect.AttributesMap;
 import org.sonatype.nexus.repository.Repository;
 import org.sonatype.nexus.repository.storage.Asset;
@@ -31,11 +34,13 @@ import static java.lang.String.format;
 @Named
 @Singleton
 public class RequestHandler implements ContributedHandler {
+    private static final Logger LOG = LoggerFactory.getLogger(RequestHandler.class);
     private final SecurityCapabilityHelper securityCapabilityHelper;
     private final RemoteScanner remoteScanner;
     private final Monitoring monitoring;
     private final LocalScanner localScanner;
     private final ComponentStore componentStore;
+    private final SecurityClient securityClient;
 
 
     @Inject
@@ -43,12 +48,14 @@ public class RequestHandler implements ContributedHandler {
                           final RemoteScanner remoteScanner,
                           final LocalScanner localScanner,
                           final Monitoring monitoring,
-                          final ComponentStore componentStore) {
+                          final ComponentStore componentStore,
+                          final SecurityClient securityClient) {
         this.securityCapabilityHelper = securityCapabilityHelper;
         this.remoteScanner = remoteScanner;
         this.monitoring = monitoring;
         this.localScanner = localScanner;
         this.componentStore = componentStore;
+        this.securityClient = securityClient;
     }
 
     @Nonnull
@@ -88,6 +95,7 @@ public class RequestHandler implements ContributedHandler {
                 break;
             }
         }
+        LOG.info("RESULTS: " + securityClient.getMapper().writeValueAsString(results));
         monitoring.send(results);
         if (results.isAllowed()) {
             return response;
