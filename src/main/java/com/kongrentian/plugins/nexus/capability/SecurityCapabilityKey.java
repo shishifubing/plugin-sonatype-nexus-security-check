@@ -44,7 +44,7 @@ public enum SecurityCapabilityKey {
             "",
             "User agent for all requests",
             StringTextFormField.class,
-            String::format
+            SecurityCapabilityKey::uselessStringPlaceholder
     )),
     HTTP_CONNECTION_TIMEOUT(new SecurityCapabilityField<>(
             "security.http.connection.timeout",
@@ -80,14 +80,14 @@ public enum SecurityCapabilityKey {
             "https://localhost",
             "Base url for remote scans",
             UrlFormField.class,
-            String::format
+            SecurityCapabilityKey::uselessStringPlaceholder
     )),
     SCAN_REMOTE_AUTH(new SecurityCapabilityField<>(
             "security.scan.remote.auth",
             "",
             "Auth for remote scans, either login:password or token",
             PasswordFormField.class,
-            String::format
+            SecurityCapabilityKey::uselessStringPlaceholder
     )),
     SCAN_REMOTE_INTERVAL(new SecurityCapabilityField<>(
             "security.scan.remote.interval.minutes",
@@ -109,14 +109,14 @@ public enum SecurityCapabilityKey {
             "2022-02-20",
             "All last_modified dates after this one are blocked (inclusive)",
             StringTextFormField.class,
-            String::format
+            SecurityCapabilityKey::uselessStringPlaceholder
     )),
     SCAN_LOCAL_WHITE_LIST(new SecurityCapabilityField<>(
             "security.scan.local.white_list",
             "{}",
             "White list for packages and users",
             TextAreaFormField.class,
-            String::format
+            SecurityCapabilityKey::uselessStringPlaceholder
     )),
 
     MONITORING_URL(new SecurityCapabilityField<>(
@@ -124,34 +124,38 @@ public enum SecurityCapabilityKey {
             "https://localhost:5601",
             "Base url for monitoring",
             UrlFormField.class,
-            String::format
+            SecurityCapabilityKey::uselessStringPlaceholder
     )),
     MONITORING_AUTH(new SecurityCapabilityField<>(
             "security.monitoring.auth",
             "",
             "Auth for monitoring, either login:password or token ",
             PasswordFormField.class,
-            String::format
+            SecurityCapabilityKey::uselessStringPlaceholder
     )),
     MONITORING_PIPELINE(new SecurityCapabilityField<>(
             "security.monitoring.pipeline",
             "timestamp",
             "Which pipeline to use for bulk request",
             StringTextFormField.class,
-            String::format
+            SecurityCapabilityKey::uselessStringPlaceholder
     )),
     MONITORING_INDEX(new SecurityCapabilityField<>(
             "security.monitoring.index",
             "nexus-assets",
             "Which index to use for bulk request",
             StringTextFormField.class,
-            String::format
+            SecurityCapabilityKey::uselessStringPlaceholder
     ));
 
     private final SecurityCapabilityField<?> securityCapabilityField;
 
     SecurityCapabilityKey(SecurityCapabilityField<?> securityCapabilityField) {
         this.securityCapabilityField = securityCapabilityField;
+    }
+
+    private static String uselessStringPlaceholder(String input) {
+        return input;
     }
 
     public String propertyKey() {

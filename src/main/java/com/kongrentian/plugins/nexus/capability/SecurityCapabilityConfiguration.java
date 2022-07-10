@@ -105,7 +105,7 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         String propertyKey = securityCapabilityKey.propertyKey();
         String property = properties.get(propertyKey);
         try {
-            if (property != null) {
+            if (property != null && !property.isEmpty()) {
                 return securityCapabilityKey.field().convert(property);
             }
         } catch (Throwable exception) {
