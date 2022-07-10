@@ -78,8 +78,19 @@ public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConf
     @Override
     public void onUpdate() throws Exception {
         super.onUpdate();
+        update();
+    }
+
+    @Override
+    public void onCreate() throws Exception {
+        super.onCreate();
+        update();
+    }
+
+    private void update() {
         updateTime = Instant.now();
-        securityCapabilityHelper.recreateSecurityClient();
+        securityCapabilityHelper.recreateSecurityClientApi();
+        securityCapabilityHelper.recreateMonitoringApi();
     }
 
     /**
