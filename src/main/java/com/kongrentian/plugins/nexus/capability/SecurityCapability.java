@@ -2,7 +2,6 @@ package com.kongrentian.plugins.nexus.capability;
 
 import org.sonatype.nexus.capability.CapabilitySupport;
 import org.sonatype.nexus.common.template.TemplateParameters;
-import org.sonatype.nexus.internal.capability.node.IdentityCapabilityDescriptor;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -27,10 +26,8 @@ public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConf
     @Nullable
     @Override
     protected String renderStatus() {
-        return render(IdentityCapabilityDescriptor.TYPE_ID + "-status.vm", new TemplateParameters(
-                        getConfig().getStatus()
-                )
-        );
+        return render(SecurityCapabilityHelper.capabilityStatusTemplate,
+                new TemplateParameters(getConfig().getStatus()));
     }
 
     @Override

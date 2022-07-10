@@ -1,5 +1,6 @@
 package com.kongrentian.plugins.nexus.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.joda.time.DateTime;
 import org.sonatype.nexus.repository.storage.Asset;
@@ -21,6 +22,7 @@ public class RequestInformationComponent implements Serializable {
     private final String assetPath;
     @JsonProperty
     private final String extension;
+    @JsonIgnore
     private final Asset asset;
 
     public RequestInformationComponent(Content content, Asset asset,

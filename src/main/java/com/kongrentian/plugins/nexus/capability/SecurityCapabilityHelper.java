@@ -23,6 +23,15 @@ public class SecurityCapabilityHelper {
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             // to deserialize joda datetime
             .registerModule(new JodaModule());
+    public final static String capabilityStatusTemplate =
+            // apache velocity template
+            String.join("\n", new String[]{
+                    "#foreach( $key in $context.keys )",
+                    "<h4>$key</h4>",
+                    "<div>",
+                    "    <pre>$context.get($key)</pre>",
+                    "</div>",
+                    "#end"});
     public final static ObjectMapper yamlMapper = new ObjectMapper(
             new YAMLFactory().disable(
                     YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
