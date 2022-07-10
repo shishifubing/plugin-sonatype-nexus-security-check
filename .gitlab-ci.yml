@@ -9,6 +9,10 @@ build:
     NEXUS_URL: http://kongrentian.com:8081
     DIRECTORY_DEPLOY: /var/nexus/deploy
     DIRECTORY_DATA: /var/nexus/data
+  artifacts:
+    paths:
+      - target/*.kar
+    when: always
   script:
     - ./mvnw -P buildKar clean verify --show-version --batch-mode --errors
     - chmod 777 target/*.kar

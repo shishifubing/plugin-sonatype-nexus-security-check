@@ -10,8 +10,9 @@ services:
     ports: [ "8081:8081" ]
     networks: [ nexus ]
 
+
   elasticsearch:
-    container_name: es-container
+    container_name: elastic
     image: elasticsearch:7.17.5
     environment:
       - xpack.security.enabled=false
@@ -20,10 +21,10 @@ services:
     ports: [ "9200:9200" ]
 
   kibana:
-    container_name: kb-container
+    container_name: kibana
     image: kibana:7.17.5
     environment:
-      - ELASTICSEARCH_HOSTS=http://es-container:9200
+      - ELASTICSEARCH_HOSTS=http://elastic:9200
     networks: [ nexus ]
     depends_on: [ elasticsearch ]
     ports: [ "5601:5601" ]
