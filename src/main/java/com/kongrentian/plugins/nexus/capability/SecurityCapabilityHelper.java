@@ -33,16 +33,9 @@ public class SecurityCapabilityHelper {
             // cannot get access to whole context
             // (the tool is not enabled, I think)
             String.join("\n", new String[]{
-                    "<h3>status</h3>",
                     "#foreach( $entry in $status.entrySet() )",
                     "<h4>$entry.getKey()</h4>",
                     "<div><pre>$entry.getValue()</pre></div>",
-                    "#end",
-                    "<hr>",
-                    "<h3>config</h3>",
-                    "#foreach( $entry in $config.entrySet() )",
-                    "<h4>$config.getKey()</h4>",
-                    "<div><pre>$config.getValue()</pre></div>",
                     "#end"
             });
     public final static ObjectMapper yamlMapper = new ObjectMapper(

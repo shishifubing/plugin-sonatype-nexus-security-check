@@ -38,7 +38,7 @@ abstract public class AbstractScanner {
 
     abstract public SecurityCapabilityKey getFailKey();
 
-    public MonitoringInformationScanResult asResult(ScanResult result) {
-        return new MonitoringInformationScanResult(getFailKey(), result);
+    public MonitoringInformationScanResult convertToMonitoringScanResult(ScanResult result) {
+        return new MonitoringInformationScanResult(getClass(), result);
     }
 }

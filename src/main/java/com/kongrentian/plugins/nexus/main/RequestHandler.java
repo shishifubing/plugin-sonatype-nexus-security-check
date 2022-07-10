@@ -86,7 +86,7 @@ public class RequestHandler implements ContributedHandler {
         MonitoringInformation results = new MonitoringInformation(information);
         for (AbstractScanner scanner : getScanners(config)) {
             ScanResult result = scanner.scan(information);
-            results.add(scanner.asResult(result));
+            results.add(scanner.convertToMonitoringScanResult(result));
             if (!result.isAllowed()) {
                 results.setAllowed(false);
                 break;

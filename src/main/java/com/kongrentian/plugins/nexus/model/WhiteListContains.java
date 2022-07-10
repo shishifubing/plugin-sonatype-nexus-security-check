@@ -4,5 +4,6 @@ public enum WhiteListContains {
     EXTENSION,
     USER,
     PACKAGE_VERSION,
-    REPOSITORY
+    REPOSITORY,
+    FORMAT
 }

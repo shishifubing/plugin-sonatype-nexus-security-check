@@ -15,6 +15,8 @@ import static java.lang.String.format;
 
 /**
  * <pre>
+ * formats:
+ *   - go
  * repositories:
  *   - pypi.org-proxy
  * extensions:
@@ -38,6 +40,8 @@ public class WhiteList implements Serializable {
     @JsonProperty
     private final List<String> users;
     @JsonProperty
+    private final List<String> formats;
+    @JsonProperty
     private final Map<String, Map<String, Map<String, WhiteListPackageVersion>>> packages;
 
     public WhiteList() {
@@ -45,6 +49,7 @@ public class WhiteList implements Serializable {
         packages = new HashMap<>();
         extensions = new ArrayList<>();
         repositories = new ArrayList<>();
+        formats = new ArrayList<>();
     }
 
     public static WhiteList fromYAML(String yaml) throws JsonProcessingException {
@@ -89,14 +94,18 @@ public class WhiteList implements Serializable {
     public WhiteListContains contains(RequestInformation requestInformation) {
         RequestInformationComponent component = requestInformation.getComponent();
         RequestInformationRepository repository = requestInformation.getRepository();
-        if (extensions.contains(component.getExtension())) {
-            return WhiteListContains.EXTENSION;
-        }
+
         if (users.contains(requestInformation.getUserId())) {
             return WhiteListContains.USER;
         }
+        if (formats.contains(repository.getFormat())) {
+            return WhiteListContains.FORMAT;
+        }
         if (repositories.contains(repository.getName())) {
             return WhiteListContains.REPOSITORY;
+        }
+        if (extensions.contains(component.getExtension())) {
+            return WhiteListContains.EXTENSION;
         }
         WhiteListPackageVersion version = getVersion(
                 repository.getFormat(), component);

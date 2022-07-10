@@ -86,6 +86,8 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
             scanLocalWhiteListTemp = new WhiteList();
         }
         scanLocalWhiteList = scanLocalWhiteListTemp;
+        status.put(SCAN_LOCAL_WHITE_LIST.propertyKey() + ".value",
+                scanLocalWhiteList);
 
         httpSSLVerify = (boolean) get(HTTP_SSL_VERIFY);
         httpUserAgent = (String) get(HTTP_USER_AGENT);
