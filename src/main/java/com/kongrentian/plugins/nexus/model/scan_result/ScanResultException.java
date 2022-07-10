@@ -12,6 +12,6 @@ public class ScanResultException {
 
     public ScanResultException(Throwable exception) {
         this.exceptionClass = exception.getClass();
-        this.stackTrace = ExceptionUtils.getFullStackTrace(exception);
+        this.stackTrace = ExceptionUtils.getStackTrace(exception);
     }
 }
