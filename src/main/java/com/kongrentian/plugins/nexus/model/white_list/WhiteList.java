@@ -9,8 +9,6 @@ import com.kongrentian.plugins.nexus.model.request_information.RequestInformatio
 import com.kongrentian.plugins.nexus.model.request_information.RequestInformationRepository;
 import com.kongrentian.plugins.nexus.model.scan_result.ScanResultType;
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
@@ -38,23 +36,29 @@ import static java.lang.String.format;
  */
 public class WhiteList implements Serializable {
 
-    static final Logger LOG = LoggerFactory.getLogger(WhiteList.class);
     @JsonIgnore
     private final static List<ScanResultType> scanFailureTypes = Arrays.asList(
             ScanResultType.WHITE_LIST_PACKAGE_VERSION_DATE_INVALID,
             ScanResultType.WHITE_LIST_PACKAGE_VERSION_MISSING,
             ScanResultType.WHITE_LIST_LAST_MODIFIED_MISSING);
     @JsonProperty
-    private final List<String> extensions = new ArrayList<>();
+    private final List<String> extensions;
     @JsonProperty
-    private final List<String> repositories = new ArrayList<>();
+    private final List<String> repositories;
     @JsonProperty
-    private final List<String> users = new ArrayList<>();
+    private final List<String> users;
     @JsonProperty
-    private final List<String> formats = new ArrayList<>();
+    private final List<String> formats;
     @JsonProperty
-    private final Map<String, Map<String, Map<String, WhiteListPackageVersion>>> packages = new HashMap<>();
+    private final Map<String, Map<String, Map<String, WhiteListPackageVersion>>> packages;
 
+    public WhiteList() {
+        users = new ArrayList<>();
+        packages = new HashMap<>();
+        extensions = new ArrayList<>();
+        repositories = new ArrayList<>();
+        formats = new ArrayList<>();
+    }
 
     public static WhiteList fromYAML(String yaml) throws JsonProcessingException {
         return SecurityCapabilityHelper.yamlMapper.readValue(yaml, WhiteList.class);
@@ -103,42 +107,30 @@ public class WhiteList implements Serializable {
         RequestInformationComponent component = requestInformation.getComponent();
         RequestInformationRepository repository = requestInformation.getRepository();
 
-        LOG.info("users");
-        LOG.info(requestInformation.getRequest().toString());
-        LOG.info(requestInformation.getRequest().getUserId());
-        LOG.info(users.toString());
-
         if (users.contains(requestInformation.getRequest().getUserId())) {
             return ScanResultType.WHITE_LIST_CONTAINS_USER;
         }
-        LOG.info("formats");
         if (formats.contains(repository.getFormat())) {
             return ScanResultType.WHITE_LIST_CONTAINS_FORMAT;
         }
-        LOG.info("repositories");
         if (repositories.contains(repository.getName())) {
             return ScanResultType.WHITE_LIST_CONTAINS_REPOSITORY;
         }
-        LOG.info("extensions");
         if (extensions.contains(component.getExtension())) {
             return ScanResultType.WHITE_LIST_CONTAINS_EXTENSION;
         }
-        LOG.info("getVersion");
         WhiteListPackageVersion version = getVersion(
                 repository.getFormat(), component);
         if (version == null) {
             return ScanResultType.WHITE_LIST_PACKAGE_VERSION_MISSING;
         }
-        LOG.info("isAllowed");
         if (version.isAllowed()) {
             return ScanResultType.WHITE_LIST_PACKAGE_VERSION_ALLOWED;
         }
-        LOG.info("lastModified");
         DateTime lastModified = component.getLastModified();
         if (lastModified == null) {
             return ScanResultType.WHITE_LIST_LAST_MODIFIED_MISSING;
         }
-        LOG.info("isBefore");
         if (version.getAllowedDate().isBefore(lastModified)) {
             return ScanResultType.WHITE_LIST_PACKAGE_VERSION_DATE_VALID;
         }
