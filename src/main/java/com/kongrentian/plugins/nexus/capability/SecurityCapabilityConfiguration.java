@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.kongrentian.plugins.nexus.capability.SecurityCapabilityKey.*;
+import static java.lang.String.format;
 
 public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupport {
 
@@ -66,7 +67,7 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
 
         try {
             scanLocalLastModifiedTemp = SecurityCapabilityField.parseTime(lastModified);
-        } catch (Exception exception) {
+        } catch (Throwable exception) {
             LOG.error("Could not parse last_modified date: {}",
                     lastModified, exception);
             status.put(SCAN_LOCAL_LAST_MODIFIED.propertyKey(),
@@ -78,7 +79,7 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         String whiteList = (String) get(SCAN_LOCAL_WHITE_LIST);
         try {
             scanLocalWhiteListTemp = WhiteList.fromYAML(whiteList);
-        } catch (Exception exception) {
+        } catch (Throwable exception) {
             LOG.error("Could not parse white list: {}",
                     whiteList, exception);
             status.put(SCAN_LOCAL_WHITE_LIST.propertyKey(), exception);
@@ -95,15 +96,15 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
 
     public Object get(SecurityCapabilityKey securityCapabilityKey) {
         String defaultValue = securityCapabilityKey.defaultValue();
-        String property = properties.get(securityCapabilityKey.propertyKey());
+        String propertyKey = securityCapabilityKey.propertyKey();
+        String property = properties.get(propertyKey);
         try {
             return securityCapabilityKey.field().convert(property);
         } catch (Throwable exception) {
-            LOG.error("Could not convert property {}, falling back to default - {}",
-                    securityCapabilityKey.name(),
-                    securityCapabilityKey.defaultValue(),
-                    exception);
-
+            String message = format("Could not convert property '%s', falling back to default - '%s'",
+                    propertyKey, securityCapabilityKey.defaultValue());
+            LOG.error(message, exception);
+            status.put(propertyKey, exception.getMessage());
         }
         return securityCapabilityKey.field().convert(defaultValue);
     }
