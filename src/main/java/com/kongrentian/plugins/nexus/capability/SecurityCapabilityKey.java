@@ -113,7 +113,21 @@ public enum SecurityCapabilityKey {
     )),
     SCAN_LOCAL_WHITE_LIST(new SecurityCapabilityField<>(
             "security.scan.local.white_list",
-            "{}",
+            String.join("\n", new String[]{
+                    "formats:",
+                    "    - format",
+                    "repositories:",
+                    "    - repository",
+                    "extensions:",
+                    "    - extension",
+                    "users:",
+                    "    - user",
+                    "packages:",
+                    "    pypi:",
+                    "        pip:",
+                    "            some_nonexistent_version:",
+                    "                allowed: true"
+            }),
             "White list for packages and users",
             TextAreaFormField.class,
             SecurityCapabilityKey::uselessStringPlaceholder
