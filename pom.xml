@@ -64,8 +64,27 @@
                 </executions>
                 <configuration>
                     <instructions>
+                        <Bundle-SymbolicName>${artifactId}</Bundle-SymbolicName>
+                        <Bundle-Description>${artifactId}</Bundle-Description>
                         <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
+                        <Export-Package>
+                            retrofit2,
+                            retrofit2.http,
+                            okhttp3,
+                            okio
+                        </Export-Package>
+                        <Import-Package>
+                            retrofit2,
+                            retrofit2.http,
+                            com.fasterxml.jackson.*,
+                            javax.inject,
+                            javax.net,
+                            javax.net.ssl,
+                            org.slf4j,
+                            org.osgi.framework,
+                            org.sonatype.nexus.*
+                        </Import-Package>
                         <Include-Resource>target/classes,{maven-resources}</Include-Resource>
                     </instructions>
                 </configuration>
