@@ -1,26 +1,27 @@
 stages:
-  - build
+  - test
 
 build:
   tags:
     - linux
-  stage: build
+  stage: test
   variables:
     NEXUS_URL: http://kongrentian.com:8081
-    DEPLOY_DIR: /var/nexus/deploy
-    DATA_DIR: /var/nexus/data
+    DIRECTORY_DEPLOY: /var/nexus/deploy
+    DIRECTORY_DATA: /var/nexus/data
   script:
     - ./mvnw -P buildKar clean verify --show-version --batch-mode --errors
     - chmod 777 target/*.kar
-    - rm -f "${DEPLOY_DIR}"/*.kar
-    - cp target/*.kar "${DEPLOY_DIR}/"
+    - rm -f "${DIRECTORY_DEPLOY}"/*.kar
+    - cp target/*.kar "${DIRECTORY_DEPLOY}/"
+    - docker up -d
     - docker restart nexus
     - sleep 120
-    - curl 
+    - curl
       --fail
-      --user "${NEXUS_LOGIN}:${NEXUS_PASSWORD}" 
+      --user "${NEXUS_LOGIN}:${NEXUS_PASSWORD}"
       "${NEXUS_URL}/repository/pypi/packages/pip/21.3.1/pip-21.3.1-py3-none-any.whl"
       > /dev/null
       || fail_flag=True
-    - tail -n 300 "${DATA_DIR}/log/nexus.log"
+    - tail -n 300 "${DIRECTORY_DATA}/log/nexus.log"
     - test "${fail_flag}" && exit 1
