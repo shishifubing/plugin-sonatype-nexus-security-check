@@ -26,6 +26,9 @@ abstract public class AbstractScanner {
             return scanImpl(information);
         } catch (Throwable exception) {
             boolean fail = failOnErrors();
+            LOG.error("Could not scan asset {}",
+                    information.getRequest().getPath(),
+                    exception);
             return new ScanResult(
                     !fail,
                     fail ? ScanResultType.EXCEPTION

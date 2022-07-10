@@ -94,7 +94,6 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         httpConnectionTimeout = (Long) get(HTTP_CONNECTION_TIMEOUT);
         httpReadTimeout = (long) get(HTTP_READ_TIMEOUT);
         httpWriteTimeout = (long) get(HTTP_WRITE_TIMEOUT);
-        LOG.info("CONFIG: {}", properties);
     }
 
     public Object get(SecurityCapabilityKey securityCapabilityKey) {

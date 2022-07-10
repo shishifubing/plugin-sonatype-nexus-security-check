@@ -44,6 +44,7 @@ public class Monitoring {
                 SecurityCapabilityHelper.jsonMapper
                         .writeValueAsString(information));
         builder.insert(0, "{\"index\":{ } }\n");
+        LOG.info("MONITORING REQUEST: {}", builder);
         api.bulk(builder.toString(),
                 config.getMonitoringIndex(),
                 SecurityCapabilityHelper.todayDate(),

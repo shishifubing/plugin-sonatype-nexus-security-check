@@ -2,7 +2,6 @@ package com.kongrentian.plugins.nexus.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.sonatype.nexus.common.collect.NestedAttributesMap;
 
 import javax.annotation.Nullable;
@@ -17,7 +16,7 @@ public class ScanResult implements Serializable {
     @JsonProperty
     private final ScanResultType type;
     @JsonProperty
-    private String exception = null;
+    private ScanResultException exception;
     @JsonIgnore
     private Instant scanDate;
 
@@ -38,7 +37,7 @@ public class ScanResult implements Serializable {
     }
 
     public ScanResult setException(Throwable exception) {
-        this.exception = ExceptionUtils.getFullStackTrace(exception);
+        this.exception = new ScanResultException(exception);
         return this;
     }
 
