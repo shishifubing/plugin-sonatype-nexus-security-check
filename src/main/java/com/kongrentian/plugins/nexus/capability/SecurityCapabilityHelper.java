@@ -9,8 +9,6 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.kongrentian.plugins.nexus.api.SecurityClient;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.sonatype.nexus.capability.CapabilityReference;
 import org.sonatype.nexus.capability.CapabilityRegistry;
 import org.sonatype.nexus.common.template.TemplateParameters;
@@ -35,17 +33,21 @@ public class SecurityCapabilityHelper {
             // cannot get access to whole context
             // (the tool is not enabled, I think)
             String.join("\n", new String[]{
+                    "<h3>status</h3>",
                     "#foreach( $entry in $status.entrySet() )",
                     "<h4>$entry.getKey()</h4>",
-                    "<div>",
-                    "    <pre>$entry.getValue()</pre>",
-                    "</div>",
+                    "<div><pre>$entry.getValue()</pre></div>",
+                    "#end",
+                    "<hr>",
+                    "<h3>config</h3>",
+                    "#foreach( $entry in $config.entrySet() )",
+                    "<h4>$config.getKey()</h4>",
+                    "<div><pre>$config.getValue()</pre></div>",
                     "#end"
             });
     public final static ObjectMapper yamlMapper = new ObjectMapper(
             new YAMLFactory().disable(
                     YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
-    private static final Logger LOG = LoggerFactory.getLogger(SecurityCapabilityHelper.class);
     private final CapabilityRegistry capabilityRegistry;
     private final VelocityEngine velocityEngine;
     private CapabilityReference securityCapabilityReference;

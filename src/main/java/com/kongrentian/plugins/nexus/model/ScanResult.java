@@ -1,15 +1,13 @@
 package com.kongrentian.plugins.nexus.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.kongrentian.plugins.nexus.capability.SecurityCapabilityKey;
 import org.sonatype.nexus.common.collect.NestedAttributesMap;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-
-import static java.lang.String.format;
 
 public class ScanResult implements Serializable {
     public static final long NO_LAST_SCAN = -1;
@@ -19,6 +17,7 @@ public class ScanResult implements Serializable {
     private String reason;
     @JsonProperty
     private String exception = null;
+    @JsonIgnore
     private Instant scanDate;
 
     public ScanResult() {
@@ -39,19 +38,6 @@ public class ScanResult implements Serializable {
         this.scanDate = scanDate;
     }
 
-    public static ScanResult tooRecent(
-            boolean allowed,
-            long remoteScanTimeDifference,
-            long maximumRemoteScanTimeDifference,
-            ScanResult lastScan) {
-        return new ScanResult(allowed,
-                format("The asset was checked recently, using the last scan "
-                                + "scan difference - %s minutes, "
-                                + "maximum - %s",
-                        remoteScanTimeDifference,
-                        maximumRemoteScanTimeDifference));
-    }
-
     @Nullable
     public static ScanResult fromAttributes(NestedAttributesMap attributes) {
         Boolean allowed = (Boolean) attributes.get("security_allowed");
@@ -63,6 +49,7 @@ public class ScanResult implements Serializable {
         return new ScanResult(allowed, reason, scanDate);
     }
 
+    @JsonIgnore
     public long getInterval() {
         if (scanDate == null) {
             return NO_LAST_SCAN;
@@ -86,8 +73,5 @@ public class ScanResult implements Serializable {
         return reason;
     }
 
-    public boolean isFailure() {
-        return exception != null;
-    }
 }
 

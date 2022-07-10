@@ -99,9 +99,7 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         String propertyKey = securityCapabilityKey.propertyKey();
         String property = properties.get(propertyKey);
         try {
-            if (property == null) {
-                status.put(propertyKey, "this property is null");
-            } else {
+            if (property != null) {
                 return securityCapabilityKey.field().convert(property);
             }
         } catch (Throwable exception) {
@@ -183,6 +181,10 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
 
     public Map<String, Object> getStatus() {
         return status;
+    }
+
+    public Map<String, String> getProperties() {
+        return properties;
     }
 }
 

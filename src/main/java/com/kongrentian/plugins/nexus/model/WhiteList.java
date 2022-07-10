@@ -15,6 +15,8 @@ import static java.lang.String.format;
 
 /**
  * <pre>
+ * repositories:
+ *   - pypi.org-proxy
  * extensions:
  *   - json
  * users:
@@ -32,6 +34,8 @@ public class WhiteList implements Serializable {
     @JsonProperty
     private final List<String> extensions;
     @JsonProperty
+    private final List<String> repositories;
+    @JsonProperty
     private final List<String> users;
     @JsonProperty
     private final Map<String, Map<String, Map<String, WhiteListPackageVersion>>> packages;
@@ -40,6 +44,7 @@ public class WhiteList implements Serializable {
         users = new ArrayList<>();
         packages = new HashMap<>();
         extensions = new ArrayList<>();
+        repositories = new ArrayList<>();
     }
 
     public static WhiteList fromYAML(String yaml) throws JsonProcessingException {
@@ -80,21 +85,26 @@ public class WhiteList implements Serializable {
         return null;
     }
 
-    public boolean contains(RequestInformation requestInformation) {
+    @Nullable
+    public WhiteListContains contains(RequestInformation requestInformation) {
         RequestInformationComponent component = requestInformation.getComponent();
         RequestInformationRepository repository = requestInformation.getRepository();
-        if (extensions.contains(component.getExtension())
-                || users.contains(requestInformation.getUserId())) {
-            return true;
+        if (extensions.contains(component.getExtension())) {
+            return WhiteListContains.EXTENSION;
+        }
+        if (users.contains(requestInformation.getUserId())) {
+            return WhiteListContains.USER;
+        }
+        if (repositories.contains(repository.getName())) {
+            return WhiteListContains.REPOSITORY;
         }
         WhiteListPackageVersion version = getVersion(
                 repository.getFormat(), component);
-        if (version == null) {
-            return false;
+        if (version == null || !version.isAllowed()) {
+            return null;
         }
-        return version.isAllowed();
+        return WhiteListContains.PACKAGE_VERSION;
     }
-
 
 }
 

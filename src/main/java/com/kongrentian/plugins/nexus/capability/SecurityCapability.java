@@ -35,7 +35,8 @@ public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConf
         try {
             return securityCapabilityHelper.render(
                     new TemplateParameters()
-                            .set("status", getConfig().getStatus()));
+                            .set("status", getConfig().getStatus())
+                            .set("config", getConfig().getProperties()));
         } catch (Throwable exception) {
             LOG.error("Could not render the status", exception);
             return "Could not render the status: " + exception;

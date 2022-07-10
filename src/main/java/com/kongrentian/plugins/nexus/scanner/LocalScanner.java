@@ -5,6 +5,7 @@ import com.kongrentian.plugins.nexus.capability.SecurityCapabilityHelper;
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityKey;
 import com.kongrentian.plugins.nexus.model.RequestInformation;
 import com.kongrentian.plugins.nexus.model.ScanResult;
+import com.kongrentian.plugins.nexus.model.WhiteListContains;
 import org.joda.time.DateTime;
 import org.sonatype.nexus.repository.storage.AssetStore;
 
@@ -22,12 +23,13 @@ public class LocalScanner extends AbstractScanner {
 
     @Override
     ScanResult scanImpl(RequestInformation information) {
-        SecurityCapabilityConfiguration config = securityCapabilityHelper.getCapabilityConfiguration();
-        boolean inWhiteList = config
+        SecurityCapabilityConfiguration config = securityCapabilityHelper
+                .getCapabilityConfiguration();
+        WhiteListContains contains = config
                 .getScanLocalWhiteList()
                 .contains(information);
-        if (inWhiteList) {
-            return new ScanResult(true, "white list");
+        if (contains != null) {
+            return new ScanResult(true, "white list contains " + contains.name());
         }
         DateTime lastModified = information.getComponent().getLastModified();
         if (lastModified.isBefore(config.getScanLocalLastModified())) {
