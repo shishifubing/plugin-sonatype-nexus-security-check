@@ -2,7 +2,6 @@ package com.kongrentian.plugins.nexus.scanner;
 
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityHelper;
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityKey;
-import com.kongrentian.plugins.nexus.model.MonitoringInformationScanResult;
 import com.kongrentian.plugins.nexus.model.RequestInformation;
 import com.kongrentian.plugins.nexus.model.ScanResult;
 import com.kongrentian.plugins.nexus.model.ScanResultType;
@@ -43,9 +42,5 @@ abstract public class AbstractScanner {
         return (Boolean) securityCapabilityHelper
                 .getCapabilityConfiguration()
                 .get(getFailKey());
-    }
-
-    public MonitoringInformationScanResult convertToMonitoringScanResult(ScanResult result) {
-        return new MonitoringInformationScanResult(getClass(), result);
     }
 }

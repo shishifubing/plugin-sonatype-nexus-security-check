@@ -67,14 +67,6 @@ public enum SecurityCapabilityKey {
             NumberTextFormField.class,
             Long::parseLong
     )),
-
-    SCAN_REMOTE_FAIL_ON_ERRORS(new SecurityCapabilityField<>(
-            "security.scan.remote.fail.on_scan_errors",
-            "true",
-            "Whether to fail the request on errors",
-            CheckboxFormField.class,
-            Boolean::parseBoolean
-    )),
     SCAN_REMOTE_URL(new SecurityCapabilityField<>(
             "security.scan.remote.url",
             "https://localhost",
@@ -88,6 +80,13 @@ public enum SecurityCapabilityKey {
             "Auth for remote scans, either login:password or token",
             PasswordFormField.class,
             SecurityCapabilityKey::uselessStringPlaceholder
+    )),
+    SCAN_REMOTE_FAIL_ON_ERRORS(new SecurityCapabilityField<>(
+            "security.scan.remote.fail.on_scan_errors",
+            "true",
+            "Whether to fail the request on errors",
+            CheckboxFormField.class,
+            Boolean::parseBoolean
     )),
     SCAN_REMOTE_INTERVAL(new SecurityCapabilityField<>(
             "security.scan.remote.interval.minutes",

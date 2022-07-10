@@ -3,6 +3,7 @@ package com.kongrentian.plugins.nexus.main;
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityConfiguration;
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityHelper;
 import com.kongrentian.plugins.nexus.model.MonitoringInformation;
+import com.kongrentian.plugins.nexus.model.MonitoringInformationScanResult;
 import com.kongrentian.plugins.nexus.model.RequestInformation;
 import com.kongrentian.plugins.nexus.model.ScanResult;
 import com.kongrentian.plugins.nexus.monitoring.Monitoring;
@@ -86,7 +87,7 @@ public class RequestHandler implements ContributedHandler {
         MonitoringInformation results = new MonitoringInformation(information);
         for (AbstractScanner scanner : getScanners(config)) {
             ScanResult result = scanner.scan(information);
-            results.add(scanner.convertToMonitoringScanResult(result));
+            results.add(new MonitoringInformationScanResult(scanner.getClass(), result));
             if (!result.isAllowed()) {
                 results.setAllowed(false);
                 break;

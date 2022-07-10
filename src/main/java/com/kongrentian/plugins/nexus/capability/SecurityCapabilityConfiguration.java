@@ -94,6 +94,7 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         httpConnectionTimeout = (Long) get(HTTP_CONNECTION_TIMEOUT);
         httpReadTimeout = (long) get(HTTP_READ_TIMEOUT);
         httpWriteTimeout = (long) get(HTTP_WRITE_TIMEOUT);
+        LOG.info("CONFIG: {}", properties);
     }
 
     public Object get(SecurityCapabilityKey securityCapabilityKey) {
@@ -103,6 +104,9 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         try {
             if (property != null && !property.isEmpty()) {
                 return securityCapabilityKey.field().convert(property);
+            } else {
+                status.put(propertyKey,
+                        "null or empty, using default: " + defaultValue);
             }
         } catch (Throwable exception) {
             String message = format("Could not convert property '%s', falling back to default - '%s'",
