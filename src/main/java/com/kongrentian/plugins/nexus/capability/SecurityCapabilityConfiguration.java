@@ -99,7 +99,11 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         String propertyKey = securityCapabilityKey.propertyKey();
         String property = properties.get(propertyKey);
         try {
-            return securityCapabilityKey.field().convert(property);
+            if (property == null) {
+                status.put(propertyKey, "this property is null");
+            } else {
+                return securityCapabilityKey.field().convert(property);
+            }
         } catch (Throwable exception) {
             String message = format("Could not convert property '%s', falling back to default - '%s'",
                     propertyKey, securityCapabilityKey.defaultValue());

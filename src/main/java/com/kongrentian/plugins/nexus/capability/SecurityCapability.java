@@ -1,5 +1,7 @@
 package com.kongrentian.plugins.nexus.capability;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonatype.nexus.capability.CapabilitySupport;
 import org.sonatype.nexus.common.template.TemplateParameters;
 
@@ -11,6 +13,8 @@ import java.util.Map;
 @Named(SecurityCapabilityDescriptor.CAPABILITY_ID)
 public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConfiguration> {
 
+
+    private static final Logger LOG = LoggerFactory.getLogger(SecurityCapability.class);
     private final SecurityCapabilityHelper securityCapabilityHelper;
 
     @Inject
@@ -26,8 +30,13 @@ public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConf
     @Nullable
     @Override
     protected String renderStatus() {
-        return render(SecurityCapabilityHelper.capabilityStatusTemplate,
-                new TemplateParameters(getConfig().getStatus()));
+        try {
+            return securityCapabilityHelper.render(
+                    new TemplateParameters(getConfig().getStatus()));
+        } catch (Throwable exception) {
+            LOG.error("Could not render the status", exception);
+            return "Could not render the status: " + exception;
+        }
     }
 
     @Override

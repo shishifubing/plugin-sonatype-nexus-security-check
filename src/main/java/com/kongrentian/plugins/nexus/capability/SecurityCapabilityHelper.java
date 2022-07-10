@@ -7,12 +7,16 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.kongrentian.plugins.nexus.api.SecurityClient;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
 import org.sonatype.nexus.capability.CapabilityReference;
 import org.sonatype.nexus.capability.CapabilityRegistry;
+import org.sonatype.nexus.common.template.TemplateParameters;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.StringWriter;
 import java.time.Instant;
 
 
@@ -36,17 +40,35 @@ public class SecurityCapabilityHelper {
             new YAMLFactory().disable(
                     YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
     private final CapabilityRegistry capabilityRegistry;
+    private final VelocityEngine velocityEngine;
     private CapabilityReference securityCapabilityReference;
     private SecurityClient securityClient;
 
     @Inject
-    public SecurityCapabilityHelper(final CapabilityRegistry capabilityRegistry) {
+    public SecurityCapabilityHelper(final CapabilityRegistry capabilityRegistry,
+                                    final VelocityEngine velocityEngine) {
         this.capabilityRegistry = capabilityRegistry;
+        this.velocityEngine = velocityEngine;
     }
 
     private static boolean isTypeEqual(CapabilityReference reference) {
         return SecurityCapabilityDescriptor.CAPABILITY_TYPE
                 .equals(reference.context().type());
+    }
+
+    /**
+     * you are supposed to use 'render' in
+     * {@link org.sonatype.nexus.capability.CapabilitySupport},
+     * but it only works with urls - you cannot just render a random template
+     */
+    public String render(final TemplateParameters parameters) {
+        StringWriter writer = new StringWriter();
+        velocityEngine.evaluate(
+                new VelocityContext(parameters.get()),
+                writer,
+                SecurityCapability.class.getName(),
+                capabilityStatusTemplate);
+        return writer.toString();
     }
 
     @Nonnull
