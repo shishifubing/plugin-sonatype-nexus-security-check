@@ -40,6 +40,9 @@
                         <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                         <Include-Resource>target/classes,{maven-resources}</Include-Resource>
+                        <Import-Package>
+                            com.fasterxml.jackson.*
+                        </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>
