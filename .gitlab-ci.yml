@@ -19,7 +19,9 @@ build:
     - rm -f "${DIRECTORY_DEPLOY}"/*.kar
     - cp target/*.kar "${DIRECTORY_DEPLOY}/"
     - /usr/libexec/docker/cli-plugins/docker-compose
-      up -d
+      up
+      --detach
+      --remove-orphans
     - docker restart nexus
     - sleep 120
     - curl

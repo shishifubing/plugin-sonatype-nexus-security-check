@@ -41,6 +41,7 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
     private final Map<String, Object> status = new HashMap<>();
     private final String monitoringPipeline;
     private final String monitoringIndex;
+    private final String monitoringAnonymousUserId;
 
 
     public SecurityCapabilityConfiguration(Map<String, String> properties) {
@@ -59,6 +60,7 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         monitoringAuth = (String) get(MONITORING_AUTH);
         monitoringPipeline = (String) get(MONITORING_PIPELINE);
         monitoringIndex = (String) get(MONITORING_INDEX);
+        monitoringAnonymousUserId = (String) get(MONITORING_ANONYMOUS_USER_ID);
 
         scanRemoteUrl = (String) get(SCAN_REMOTE_URL);
         scanRemoteAuth = (String) get(SCAN_REMOTE_AUTH);
@@ -191,5 +193,11 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
     public String getMonitoringIndex() {
         return monitoringIndex;
     }
+
+    public String getMonitoringAnonymousUserId() {
+        return monitoringAnonymousUserId;
+    }
+
+
 }
 

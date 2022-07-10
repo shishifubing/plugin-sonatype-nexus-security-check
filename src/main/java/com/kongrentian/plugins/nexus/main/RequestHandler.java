@@ -80,10 +80,13 @@ public class RequestHandler implements ContributedHandler {
         }
         Component component = componentStore.read(asset.componentId());
 
+        SecurityCapabilityConfiguration config = securityCapabilityHelper.getCapabilityConfiguration();
         String userId = (String) request.getAttributes().get(SecurityFilter.ATTR_USER_ID);
+        if (userId == null) {
+            userId = config.getMonitoringAnonymousUserId();
+        }
         RequestInformation information = new RequestInformation(
                 userId, repository, content, asset, component, request);
-        SecurityCapabilityConfiguration config = securityCapabilityHelper.getCapabilityConfiguration();
         MonitoringInformation results = new MonitoringInformation(information);
         for (AbstractScanner scanner : getScanners(config)) {
             ScanResult result = scanner.scan(information);

@@ -7,6 +7,7 @@ import org.sonatype.nexus.repository.storage.Component;
 import org.sonatype.nexus.repository.view.Content;
 import org.sonatype.nexus.repository.view.Request;
 
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 
 public class RequestInformation implements Serializable {
@@ -20,7 +21,7 @@ public class RequestInformation implements Serializable {
     private final RequestInformationRequest request;
 
 
-    public RequestInformation(String userId, Repository repository, Content content,
+    public RequestInformation(@Nonnull String userId, Repository repository, Content content,
                               Asset asset, Component component, Request request) {
         this.repository = new RequestInformationRepository(repository);
         this.component = new RequestInformationComponent(content, asset, component);

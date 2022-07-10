@@ -67,6 +67,7 @@ public enum SecurityCapabilityKey {
             NumberTextFormField.class,
             Long::parseLong
     )),
+
     SCAN_REMOTE_URL(new SecurityCapabilityField<>(
             "security.scan.remote.url",
             "https://localhost",
@@ -144,6 +145,13 @@ public enum SecurityCapabilityKey {
             "",
             "Auth for monitoring, either login:password or token ",
             PasswordFormField.class,
+            SecurityCapabilityKey::uselessStringPlaceholder
+    )),
+    MONITORING_ANONYMOUS_USER_ID(new SecurityCapabilityField<>(
+            "security.monitoring.anonymous.user_id",
+            "anonymous",
+            "Username assigned to anonymous requests (for monitoring)",
+            StringTextFormField.class,
             SecurityCapabilityKey::uselessStringPlaceholder
     )),
     MONITORING_PIPELINE(new SecurityCapabilityField<>(
