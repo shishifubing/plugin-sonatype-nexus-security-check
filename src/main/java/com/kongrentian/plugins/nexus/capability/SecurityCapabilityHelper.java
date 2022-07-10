@@ -9,6 +9,8 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.kongrentian.plugins.nexus.api.SecurityClient;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonatype.nexus.capability.CapabilityReference;
 import org.sonatype.nexus.capability.CapabilityRegistry;
 import org.sonatype.nexus.common.template.TemplateParameters;
@@ -22,6 +24,7 @@ import java.time.Instant;
 
 @Named
 public class SecurityCapabilityHelper {
+
     public final static ObjectMapper jsonMapper = new ObjectMapper()
             .setSerializationInclusion(JsonInclude.Include.NON_NULL)
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
@@ -39,6 +42,7 @@ public class SecurityCapabilityHelper {
     public final static ObjectMapper yamlMapper = new ObjectMapper(
             new YAMLFactory().disable(
                     YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
+    private static final Logger LOG = LoggerFactory.getLogger(SecurityCapabilityHelper.class);
     private final CapabilityRegistry capabilityRegistry;
     private final VelocityEngine velocityEngine;
     private CapabilityReference securityCapabilityReference;
@@ -62,13 +66,16 @@ public class SecurityCapabilityHelper {
      * but it only works with urls - you cannot just render a random template
      */
     public String render(final TemplateParameters parameters) {
+        LOG.info("EVALUATION PARAMETERS: {}", parameters.get());
         StringWriter writer = new StringWriter();
         velocityEngine.evaluate(
                 new VelocityContext(parameters.get()),
                 writer,
                 SecurityCapability.class.getName(),
                 capabilityStatusTemplate);
-        return writer.toString();
+        String result = writer.toString();
+        LOG.info("RESULT OF EVALUATION: {}", result);
+        return result;
     }
 
     @Nonnull
