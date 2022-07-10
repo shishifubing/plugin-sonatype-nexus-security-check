@@ -5,7 +5,7 @@ import org.sonatype.nexus.formfields.*;
 
 /**
  * this monstrosity is created in order to
- * avoid duplication in {@link SecurityCapabilityField}
+ * avoid duplication in {@link SecurityCapabilityDescriptor}
  * <p>
  * cannot avoid duplication in {@link SecurityCapabilityConfiguration} though
  */
@@ -107,7 +107,7 @@ public enum SecurityCapabilityKey {
     SCAN_LOCAL_LAST_MODIFIED(new SecurityCapabilityField<>(
             "security.scan.local.last_modified",
             "2022-02-20",
-            "All last_modified dates after this one are blocked",
+            "All last_modified dates after this one are blocked (inclusive)",
             StringTextFormField.class,
             String::format
     )),
@@ -135,6 +135,7 @@ public enum SecurityCapabilityKey {
     ));
 
     private final SecurityCapabilityField<?> securityCapabilityField;
+
     SecurityCapabilityKey(SecurityCapabilityField<?> securityCapabilityField) {
         this.securityCapabilityField = securityCapabilityField;
     }

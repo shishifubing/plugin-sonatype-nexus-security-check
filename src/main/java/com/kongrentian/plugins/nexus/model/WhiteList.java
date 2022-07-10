@@ -109,7 +109,8 @@ public class WhiteList implements Serializable {
         }
         WhiteListPackageVersion version = getVersion(
                 repository.getFormat(), component);
-        if (version == null || !version.isAllowed()) {
+        if (version == null
+                || !version.isAllowed(component.getLastModified())) {
             return null;
         }
         return WhiteListContains.PACKAGE_VERSION;

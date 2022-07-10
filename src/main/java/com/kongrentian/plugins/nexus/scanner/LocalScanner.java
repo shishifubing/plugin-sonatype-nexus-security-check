@@ -33,9 +33,9 @@ public class LocalScanner extends AbstractScanner {
         }
         DateTime lastModified = information.getComponent().getLastModified();
         if (lastModified.isBefore(config.getScanLocalLastModified())) {
-            return new ScanResult(true, "valid last_modified:" + lastModified);
+            return new ScanResult(true, "valid last_modified: " + lastModified);
         }
-        return new ScanResult(false, "invalid last_modified:" + lastModified);
+        return new ScanResult(false, "invalid last_modified: " + lastModified);
     }
 
     @Override
