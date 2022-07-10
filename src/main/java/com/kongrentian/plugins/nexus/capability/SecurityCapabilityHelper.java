@@ -11,7 +11,6 @@ import org.sonatype.nexus.capability.CapabilityReference;
 import org.sonatype.nexus.capability.CapabilityRegistry;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.time.Instant;
@@ -39,12 +38,6 @@ public class SecurityCapabilityHelper {
     private static boolean isTypeEqual(CapabilityReference reference) {
         return SecurityCapabilityDescriptor.CAPABILITY_TYPE
                 .equals(reference.context().type());
-    }
-
-    protected static String errorMessage(@Nullable Exception exception) {
-        return exception == null ?
-                " is valid\n" :
-                " is not valid\n" + exception.getMessage();
     }
 
     @Nonnull

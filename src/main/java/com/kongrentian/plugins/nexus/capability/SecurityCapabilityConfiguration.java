@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonatype.nexus.capability.CapabilityConfigurationSupport;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.kongrentian.plugins.nexus.capability.SecurityCapabilityKey.*;
@@ -23,9 +24,7 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
 
     private final boolean scanLocalFailOnScanErrors;
     private final DateTime scanLocalLastModified;
-    private Exception scanLocalLastModifiedException = null;
     private final WhiteList scanLocalWhiteList;
-    private Exception scanLocalWhiteListException = null;
 
     private final boolean scanRemoteFailOnScanErrors;
     private final String scanRemoteUrl;
@@ -39,11 +38,16 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
     private final long httpWriteTimeout;
 
     private final Map<String, String> properties;
+    private final Map<String, Object> status = new HashMap<>();
+
 
     public SecurityCapabilityConfiguration(Map<String, String> properties) {
         DateTime scanLocalLastModifiedTemp;
         WhiteList scanLocalWhiteListTemp;
+        status.put(SCAN_LOCAL_LAST_MODIFIED.propertyKey(), "valid");
+        status.put(SCAN_LOCAL_WHITE_LIST.propertyKey(), "valid");
         this.properties = properties;
+
 
         enableMonitoring = (boolean) get(ENABLE_MONITORING);
         enableScanRemote = (boolean) get(ENABLE_SCAN_REMOTE);
@@ -59,12 +63,14 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
 
         scanLocalFailOnScanErrors = (boolean) get(SCAN_LOCAL_FAIL_ON_ERRORS);
         String lastModified = (String) get(SCAN_LOCAL_LAST_MODIFIED);
+
         try {
             scanLocalLastModifiedTemp = SecurityCapabilityField.parseTime(lastModified);
         } catch (Exception exception) {
             LOG.error("Could not parse last_modified date: {}",
                     lastModified, exception);
-            scanLocalLastModifiedException = exception;
+            status.put(SCAN_LOCAL_LAST_MODIFIED.propertyKey(),
+                    exception);
             scanLocalLastModifiedTemp = SecurityCapabilityField.parseTime(
                     SCAN_LOCAL_LAST_MODIFIED.defaultValue());
         }
@@ -75,7 +81,7 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         } catch (Exception exception) {
             LOG.error("Could not parse white list: {}",
                     whiteList, exception);
-            scanLocalWhiteListException = exception;
+            status.put(SCAN_LOCAL_WHITE_LIST.propertyKey(), exception);
             scanLocalWhiteListTemp = new WhiteList();
         }
         scanLocalWhiteList = scanLocalWhiteListTemp;
@@ -170,12 +176,8 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         return scanLocalFailOnScanErrors;
     }
 
-    public Exception getScanLocalLastModifiedException() {
-        return scanLocalLastModifiedException;
-    }
-
-    public Exception getScanLocalWhiteListException() {
-        return scanLocalWhiteListException;
+    public Map<String, Object> getStatus() {
+        return status;
     }
 }
 

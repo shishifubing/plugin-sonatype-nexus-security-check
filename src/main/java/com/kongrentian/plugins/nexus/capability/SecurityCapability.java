@@ -1,6 +1,8 @@
 package com.kongrentian.plugins.nexus.capability;
 
 import org.sonatype.nexus.capability.CapabilitySupport;
+import org.sonatype.nexus.common.template.TemplateParameters;
+import org.sonatype.nexus.internal.capability.node.IdentityCapabilityDescriptor;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -25,14 +27,10 @@ public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConf
     @Nullable
     @Override
     protected String renderStatus() {
-        SecurityCapabilityConfiguration config = getConfig();
-        return SecurityCapabilityKey.SCAN_LOCAL_LAST_MODIFIED.propertyKey() +
-                SecurityCapabilityHelper.errorMessage(
-                        config.getScanLocalLastModifiedException()) +
-                ", " +
-                SecurityCapabilityKey.SCAN_LOCAL_WHITE_LIST.propertyKey() +
-                SecurityCapabilityHelper.errorMessage(
-                        config.getScanLocalWhiteListException());
+        return render(IdentityCapabilityDescriptor.TYPE_ID + "-status.vm", new TemplateParameters(
+                        getConfig().getStatus()
+                )
+        );
     }
 
     @Override
