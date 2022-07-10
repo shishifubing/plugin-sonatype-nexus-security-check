@@ -12,7 +12,7 @@ services:
 
   elasticsearch:
     container_name: es-container
-    image: elasticsearch/elasticsearch:7.11.0
+    image: elasticsearch:7.11.0
     environment:
       - xpack.security.enabled=false
       - "discovery.type=single-node"
@@ -21,7 +21,7 @@ services:
 
   kibana:
     container_name: kb-container
-    image: kibana/kibana:7.11.0
+    image: kibana:7.11.0
     environment:
       - ELASTICSEARCH_HOSTS=http://es-container:9200
     networks: [ nexus ]
