@@ -1,6 +1,7 @@
 package com.kongrentian.plugins.nexus.capability;
 
 import org.sonatype.nexus.formfields.AbstractFormField;
+import org.sonatype.nexus.formfields.CheckboxFormField;
 import org.sonatype.nexus.formfields.FormField;
 
 import java.lang.reflect.InvocationTargetException;
@@ -69,6 +70,15 @@ public final class SecurityCapabilityField<TEMPLATE> {
                         propertyKey,
                         description,
                         FormField.OPTIONAL);
+        // if checkbox was not set before, it is null
+        // and appears as not checked
+        // in that case, default value will be used
+        // (which can be true)
+        // it can be confusing, so all checkboxes will
+        // be mandatory
+        if (result instanceof CheckboxFormField) {
+            result.setRequired(FormField.MANDATORY);
+        }
         result.setInitialValue(convert(defaultValue));
         return result;
     }

@@ -104,9 +104,11 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         try {
             if (property != null && !property.isEmpty()) {
                 return securityCapabilityKey.field().convert(property);
-            } else {
+            } else if (!defaultValue.isEmpty()) {
                 status.put(propertyKey,
-                        "null or empty, using default: " + defaultValue);
+                        format("property is %s, using default: %s",
+                                property == null ? null : "empty",
+                                defaultValue));
             }
         } catch (Throwable exception) {
             String message = format("Could not convert property '%s', falling back to default - '%s'",
