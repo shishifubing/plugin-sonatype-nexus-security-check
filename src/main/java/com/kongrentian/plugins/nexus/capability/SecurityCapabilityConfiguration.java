@@ -1,6 +1,6 @@
 package com.kongrentian.plugins.nexus.capability;
 
-import com.kongrentian.plugins.nexus.model.WhiteList;
+import com.kongrentian.plugins.nexus.model.white_list.WhiteList;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;

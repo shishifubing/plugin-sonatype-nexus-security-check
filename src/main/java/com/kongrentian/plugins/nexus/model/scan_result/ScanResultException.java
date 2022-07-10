@@ -1,4 +1,4 @@
-package com.kongrentian.plugins.nexus.model;
+package com.kongrentian.plugins.nexus.model.scan_result;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang.exception.ExceptionUtils;

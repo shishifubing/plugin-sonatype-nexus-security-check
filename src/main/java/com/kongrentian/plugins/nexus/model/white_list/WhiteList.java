@@ -1,9 +1,13 @@
-package com.kongrentian.plugins.nexus.model;
+package com.kongrentian.plugins.nexus.model.white_list;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityHelper;
+import com.kongrentian.plugins.nexus.model.request_information.RequestInformation;
+import com.kongrentian.plugins.nexus.model.request_information.RequestInformationComponent;
+import com.kongrentian.plugins.nexus.model.request_information.RequestInformationRepository;
+import com.kongrentian.plugins.nexus.model.scan_result.ScanResultType;
 import org.joda.time.DateTime;
 
 import javax.annotation.Nullable;

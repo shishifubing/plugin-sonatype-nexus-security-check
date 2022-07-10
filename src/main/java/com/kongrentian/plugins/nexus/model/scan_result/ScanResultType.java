@@ -1,4 +1,4 @@
-package com.kongrentian.plugins.nexus.model;
+package com.kongrentian.plugins.nexus.model.scan_result;
 
 public enum ScanResultType {
     WHITE_LIST_CONTAINS_EXTENSION,

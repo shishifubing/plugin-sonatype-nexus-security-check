@@ -3,10 +3,10 @@ package com.kongrentian.plugins.nexus.scanner;
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityConfiguration;
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityHelper;
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityKey;
-import com.kongrentian.plugins.nexus.model.RequestInformation;
-import com.kongrentian.plugins.nexus.model.ScanResult;
-import com.kongrentian.plugins.nexus.model.ScanResultType;
-import com.kongrentian.plugins.nexus.model.WhiteList;
+import com.kongrentian.plugins.nexus.model.request_information.RequestInformation;
+import com.kongrentian.plugins.nexus.model.scan_result.ScanResult;
+import com.kongrentian.plugins.nexus.model.scan_result.ScanResultType;
+import com.kongrentian.plugins.nexus.model.white_list.WhiteList;
 import org.joda.time.DateTime;
 import org.sonatype.nexus.repository.storage.AssetStore;
 

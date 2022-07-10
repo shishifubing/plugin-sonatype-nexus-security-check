@@ -2,9 +2,9 @@ package com.kongrentian.plugins.nexus.scanner;
 
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityHelper;
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityKey;
-import com.kongrentian.plugins.nexus.model.RequestInformation;
-import com.kongrentian.plugins.nexus.model.ScanResult;
-import com.kongrentian.plugins.nexus.model.ScanResultType;
+import com.kongrentian.plugins.nexus.model.request_information.RequestInformation;
+import com.kongrentian.plugins.nexus.model.scan_result.ScanResult;
+import com.kongrentian.plugins.nexus.model.scan_result.ScanResultType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonatype.nexus.repository.storage.AssetStore;

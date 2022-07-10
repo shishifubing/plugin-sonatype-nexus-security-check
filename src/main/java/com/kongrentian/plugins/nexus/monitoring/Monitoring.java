@@ -3,7 +3,7 @@ package com.kongrentian.plugins.nexus.monitoring;
 import com.kongrentian.plugins.nexus.api.MonitoringApi;
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityConfiguration;
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityHelper;
-import com.kongrentian.plugins.nexus.model.MonitoringInformation;
+import com.kongrentian.plugins.nexus.model.monitoring_information.MonitoringInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

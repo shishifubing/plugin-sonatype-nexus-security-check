@@ -2,10 +2,10 @@ package com.kongrentian.plugins.nexus.main;
 
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityConfiguration;
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityHelper;
-import com.kongrentian.plugins.nexus.model.MonitoringInformation;
-import com.kongrentian.plugins.nexus.model.MonitoringInformationScanResult;
-import com.kongrentian.plugins.nexus.model.RequestInformation;
-import com.kongrentian.plugins.nexus.model.ScanResult;
+import com.kongrentian.plugins.nexus.model.monitoring_information.MonitoringInformation;
+import com.kongrentian.plugins.nexus.model.monitoring_information.MonitoringInformationScanResult;
+import com.kongrentian.plugins.nexus.model.request_information.RequestInformation;
+import com.kongrentian.plugins.nexus.model.scan_result.ScanResult;
 import com.kongrentian.plugins.nexus.monitoring.Monitoring;
 import com.kongrentian.plugins.nexus.scanner.AbstractScanner;
 import com.kongrentian.plugins.nexus.scanner.LocalScanner;

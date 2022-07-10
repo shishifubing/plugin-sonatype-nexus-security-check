@@ -1,4 +1,4 @@
-package com.kongrentian.plugins.nexus.model;
+package com.kongrentian.plugins.nexus.model.request_information;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.sonatype.nexus.repository.view.Request;
