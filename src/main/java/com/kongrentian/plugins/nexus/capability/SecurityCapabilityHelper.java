@@ -32,13 +32,15 @@ public class SecurityCapabilityHelper {
     public final static ObjectMapper yamlMapper = new ObjectMapper(
             new YAMLFactory().disable(
                     YAMLGenerator.Feature.WRITE_DOC_START_MARKER))
+            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+            // to deserialize joda datetime
             .setDateFormat(DATE_FORMAT)
-            .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+            .registerModule(new JodaModule());
     public final static ObjectMapper jsonMapper = new ObjectMapper()
             .setSerializationInclusion(JsonInclude.Include.NON_NULL)
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-            .setDateFormat(DATE_FORMAT)
             // to deserialize joda datetime
+            .setDateFormat(DATE_FORMAT)
             .registerModule(new JodaModule());
     private static final DateTimeFormatter dateTimeFormatter =
             DateTimeFormat
