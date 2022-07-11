@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.joda.deser.LocalDateDeserializer;
 import org.joda.time.DateTime;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
 
 public class WhiteListPackageVersion implements Serializable {
@@ -19,6 +20,12 @@ public class WhiteListPackageVersion implements Serializable {
         this.allowedDate = allowedDate;
     }
 
+    public WhiteListPackageVersion() {
+        this.allowed = false;
+        this.allowedDate = null;
+    }
+
+    @Nullable
     public DateTime getAllowedDate() {
         return allowedDate;
     }

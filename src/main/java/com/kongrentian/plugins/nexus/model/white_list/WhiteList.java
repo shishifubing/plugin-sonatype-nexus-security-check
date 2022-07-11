@@ -101,7 +101,7 @@ public class WhiteList implements Serializable {
         }
         return null;
     }
-    
+
     public ScanResultType contains(RequestInformation requestInformation) {
         RequestInformationComponent component = requestInformation.getComponent();
         RequestInformationRepository repository = requestInformation.getRepository();
@@ -130,7 +130,8 @@ public class WhiteList implements Serializable {
         if (lastModified == null) {
             return ScanResultType.WHITE_LIST_LAST_MODIFIED_MISSING;
         }
-        if (version.getAllowedDate().isBefore(lastModified)) {
+        DateTime allowedDate = version.getAllowedDate();
+        if (allowedDate != null && allowedDate.isBefore(lastModified)) {
             return ScanResultType.WHITE_LIST_PACKAGE_VERSION_DATE_VALID;
         }
         return ScanResultType.WHITE_LIST_PACKAGE_VERSION_DATE_INVALID;
