@@ -115,7 +115,8 @@ public enum SecurityCapabilityKey {
             "security.scan.local.white_list",
             String.join("\n", new String[]{
                     "# do not leave any top keys without content,",
-                    "# it will cause null pointer exceptions",
+                    "# it will cause null pointer exception",
+                    "# which will fail all local scans",
                     "formats:",
                     "    - format",
                     "repositories:",
@@ -128,7 +129,9 @@ public enum SecurityCapabilityKey {
                     "    pypi:",
                     "        pip:",
                     "            some_nonexistent_version:",
-                    "                allowed: true"
+                    "                allowed: true",
+                    "            some_other_version",
+                    "                allowed_date: 2022-07-07"
             }),
             "White list for packages and users",
             TextAreaFormField.class,

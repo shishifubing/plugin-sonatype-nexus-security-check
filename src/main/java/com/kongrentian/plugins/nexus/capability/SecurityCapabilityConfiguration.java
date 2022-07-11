@@ -82,11 +82,6 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         String whiteList = (String) get(SCAN_LOCAL_WHITE_LIST);
         try {
             scanLocalWhiteListTemp = WhiteList.fromYAML(whiteList);
-            assert scanLocalWhiteListTemp.getExtensions() != null;
-            assert scanLocalWhiteListTemp.getRepositories() != null;
-            assert scanLocalWhiteListTemp.getFormats() != null;
-            assert scanLocalWhiteListTemp.getUsers() != null;
-            assert scanLocalWhiteListTemp.getPackages() != null;
         } catch (Throwable exception) {
             LOG.error("Could not parse white list: {}",
                     whiteList, exception);

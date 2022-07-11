@@ -136,30 +136,6 @@ public class WhiteList implements Serializable {
         }
         return ScanResultType.WHITE_LIST_PACKAGE_VERSION_DATE_INVALID;
     }
-
-    @Nullable
-    public List<String> getExtensions() {
-        return extensions;
-    }
-
-    @Nullable
-    public List<String> getRepositories() {
-        return repositories;
-    }
-
-    @Nullable
-    public List<String> getUsers() {
-        return users;
-    }
-
-    @Nullable
-    public List<String> getFormats() {
-        return formats;
-    }
-
-    @Nullable
-    public Map<String, Map<String, Map<String, WhiteListPackageVersion>>> getPackages() {
-        return packages;
-    }
+    
 }
 
