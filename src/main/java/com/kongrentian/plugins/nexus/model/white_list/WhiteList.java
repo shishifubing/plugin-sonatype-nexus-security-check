@@ -131,11 +131,11 @@ public class WhiteList implements Serializable {
             return ScanResultType.WHITE_LIST_LAST_MODIFIED_MISSING;
         }
         DateTime allowedDate = version.getAllowedDate();
-        if (allowedDate != null && allowedDate.isBefore(lastModified)) {
+        if (allowedDate != null && allowedDate.isAfter(lastModified)) {
             return ScanResultType.WHITE_LIST_PACKAGE_VERSION_DATE_VALID;
         }
         return ScanResultType.WHITE_LIST_PACKAGE_VERSION_DATE_INVALID;
     }
-    
+
 }
 
