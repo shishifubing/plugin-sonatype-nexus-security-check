@@ -73,6 +73,11 @@
             <artifactId>snakeyaml</artifactId>
             <version>${version.snakeyaml}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity</artifactId>
+            <version>${version.velocity}</version>
+        </dependency>
         <!--
         cannot use elastic client
         it has commons-logging:commons-logging library
@@ -84,11 +89,6 @@
         </dependency>
         -->
 
-        <dependency>
-            <groupId>org.apache.velocity</groupId>
-            <artifactId>velocity</artifactId>
-            <scope>provided</scope>
-        </dependency>
         <dependency>
             <groupId>org.sonatype.nexus</groupId>
             <artifactId>nexus-capability</artifactId>
