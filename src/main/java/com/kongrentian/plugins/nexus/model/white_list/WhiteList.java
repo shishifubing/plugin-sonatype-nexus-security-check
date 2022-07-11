@@ -101,8 +101,7 @@ public class WhiteList implements Serializable {
         }
         return null;
     }
-
-    @Nullable
+    
     public ScanResultType contains(RequestInformation requestInformation) {
         RequestInformationComponent component = requestInformation.getComponent();
         RequestInformationRepository repository = requestInformation.getRepository();
