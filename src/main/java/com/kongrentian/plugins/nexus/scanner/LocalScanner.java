@@ -29,7 +29,6 @@ public class LocalScanner extends AbstractScanner {
         ScanResultType scanResultType = config
                 .getScanLocalWhiteList()
                 .contains(information);
-        LOG.info("RESULT TYPE: {}", scanResultType);
         if (!WhiteList.isFailure(scanResultType)) {
             return new ScanResult(true, scanResultType);
         }

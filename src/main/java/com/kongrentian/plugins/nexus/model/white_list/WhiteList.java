@@ -9,8 +9,6 @@ import com.kongrentian.plugins.nexus.model.request_information.RequestInformatio
 import com.kongrentian.plugins.nexus.model.request_information.RequestInformationRepository;
 import com.kongrentian.plugins.nexus.model.scan_result.ScanResultType;
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
@@ -38,8 +36,6 @@ import static java.lang.String.format;
  */
 public class WhiteList implements Serializable {
 
-
-    static final Logger LOG = LoggerFactory.getLogger(WhiteList.class);
     @JsonIgnore
     private final static List<ScanResultType> scanFailureTypes = Arrays.asList(
             ScanResultType.WHITE_LIST_PACKAGE_VERSION_DATE_INVALID,
@@ -135,8 +131,6 @@ public class WhiteList implements Serializable {
             return ScanResultType.WHITE_LIST_LAST_MODIFIED_MISSING;
         }
         DateTime allowedDate = version.getAllowedDate();
-        LOG.info("ALLOWED DATE: {}", allowedDate);
-        LOG.info("LAST MODIFIED: {}", lastModified);
         if (allowedDate != null && lastModified.isBefore(allowedDate)) {
             return ScanResultType.WHITE_LIST_PACKAGE_VERSION_DATE_VALID;
         }

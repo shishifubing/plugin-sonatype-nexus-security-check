@@ -96,7 +96,7 @@ public class RequestHandler implements ContributedHandler {
                 break;
             }
         }
-        LOG.info("RESULTS: " + SecurityCapabilityHelper.jsonMapper
+        LOG.debug("NEXUS SECURITY PLUGIN SCAN RESULTS:" + SecurityCapabilityHelper.jsonMapper
                 .writeValueAsString(results));
         monitoring.send(results);
         if (results.isAllowed()) {

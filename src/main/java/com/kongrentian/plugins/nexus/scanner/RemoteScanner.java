@@ -39,7 +39,7 @@ public class RemoteScanner extends AbstractScanner {
                 .check(information)
                 .execute();
         String message = responseCheck.message();
-        LOG.info("Security check response: {}", message);
+        LOG.debug("Security check response: {}", message);
         ScanResult scanResult = responseCheck.body();
         if (!responseCheck.isSuccessful() || scanResult == null) {
             throw new RuntimeException("Invalid response code "
