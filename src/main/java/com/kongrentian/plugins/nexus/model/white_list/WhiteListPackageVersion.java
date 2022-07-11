@@ -2,7 +2,7 @@ package com.kongrentian.plugins.nexus.model.white_list;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.datatype.joda.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.joda.deser.DateTimeDeserializer;
 import org.joda.time.DateTime;
 
 import javax.annotation.Nullable;
@@ -10,7 +10,7 @@ import java.io.Serializable;
 
 public class WhiteListPackageVersion implements Serializable {
     @JsonProperty("allowed_date")
-    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonDeserialize(using = DateTimeDeserializer.class)
     private DateTime allowedDate;
     @JsonProperty
     private boolean allowed;
