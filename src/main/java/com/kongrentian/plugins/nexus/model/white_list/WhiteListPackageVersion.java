@@ -11,9 +11,9 @@ import java.io.Serializable;
 public class WhiteListPackageVersion implements Serializable {
     @JsonProperty("allowed_date")
     @JsonDeserialize(using = LocalDateDeserializer.class)
-    private final DateTime allowedDate;
+    private DateTime allowedDate;
     @JsonProperty
-    private final boolean allowed;
+    private boolean allowed;
 
     public WhiteListPackageVersion(DateTime allowedDate, boolean allowed) {
         this.allowed = allowed;
@@ -30,7 +30,15 @@ public class WhiteListPackageVersion implements Serializable {
         return allowedDate;
     }
 
+    public void setAllowedDate(DateTime allowedDate) {
+        this.allowedDate = allowedDate;
+    }
+
     public boolean isAllowed() {
         return allowed;
+    }
+
+    public void setAllowed(boolean allowed) {
+        this.allowed = allowed;
     }
 }
