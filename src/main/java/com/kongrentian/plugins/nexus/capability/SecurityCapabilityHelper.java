@@ -34,14 +34,15 @@ public class SecurityCapabilityHelper {
                     YAMLGenerator.Feature.WRITE_DOC_START_MARKER))
             .setSerializationInclusion(JsonInclude.Include.NON_NULL)
             // to deserialize joda datetime
-            .setDateFormat(DATE_FORMAT)
-            .registerModule(new JodaModule());
+            .registerModule(new JodaModule())
+            .setDateFormat(DATE_FORMAT);
+
     public final static ObjectMapper jsonMapper = new ObjectMapper()
             .setSerializationInclusion(JsonInclude.Include.NON_NULL)
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             // to deserialize joda datetime
-            .setDateFormat(DATE_FORMAT)
-            .registerModule(new JodaModule());
+            .registerModule(new JodaModule())
+            .setDateFormat(DATE_FORMAT);
     private static final DateTimeFormatter dateTimeFormatter =
             DateTimeFormat
                     .forPattern(DATE_FORMAT_PATTERN)
