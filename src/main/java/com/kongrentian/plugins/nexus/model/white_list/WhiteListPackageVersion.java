@@ -15,16 +15,6 @@ public class WhiteListPackageVersion implements Serializable {
     @JsonProperty
     private boolean allowed;
 
-    public WhiteListPackageVersion(DateTime allowedDate, boolean allowed) {
-        this.allowed = allowed;
-        this.allowedDate = allowedDate;
-    }
-
-    public WhiteListPackageVersion() {
-        this.allowed = false;
-        this.allowedDate = null;
-    }
-
     @Nullable
     public DateTime getAllowedDate() {
         return allowedDate;
