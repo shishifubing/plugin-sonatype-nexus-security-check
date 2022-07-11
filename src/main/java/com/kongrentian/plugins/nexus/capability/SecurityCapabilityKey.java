@@ -115,8 +115,7 @@ public enum SecurityCapabilityKey {
             "security.scan.local.white_list",
             String.join("\n", new String[]{
                     "# do not leave any top keys without content,",
-                    "# it will cause null pointer exceptions at runtime",
-                    "# which will fail all local scans",
+                    "# it will cause null pointer exceptions",
                     "formats:",
                     "    - format",
                     "repositories:",

@@ -19,23 +19,30 @@ import org.sonatype.nexus.capability.CapabilityRegistry;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 
 
 @Named
 public class SecurityCapabilityHelper {
 
+    public final static String DATE_FORMAT_PATTERN = "yyyy-MM-dd";
+    public final static SimpleDateFormat DATE_FORMAT =
+            new SimpleDateFormat(DATE_FORMAT_PATTERN);
+    public final static ObjectMapper yamlMapper = new ObjectMapper(
+            new YAMLFactory().disable(
+                    YAMLGenerator.Feature.WRITE_DOC_START_MARKER))
+            .setDateFormat(DATE_FORMAT)
+            .setSerializationInclusion(JsonInclude.Include.NON_NULL);
     public final static ObjectMapper jsonMapper = new ObjectMapper()
             .setSerializationInclusion(JsonInclude.Include.NON_NULL)
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .setDateFormat(DATE_FORMAT)
             // to deserialize joda datetime
             .registerModule(new JodaModule());
-    public final static ObjectMapper yamlMapper = new ObjectMapper(
-            new YAMLFactory().disable(
-                    YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
     private static final DateTimeFormatter dateTimeFormatter =
             DateTimeFormat
-                    .forPattern("yyyy-MM-dd")
+                    .forPattern(DATE_FORMAT_PATTERN)
                     .withZone(DateTimeZone.UTC);
     private final CapabilityRegistry capabilityRegistry;
     private CapabilityReference securityCapabilityReference;
