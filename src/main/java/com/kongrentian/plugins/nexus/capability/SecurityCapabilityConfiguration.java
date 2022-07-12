@@ -1,8 +1,10 @@
 package com.kongrentian.plugins.nexus.capability;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.sonatype.nexus.capability.CapabilityConfigurationSupport;
 
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -27,6 +29,7 @@ public class SecurityCapabilityConfiguration
     @JsonProperty("http_write_timeout")
     private final long httpWriteTimeout;
 
+    @JsonIgnore
     private final Map<String, String> properties;
     @JsonProperty("config_url_base")
     private final String configUrlBase;
@@ -39,7 +42,6 @@ public class SecurityCapabilityConfiguration
 
 
     public SecurityCapabilityConfiguration(Map<String, String> properties) {
-
         this.properties = properties;
         httpSSLVerify = (boolean) get(HTTP_SSL_VERIFY);
         httpUserAgent = (String) get(HTTP_USER_AGENT);
@@ -52,6 +54,7 @@ public class SecurityCapabilityConfiguration
         configOverride = (String) get(CONFIG_OVERRIDE);
     }
 
+    @Nonnull
     public Object get(SecurityCapabilityKey securityCapabilityKey) {
         String defaultValue = securityCapabilityKey.defaultValue();
         String propertyKey = securityCapabilityKey.propertyKey();
@@ -61,7 +64,8 @@ public class SecurityCapabilityConfiguration
                 return securityCapabilityKey.getField().convert(property);
             }
         } catch (Throwable exception) {
-            String message = format("Could not convert property '%s', falling back to default - '%s'",
+            String message = format(
+                    "Could not convert property '%s', falling back to default - '%s'",
                     propertyKey, securityCapabilityKey.defaultValue());
             LOG.error(message, exception);
         }

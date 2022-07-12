@@ -31,10 +31,13 @@ public class SecurityCapabilityUpdateTask extends TaskSupport {
         BundleConfigurationApi api = bundleHelper.getBundleConfigurationApi();
         Map<String, Object> status = bundleHelper.getCapabilityStatus();
         status.put(STATUS_KEY_TASK, "Getting a new config");
-
+        api.get("");
+        bundleHelper.getCapabilityConfiguration();
+        bundleHelper
+                .getCapabilityConfiguration()
+                .getConfigUrlRequest();
         BundleConfiguration newConfig;
         try {
-            bundleHelper.getCapabilityConfiguration();
             Response<BundleConfiguration> response =
                     api.get(bundleHelper
                             .getCapabilityConfiguration()

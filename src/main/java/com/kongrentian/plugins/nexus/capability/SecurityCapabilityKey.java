@@ -23,7 +23,7 @@ public enum SecurityCapabilityKey implements Serializable {
     CONFIG_URL_REQUEST(new SecurityCapabilityFormField<>(
             "security.config.url.request",
             "kongrentian-groups/java/nexus-plugin-security-check/-/raw/master/plugin_config.yml",
-            "Request for fetch the config",
+            "Rest of the url for config requests",
             StringTextFormField.class,
             SecurityCapabilityKey::uselessStringPlaceholder
     )),
