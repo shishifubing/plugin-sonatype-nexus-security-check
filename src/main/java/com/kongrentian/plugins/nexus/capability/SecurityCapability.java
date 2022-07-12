@@ -1,5 +1,6 @@
 package com.kongrentian.plugins.nexus.capability;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kongrentian.plugins.nexus.main.BundleHelper;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.velocity.VelocityContext;
@@ -21,7 +22,8 @@ import static java.lang.String.format;
 @Named(SecurityCapabilityDescriptor.CAPABILITY_ID)
 public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConfiguration> {
 
-    public final static String STATUS_KEY_CONFIG = "current configuration";
+    public final static String STATUS_KEY_CONFIG = "current remote configuration";
+    public final static String STATUS_KEY_CAPABILITY = "current capability configuration";
 
     public final static String capabilityStatusTemplate =
             // apache velocity template
@@ -30,11 +32,13 @@ public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConf
             format(String.join("\n", new String[]{
                             "<h4>%s</h4>",
                             "<div><pre>$%s</pre></div>",
-                            "<h4>$%s</h4>",
+                            "<h4>%s</h4>",
                             "<div><pre>$%s</pre></div>",
-                            "#end",
+                            "<h4>$%s</h4>",
+                            "<div><pre>$%s</pre></div>"
                     }),
                     STATUS_KEY_TASK, STATUS_KEY_TASK,
+                    STATUS_KEY_CAPABILITY, STATUS_KEY_CAPABILITY,
                     STATUS_KEY_CONFIG, STATUS_KEY_CONFIG);
     private final BundleHelper bundleHelper;
     private final VelocityEngine velocityEngine;
@@ -96,9 +100,14 @@ public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConf
         update();
     }
 
-    private void update() {
+    private void update() throws JsonProcessingException {
         updateTime = Instant.now();
         bundleHelper.recreateBundleConfigurationApi();
+        String status = BundleHelper.yamlMapper
+                .writeValueAsString(
+                        bundleHelper.getCapabilityConfiguration());
+        bundleHelper.getCapabilityStatus()
+                .put(STATUS_KEY_CAPABILITY, status);
     }
 
     /**

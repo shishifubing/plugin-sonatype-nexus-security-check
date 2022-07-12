@@ -9,6 +9,7 @@ import retrofit2.Response;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.IOException;
 import java.util.Map;
 
 import static java.lang.String.format;
@@ -25,7 +26,7 @@ public class SecurityCapabilityUpdateTask extends TaskSupport {
     }
 
     @Override
-    protected Object execute() {
+    protected Object execute() throws IOException {
         BundleConfigurationApi api = bundleHelper.getBundleConfigurationApi();
         Map<String, Object> status = bundleHelper.getCapabilityStatus();
         status.put(STATUS_KEY_TASK, "Getting a new config");
@@ -53,7 +54,7 @@ public class SecurityCapabilityUpdateTask extends TaskSupport {
                     ExceptionUtils.getStackTrace(exception));
             log.error(message);
             status.put(STATUS_KEY_TASK, message);
-            return null;
+            throw exception;
         }
         bundleHelper.setBundleConfiguration(newConfig);
         status.put(STATUS_KEY_TASK,
