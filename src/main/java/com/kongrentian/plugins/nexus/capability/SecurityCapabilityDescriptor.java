@@ -27,7 +27,7 @@ public class SecurityCapabilityDescriptor
     public SecurityCapabilityDescriptor() throws RuntimeException {
         // cannot define static methods in interface
         // cannot inherit enums
-        fields = SecurityCapabilityField.createFields();
+        fields = SecurityCapabilityFormField.createFields();
     }
 
     @Override

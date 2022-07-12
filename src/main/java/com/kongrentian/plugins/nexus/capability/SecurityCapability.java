@@ -16,31 +16,27 @@ import java.time.Instant;
 import java.util.Map;
 
 import static com.kongrentian.plugins.nexus.logging.SecurityLogConfiguration.LOG;
-import static java.lang.String.format;
 
 @Named(SecurityCapabilityDescriptor.CAPABILITY_ID)
 public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConfiguration> {
 
-    public final static String STATUS_KEY_CONFIG = "configuration.remote";
-    public final static String STATUS_KEY_CAPABILITY = "configuration.capability";
+    public final static String STATUS_KEY_CONFIG = "config";
+    public final static String STATUS_KEY_CAPABILITY = "capability";
 
-    public static final String STATUS_KEY_TASK = "status.task";
+    public static final String STATUS_KEY_TASK = "task";
 
     public final static String capabilityStatusTemplate =
             // apache velocity template
             // I cannot get access to the whole context ($context)
             // (the tool is not enabled, I think)
-            format(String.join("\n", new String[]{
-                            "<h4>%s</h4>",
-                            "<div><pre>$%s</pre></div>",
-                            "<h4>%s</h4>",
-                            "<div><pre>$%s</pre></div>",
-                            "<h4>$%s</h4>",
-                            "<div><pre>$%s</pre></div>"
-                    }),
-                    STATUS_KEY_TASK, STATUS_KEY_TASK,
-                    STATUS_KEY_CAPABILITY, STATUS_KEY_CAPABILITY,
-                    STATUS_KEY_CONFIG, STATUS_KEY_CONFIG);
+            String.join("\n", new String[]{
+                    "<h4>update task status</h4>",
+                    "<div><pre>$task</pre></div>",
+                    "<h4>remote configuration</h4>",
+                    "<div><pre>$config</pre></div>",
+                    "<h4>capability configuration</h4>",
+                    "<div><pre>$capability</pre></div>",
+            });
     private final BundleHelper bundleHelper;
     private final VelocityEngine velocityEngine;
     private Instant updateTime = Instant.now();
@@ -86,7 +82,7 @@ public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConf
     @Override
     public void onRemove() throws Exception {
         super.onRemove();
-        bundleHelper.getOrCreateCapability();
+        bundleHelper.getCapabilityConfiguration();
     }
 
     @Override

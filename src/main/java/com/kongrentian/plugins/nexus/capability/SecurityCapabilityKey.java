@@ -13,28 +13,28 @@ import java.io.Serializable;
  */
 public enum SecurityCapabilityKey implements Serializable {
 
-    CONFIG_URL_BASE(new SecurityCapabilityField<>(
+    CONFIG_URL_BASE(new SecurityCapabilityFormField<>(
             "security.config.url.base",
             "https://gitlab.com",
             "Base url for config requests",
             UrlFormField.class,
             SecurityCapabilityKey::uselessStringPlaceholder
     )),
-    CONFIG_URL_REQUEST(new SecurityCapabilityField<>(
+    CONFIG_URL_REQUEST(new SecurityCapabilityFormField<>(
             "security.config.url.request",
             "kongrentian-groups/java/nexus-plugin-security-check/-/raw/master/plugin_config.yml",
             "Request for fetch the config",
             StringTextFormField.class,
             SecurityCapabilityKey::uselessStringPlaceholder
     )),
-    CONFIG_AUTH(new SecurityCapabilityField<>(
+    CONFIG_AUTH(new SecurityCapabilityFormField<>(
             "security.config.auth",
             "",
             "Auth for config fetching, either login:password or token",
             PasswordFormField.class,
             SecurityCapabilityKey::uselessStringPlaceholder
     )),
-    CONFIG_OVERRIDE(new SecurityCapabilityField<>(
+    CONFIG_OVERRIDE(new SecurityCapabilityFormField<>(
             "security.config.override",
             "{}",
             "Override remote config",
@@ -43,45 +43,45 @@ public enum SecurityCapabilityKey implements Serializable {
     )),
 
 
-    HTTP_SSL_VERIFY(new SecurityCapabilityField<>(
+    HTTP_SSL_VERIFY(new SecurityCapabilityFormField<>(
             "security.http.ssl.verify",
             "false",
             "Whether to verify ssl certificates",
             CheckboxFormField.class,
             Boolean::parseBoolean
     )),
-    HTTP_USER_AGENT(new SecurityCapabilityField<>(
+    HTTP_USER_AGENT(new SecurityCapabilityFormField<>(
             "security.http.user_agent",
             "",
             "User agent for all requests",
             StringTextFormField.class,
             SecurityCapabilityKey::uselessStringPlaceholder
     )),
-    HTTP_CONNECTION_TIMEOUT(new SecurityCapabilityField<>(
+    HTTP_CONNECTION_TIMEOUT(new SecurityCapabilityFormField<>(
             "security.http.connection.timeout",
             "30",
             "Connection timeout for all requests, milliseconds",
             NumberTextFormField.class,
             Long::parseLong
     )),
-    HTTP_READ_TIMEOUT(new SecurityCapabilityField<>(
+    HTTP_READ_TIMEOUT(new SecurityCapabilityFormField<>(
             "security.http.read_timeout",
             "60",
             "Read timeout for all requests, milliseconds",
             NumberTextFormField.class,
             Long::parseLong
     )),
-    HTTP_WRITE_TIMEOUT(new SecurityCapabilityField<>(
+    HTTP_WRITE_TIMEOUT(new SecurityCapabilityFormField<>(
             "security.http.write_timeout",
             "60",
             "Write timeout for all requests, milliseconds",
             NumberTextFormField.class,
             Long::parseLong));
 
-    private final SecurityCapabilityField<?> securityCapabilityField;
+    private final SecurityCapabilityFormField<?> securityCapabilityFormField;
 
-    SecurityCapabilityKey(SecurityCapabilityField<?> securityCapabilityField) {
-        this.securityCapabilityField = securityCapabilityField;
+    SecurityCapabilityKey(SecurityCapabilityFormField<?> securityCapabilityFormField) {
+        this.securityCapabilityFormField = securityCapabilityFormField;
     }
 
     private static String uselessStringPlaceholder(String input) {
@@ -89,15 +89,15 @@ public enum SecurityCapabilityKey implements Serializable {
     }
 
     public String propertyKey() {
-        return securityCapabilityField.propertyKey();
+        return securityCapabilityFormField.propertyKey();
     }
 
     public String defaultValue() {
-        return securityCapabilityField.defaultValue();
+        return securityCapabilityFormField.defaultValue();
     }
 
-    public SecurityCapabilityField<?> getField() {
-        return securityCapabilityField;
+    public SecurityCapabilityFormField<?> getField() {
+        return securityCapabilityFormField;
     }
 
 }

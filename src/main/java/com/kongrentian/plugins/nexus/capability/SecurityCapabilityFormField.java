@@ -12,7 +12,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
-public final class SecurityCapabilityField<TEMPLATE> {
+public final class SecurityCapabilityFormField<TEMPLATE> {
 
     private final Class<? extends AbstractFormField<TEMPLATE>> formField;
     private final Function<String, TEMPLATE> convertFunction;
@@ -27,7 +27,7 @@ public final class SecurityCapabilityField<TEMPLATE> {
     // otherwise you will not be able to use `convert`
     // you can always do it if you remove templating, but
     // then you will not be able to generate fields
-    public SecurityCapabilityField(
+    public SecurityCapabilityFormField(
             String propertyKey,
             String defaultValue,
             String description,
