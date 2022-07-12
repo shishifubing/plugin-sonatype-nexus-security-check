@@ -5,11 +5,13 @@ import com.kongrentian.plugins.nexus.main.BundleHelper;
 import com.kongrentian.plugins.nexus.model.bundle.configuration.BundleConfiguration;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.sonatype.nexus.scheduling.TaskSupport;
+import retrofit2.Call;
 import retrofit2.Response;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Map;
 
 import static com.kongrentian.plugins.nexus.capability.SecurityCapability.STATUS_KEY_TASK;
@@ -32,25 +34,25 @@ public class SecurityCapabilityUpdateTask extends TaskSupport {
         Map<String, Object> status = bundleHelper.getCapabilityStatus();
         status.put(STATUS_KEY_TASK, "Getting a new config");
         BundleConfiguration newConfig;
+        Call<BundleConfiguration> request = api.get(
+                bundleHelper.getCapabilityConfiguration()
+                        .getConfigUrlRequest());
+        Response<BundleConfiguration> response = null;
         try {
-            Response<BundleConfiguration> response =
-                    api.get(bundleHelper
-                            .getCapabilityConfiguration()
-                            .getConfigUrlRequest()
-                    ).execute();
+            response = request.execute();
             String responseMessage = response.message();
             log.debug("Config update response: {}",
                     responseMessage);
             newConfig = response.body();
             if (!response.isSuccessful() || newConfig == null) {
-                throw new RuntimeException(
-                        "Invalid response code or null config: \ncode "
-                                + response.code()
-                                + ", message\n'"
-                                + responseMessage + "'\n");
+                throw new RuntimeException("Invalid response code or null config:");
             }
         } catch (Throwable exception) {
-            String message = format("Could not update config: %s",
+            String message = format(
+                    "Could not update config at %s:\n%s\n%s\n%s",
+                    Instant.now(),
+                    request,
+                    response,
                     ExceptionUtils.getStackTrace(exception));
             log.error(message);
             status.put(STATUS_KEY_TASK, message);
