@@ -10,13 +10,14 @@ import javax.inject.Singleton;
 public class SecurityCapabilityUpdateTaskDescriptor
         extends TaskDescriptorSupport {
     public static final String TYPE_ID = "security.task.update";
+    public static final String TASK_NAME = "Security - update config from the remote source";
 
     public SecurityCapabilityUpdateTaskDescriptor() {
         super(TYPE_ID,
                 SecurityCapabilityUpdateTask.class,
-                "Security - update config from the remote source",
+                TASK_NAME,
                 VISIBLE,
-                NOT_EXPOSED
+                EXPOSED
         );
     }
 }
