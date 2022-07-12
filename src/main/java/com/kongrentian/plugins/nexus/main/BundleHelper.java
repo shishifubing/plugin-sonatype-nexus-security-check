@@ -25,6 +25,7 @@ import org.sonatype.nexus.capability.CapabilityReference;
 import org.sonatype.nexus.capability.CapabilityRegistry;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -96,17 +97,13 @@ public class BundleHelper {
                 .setDateFormat(DATE_FORMAT);
     }
 
-    public CapabilityReference getOrCreateCapability() {
-        CapabilityReference capabilityReference =
-                capabilityRegistry
-                        .get(BundleHelper::isTypeEqual)
-                        .stream()
-                        .findFirst()
-                        .orElse(null);
-        if (capabilityReference != null) {
-            return capabilityReference;
-        }
-        return createDefaultCapability();
+    @Nullable
+    private CapabilityReference findCapability() {
+        return capabilityRegistry
+                .get(BundleHelper::isTypeEqual)
+                .stream()
+                .findFirst()
+                .orElse(null);
     }
 
     public CapabilityReference createDefaultCapability() {
@@ -119,17 +116,22 @@ public class BundleHelper {
 
     @Nonnull
     public SecurityCapabilityConfiguration getCapabilityConfiguration() {
-        return getSecurityCapabilityReference()
+        return getOrCreateCapability()
                 .capabilityAs(SecurityCapability.class)
                 .getConfig();
     }
 
     @Nonnull
-    private CapabilityReference getSecurityCapabilityReference() {
+    public CapabilityReference getOrCreateCapability() {
         if (securityCapabilityReference != null) {
             return securityCapabilityReference;
         }
-        securityCapabilityReference = getOrCreateCapability();
+        CapabilityReference capabilityReference = findCapability();
+        if (capabilityReference == null) {
+            securityCapabilityReference = createDefaultCapability();
+        } else {
+            securityCapabilityReference = capabilityReference;
+        }
         return securityCapabilityReference;
     }
 
@@ -152,7 +154,7 @@ public class BundleHelper {
     }
 
     public boolean isCapabilityActive() {
-        return getSecurityCapabilityReference()
+        return getOrCreateCapability()
                 .context()
                 .isActive();
     }

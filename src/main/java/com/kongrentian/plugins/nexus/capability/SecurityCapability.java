@@ -58,8 +58,11 @@ public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConf
     @Override
     protected String renderStatus() {
         try {
+            String status = MAPPER_YAML.writeValueAsString(
+                    bundleHelper.getBundleConfiguration());
             return render(
-                    new TemplateParameters(bundleHelper.getCapabilityStatus()));
+                    new TemplateParameters(bundleHelper.getCapabilityStatus())
+                            .set(STATUS_KEY_CONFIG_REMOTE, status));
         } catch (Throwable exception) {
             LOG.error("Could not render the status", exception);
             return "Could not render the status: <br>"
@@ -77,7 +80,7 @@ public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConf
     public void onRemove() throws Exception {
         super.onRemove();
         // it creates a new capability
-        bundleHelper.getCapabilityConfiguration();
+        bundleHelper.getOrCreateCapability();
     }
 
     @Override

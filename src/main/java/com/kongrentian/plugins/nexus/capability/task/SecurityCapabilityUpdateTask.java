@@ -12,9 +12,7 @@ import javax.inject.Named;
 import java.io.IOException;
 import java.util.Map;
 
-import static com.kongrentian.plugins.nexus.capability.SecurityCapability.STATUS_KEY_CONFIG_REMOTE;
 import static com.kongrentian.plugins.nexus.capability.SecurityCapability.STATUS_KEY_TASK;
-import static com.kongrentian.plugins.nexus.main.BundleHelper.MAPPER_YAML;
 import static java.lang.String.format;
 
 @Named
@@ -51,8 +49,6 @@ public class SecurityCapabilityUpdateTask extends TaskSupport {
                                 + ", "
                                 + responseMessage);
             }
-            status.put(STATUS_KEY_CONFIG_REMOTE,
-                    MAPPER_YAML.writeValueAsString(newConfig));
         } catch (Throwable exception) {
             String message = format("Could not update config: %s",
                     ExceptionUtils.getStackTrace(exception));
