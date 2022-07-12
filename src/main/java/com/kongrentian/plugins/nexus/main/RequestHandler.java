@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.kongrentian.plugins.nexus.logging.SecurityLogConfiguration.LOG;
+import static com.kongrentian.plugins.nexus.main.BundleHelper.MAPPER_JSON;
 import static java.lang.String.format;
 
 
@@ -98,7 +99,7 @@ public class RequestHandler implements ContributedHandler {
                 break;
             }
         }
-        LOG.debug("NEXUS SECURITY PLUGIN SCAN RESULTS:" + BundleHelper.jsonMapper
+        LOG.debug("NEXUS SECURITY PLUGIN SCAN RESULTS:" + MAPPER_JSON
                 .writeValueAsString(results));
         monitoring.send(results);
         if (results.isAllowed()) {

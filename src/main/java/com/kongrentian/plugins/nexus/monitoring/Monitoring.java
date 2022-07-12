@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.Serializable;
 
 import static com.kongrentian.plugins.nexus.logging.SecurityLogConfiguration.LOG;
+import static com.kongrentian.plugins.nexus.main.BundleHelper.MAPPER_JSON;
 
 @Named
 public class Monitoring implements Serializable {
@@ -41,7 +42,7 @@ public class Monitoring implements Serializable {
         MonitoringApi api = bundleHelper.getMonitoringApi();
 
         api.bulk("{\"index\":{ } }\n"
-                        + BundleHelper.jsonMapper
+                        + MAPPER_JSON
                         .writeValueAsString(information),
                 config.getMonitoring().getIndex(),
                 BundleHelper.todayDate(),

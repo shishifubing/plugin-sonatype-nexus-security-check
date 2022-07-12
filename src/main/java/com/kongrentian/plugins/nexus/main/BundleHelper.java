@@ -41,13 +41,13 @@ public class BundleHelper {
     public final static String DATE_FORMAT_PATTERN = "yyyy-MM-dd";
     public final static SimpleDateFormat DATE_FORMAT =
             new SimpleDateFormat(DATE_FORMAT_PATTERN);
-    public final static ObjectMapper yamlMapper =
+    public final static ObjectMapper MAPPER_YAML =
             configureObjectMapper(new ObjectMapper(
                     new YAMLFactory().disable(
                             YAMLGenerator.Feature.WRITE_DOC_START_MARKER)));
 
 
-    public final static ObjectMapper jsonMapper =
+    public final static ObjectMapper MAPPER_JSON =
             configureObjectMapper(new ObjectMapper());
     private static final DateTimeFormatter dateTimeFormatter =
             DateTimeFormat
@@ -64,6 +64,9 @@ public class BundleHelper {
     @Inject
     public BundleHelper(final CapabilityRegistry capabilityRegistry) {
         this.capabilityRegistry = capabilityRegistry;
+        recreateMonitoringApi();
+        recreateRemoteScanApi();
+        recreateBundleConfigurationApi();
     }
 
     private static boolean isTypeEqual(CapabilityReference reference) {

@@ -1,7 +1,6 @@
 package com.kongrentian.plugins.nexus.api;
 
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityConfiguration;
-import com.kongrentian.plugins.nexus.main.BundleHelper;
 import com.kongrentian.plugins.nexus.model.bundle.configuration.BundleConfiguration;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -16,6 +15,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 import static com.kongrentian.plugins.nexus.logging.SecurityLogConfiguration.LOG;
+import static com.kongrentian.plugins.nexus.main.BundleHelper.MAPPER_JSON;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public class ApiClient {
@@ -33,20 +33,21 @@ public class ApiClient {
             if (!config.getHttpSSLVerify()) {
                 buildUnsafeTrustManager(builder);
             }
-        } catch (KeyManagementException | NoSuchAlgorithmException exception) {
+        } catch (KeyManagementException
+                 | NoSuchAlgorithmException exception) {
             LOG.error("Could not build unsafe trust manager", exception);
         }
 
-        builder.addInterceptor(
-                new ApiClientServiceInterceptor(auth, config.getHttpUserAgent()));
+        builder.addInterceptor(new ApiClientServiceInterceptor(auth,
+                config.getHttpUserAgent()));
 
         return new Retrofit
                 .Builder()
                 .client(builder.build())
                 .baseUrl(baseUrl)
                 .addConverterFactory(
-                        JacksonConverterFactory.create(
-                                BundleHelper.jsonMapper))
+                        JacksonConverterFactory
+                                .create(MAPPER_JSON))
                 .build()
                 .create(api);
     }

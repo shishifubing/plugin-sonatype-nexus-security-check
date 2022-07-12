@@ -16,12 +16,13 @@ import java.time.Instant;
 import java.util.Map;
 
 import static com.kongrentian.plugins.nexus.logging.SecurityLogConfiguration.LOG;
+import static com.kongrentian.plugins.nexus.main.BundleHelper.MAPPER_YAML;
 
 @Named(SecurityCapabilityDescriptor.CAPABILITY_ID)
 public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConfiguration> {
 
-    public final static String STATUS_KEY_CONFIG = "config";
-    public final static String STATUS_KEY_CAPABILITY = "capability";
+    public final static String STATUS_KEY_CONFIG_REMOTE = "config";
+    public final static String STATUS_KEY_CONFIG_CAPABILITY = "capability";
 
     public static final String STATUS_KEY_TASK = "task";
 
@@ -94,16 +95,9 @@ public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConf
     private void update() throws JsonProcessingException {
         updateTime = Instant.now();
         bundleHelper.recreateBundleConfigurationApi();
-        updateStatus();
-    }
-
-    public void updateStatus() throws JsonProcessingException {
-        Map<String, Object> status = bundleHelper.getCapabilityStatus();
-        status.put(STATUS_KEY_CAPABILITY, BundleHelper.yamlMapper
-                .writeValueAsString(bundleHelper.getCapabilityConfiguration()));
-        status.put(STATUS_KEY_CONFIG, BundleHelper.yamlMapper
-                .writeValueAsString(bundleHelper.getBundleConfiguration()));
-
+        bundleHelper.getCapabilityStatus().put(STATUS_KEY_CONFIG_CAPABILITY,
+                MAPPER_YAML.writeValueAsString(
+                        bundleHelper.getCapabilityConfiguration()));
     }
 
     /**

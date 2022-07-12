@@ -2,8 +2,6 @@ package com.kongrentian.plugins.nexus.model.whitelist;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.kongrentian.plugins.nexus.main.BundleHelper;
 import com.kongrentian.plugins.nexus.model.information.request.RequestInformation;
 import com.kongrentian.plugins.nexus.model.information.request.RequestInformationComponent;
 import com.kongrentian.plugins.nexus.model.information.request.RequestInformationRepository;
@@ -58,11 +56,6 @@ public class WhiteList implements Serializable {
         extensions = new ArrayList<>();
         repositories = new ArrayList<>();
         formats = new ArrayList<>();
-    }
-
-    public static WhiteList fromYAML(String yaml) throws JsonProcessingException {
-        return BundleHelper.yamlMapper.readValue(yaml, WhiteList.class);
-
     }
 
     public static boolean isFailure(ScanResultType scanResultType) {
