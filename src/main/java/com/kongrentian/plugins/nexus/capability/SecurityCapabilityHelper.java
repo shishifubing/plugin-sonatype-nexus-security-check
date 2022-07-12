@@ -1,6 +1,8 @@
 package com.kongrentian.plugins.nexus.capability;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -29,20 +31,14 @@ public class SecurityCapabilityHelper {
     public final static String DATE_FORMAT_PATTERN = "yyyy-MM-dd";
     public final static SimpleDateFormat DATE_FORMAT =
             new SimpleDateFormat(DATE_FORMAT_PATTERN);
-    public final static ObjectMapper yamlMapper = new ObjectMapper(
-            new YAMLFactory().disable(
-                    YAMLGenerator.Feature.WRITE_DOC_START_MARKER))
-            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-            // to deserialize joda datetime
-            .registerModule(new JodaModule())
-            .setDateFormat(DATE_FORMAT);
+    public final static ObjectMapper yamlMapper =
+            configureObjectMapper(new ObjectMapper(
+                    new YAMLFactory().disable(
+                            YAMLGenerator.Feature.WRITE_DOC_START_MARKER)));
 
-    public final static ObjectMapper jsonMapper = new ObjectMapper()
-            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-            // to deserialize joda datetime
-            .registerModule(new JodaModule())
-            .setDateFormat(DATE_FORMAT);
+
+    public final static ObjectMapper jsonMapper =
+            configureObjectMapper(new ObjectMapper());
     private static final DateTimeFormatter dateTimeFormatter =
             DateTimeFormat
                     .forPattern(DATE_FORMAT_PATTERN)
@@ -70,6 +66,41 @@ public class SecurityCapabilityHelper {
         return DateTime.now().toString(dateTimeFormatter);
     }
 
+    private static ObjectMapper configureObjectMapper(ObjectMapper objectMapper) {
+        return objectMapper
+                // if a collection (list, for example) is not present
+                // during deserialization, it will be null
+                // very inconvenient, causes hard to debug null exceptions
+                // this makes such collections empty, instead of null
+                .setDefaultSetterInfo(JsonSetter.Value.forContentNulls(Nulls.AS_EMPTY))
+                // write dates as ISO dates, not as timestamps
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                // if a property is null, do not include it in json
+                // during serialization
+                .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+                // joda datetime handling
+                .registerModule(new JodaModule())
+                .setDateFormat(DATE_FORMAT);
+    }
+
+    public static CapabilityReference getOrCreateCapability(
+            final CapabilityRegistry capabilityRegistry) {
+        CapabilityReference capabilityReference =
+                capabilityRegistry
+                        .get(SecurityCapabilityHelper::isTypeEqual)
+                        .stream()
+                        .findFirst()
+                        .orElse(null);
+        if (capabilityReference != null) {
+            return capabilityReference;
+        }
+        return capabilityRegistry.add(
+                SecurityCapabilityDescriptor.CAPABILITY_TYPE,
+                false,
+                "Automatically created at " + Instant.now().toString(),
+                null);
+    }
+
     @Nonnull
     public SecurityCapabilityConfiguration getCapabilityConfiguration() {
         return getSecurityCapabilityReference()
@@ -82,22 +113,7 @@ public class SecurityCapabilityHelper {
         if (securityCapabilityReference != null) {
             return securityCapabilityReference;
         }
-        CapabilityReference capabilityReference =
-                capabilityRegistry
-                        .get(SecurityCapabilityHelper::isTypeEqual)
-                        .stream()
-                        .findFirst()
-                        .orElse(null);
-        if (capabilityReference == null) {
-            securityCapabilityReference = capabilityRegistry.add(
-                    SecurityCapabilityDescriptor.CAPABILITY_TYPE,
-                    false,
-                    "Automatically created at " + Instant.now().toString(),
-                    null);
-        } else {
-            securityCapabilityReference = capabilityReference;
-        }
-        return securityCapabilityReference;
+        return securityCapabilityReference = getOrCreateCapability(capabilityRegistry);
     }
 
     protected void unsetCapabilityReference() {
