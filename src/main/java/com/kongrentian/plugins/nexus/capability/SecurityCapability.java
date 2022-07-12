@@ -57,11 +57,8 @@ public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConf
     @Override
     protected String renderStatus() {
         try {
-            String config = BundleHelper.yamlMapper
-                    .writeValueAsString(bundleHelper.getBundleConfiguration());
             return render(
-                    new TemplateParameters(bundleHelper.getCapabilityStatus())
-                            .set(STATUS_KEY_CONFIG, config));
+                    new TemplateParameters(bundleHelper.getCapabilityStatus()));
         } catch (Throwable exception) {
             LOG.error("Could not render the status", exception);
             return "Could not render the status: <br>"
@@ -78,6 +75,7 @@ public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConf
     @Override
     public void onRemove() throws Exception {
         super.onRemove();
+        // it creates a new capability
         bundleHelper.getCapabilityConfiguration();
     }
 
@@ -96,11 +94,16 @@ public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConf
     private void update() throws JsonProcessingException {
         updateTime = Instant.now();
         bundleHelper.recreateBundleConfigurationApi();
-        String status = BundleHelper.yamlMapper
-                .writeValueAsString(
-                        bundleHelper.getCapabilityConfiguration());
-        bundleHelper.getCapabilityStatus()
-                .put(STATUS_KEY_CAPABILITY, status);
+        updateStatus();
+    }
+
+    public void updateStatus() throws JsonProcessingException {
+        Map<String, Object> status = bundleHelper.getCapabilityStatus();
+        status.put(STATUS_KEY_CAPABILITY, BundleHelper.yamlMapper
+                .writeValueAsString(bundleHelper.getCapabilityConfiguration()));
+        status.put(STATUS_KEY_CONFIG, BundleHelper.yamlMapper
+                .writeValueAsString(bundleHelper.getBundleConfiguration()));
+
     }
 
     /**
