@@ -8,12 +8,12 @@ import okhttp3.Response;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
-public class ServiceInterceptor implements Interceptor {
+public class ApiClientServiceInterceptor implements Interceptor {
 
     private final String[] auth;
     private final String userAgent;
 
-    public ServiceInterceptor(String auth, String userAgent) {
+    public ApiClientServiceInterceptor(String auth, String userAgent) {
         this.auth = auth.split(":");
         this.userAgent = userAgent;
     }

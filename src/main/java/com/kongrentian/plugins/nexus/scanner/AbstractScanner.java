@@ -1,10 +1,9 @@
 package com.kongrentian.plugins.nexus.scanner;
 
-import com.kongrentian.plugins.nexus.capability.SecurityCapabilityHelper;
-import com.kongrentian.plugins.nexus.capability.form_fields.SecurityCapabilityKey;
-import com.kongrentian.plugins.nexus.model.request_information.RequestInformation;
-import com.kongrentian.plugins.nexus.model.scan_result.ScanResult;
-import com.kongrentian.plugins.nexus.model.scan_result.ScanResultType;
+import com.kongrentian.plugins.nexus.main.BundleHelper;
+import com.kongrentian.plugins.nexus.model.information.request.RequestInformation;
+import com.kongrentian.plugins.nexus.model.scanresult.ScanResult;
+import com.kongrentian.plugins.nexus.model.scanresult.ScanResultType;
 import org.sonatype.nexus.repository.storage.AssetStore;
 
 import static com.kongrentian.plugins.nexus.logging.SecurityLogConfiguration.LOG;
@@ -12,12 +11,12 @@ import static com.kongrentian.plugins.nexus.logging.SecurityLogConfiguration.LOG
 abstract public class AbstractScanner {
 
     final AssetStore assetStore;
-    final SecurityCapabilityHelper securityCapabilityHelper;
+    final BundleHelper bundleHelper;
 
     public AbstractScanner(final AssetStore assetStore,
-                           final SecurityCapabilityHelper securityCapabilityHelper) {
+                           final BundleHelper bundleHelper) {
         this.assetStore = assetStore;
-        this.securityCapabilityHelper = securityCapabilityHelper;
+        this.bundleHelper = bundleHelper;
     }
 
     public ScanResult scan(RequestInformation information) {
@@ -38,11 +37,5 @@ abstract public class AbstractScanner {
 
     abstract ScanResult scanImpl(RequestInformation information) throws Throwable;
 
-    abstract public SecurityCapabilityKey getFailKey();
-
-    public boolean failOnErrors() {
-        return (Boolean) securityCapabilityHelper
-                .getCapabilityConfiguration()
-                .get(getFailKey());
-    }
+    abstract boolean failOnErrors();
 }

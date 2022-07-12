@@ -1,4 +1,4 @@
-package com.kongrentian.plugins.nexus.capability;
+package com.kongrentian.plugins.nexus.main;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSetter;
@@ -8,9 +8,14 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.kongrentian.plugins.nexus.api.ApiClient;
+import com.kongrentian.plugins.nexus.api.BundleConfigurationApi;
 import com.kongrentian.plugins.nexus.api.MonitoringApi;
 import com.kongrentian.plugins.nexus.api.RemoteScanApi;
-import com.kongrentian.plugins.nexus.api.SecurityClient;
+import com.kongrentian.plugins.nexus.capability.SecurityCapability;
+import com.kongrentian.plugins.nexus.capability.SecurityCapabilityConfiguration;
+import com.kongrentian.plugins.nexus.capability.SecurityCapabilityDescriptor;
+import com.kongrentian.plugins.nexus.model.bundle.configuration.BundleConfiguration;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
@@ -21,12 +26,16 @@ import org.sonatype.nexus.capability.CapabilityRegistry;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Named
-public class SecurityCapabilityHelper {
+@Singleton
+public class BundleHelper {
 
     public final static String DATE_FORMAT_PATTERN = "yyyy-MM-dd";
     public final static SimpleDateFormat DATE_FORMAT =
@@ -44,12 +53,15 @@ public class SecurityCapabilityHelper {
                     .forPattern(DATE_FORMAT_PATTERN)
                     .withZone(DateTimeZone.UTC);
     private final CapabilityRegistry capabilityRegistry;
+    private final Map<String, Object> capabilityStatus = new HashMap<>();
+    private BundleConfiguration bundleConfiguration = new BundleConfiguration();
     private CapabilityReference securityCapabilityReference;
     private RemoteScanApi remoteScanApi;
     private MonitoringApi monitoringApi;
+    private BundleConfigurationApi bundleConfigurationApi;
 
     @Inject
-    public SecurityCapabilityHelper(final CapabilityRegistry capabilityRegistry) {
+    public BundleHelper(final CapabilityRegistry capabilityRegistry) {
         this.capabilityRegistry = capabilityRegistry;
     }
 
@@ -87,7 +99,7 @@ public class SecurityCapabilityHelper {
             final CapabilityRegistry capabilityRegistry) {
         CapabilityReference capabilityReference =
                 capabilityRegistry
-                        .get(SecurityCapabilityHelper::isTypeEqual)
+                        .get(BundleHelper::isTypeEqual)
                         .stream()
                         .findFirst()
                         .orElse(null);
@@ -99,6 +111,10 @@ public class SecurityCapabilityHelper {
                 false,
                 "Automatically created at " + Instant.now().toString(),
                 null);
+    }
+
+    public void getOrCreateCapability() {
+        BundleHelper.getOrCreateCapability(capabilityRegistry);
     }
 
     @Nonnull
@@ -116,20 +132,22 @@ public class SecurityCapabilityHelper {
         return securityCapabilityReference = getOrCreateCapability(capabilityRegistry);
     }
 
-    protected void unsetCapabilityReference() {
-        securityCapabilityReference = null;
-        remoteScanApi = null;
-        monitoringApi = null;
+    public void recreateRemoteScanApi() {
+        remoteScanApi = ApiClient.createRemoteScanApi(
+                bundleConfiguration,
+                getCapabilityConfiguration());
     }
 
-    protected void recreateSecurityClientApi() {
-        remoteScanApi = SecurityClient
-                .createSecurityClientApi(getCapabilityConfiguration());
+
+    public void recreateMonitoringApi() {
+        monitoringApi = ApiClient.createMonitoringApi(
+                bundleConfiguration,
+                getCapabilityConfiguration());
     }
 
-    protected void recreateMonitoringApi() {
-        monitoringApi = SecurityClient
-                .createMonitoringApi(getCapabilityConfiguration());
+    public void recreateBundleConfigurationApi() {
+        bundleConfigurationApi = ApiClient.createBundleConfigurationApi(
+                getCapabilityConfiguration());
     }
 
     public boolean isCapabilityActive() {
@@ -139,17 +157,29 @@ public class SecurityCapabilityHelper {
     }
 
     public RemoteScanApi getSecurityClientApi() {
-        if (remoteScanApi == null) {
-            recreateSecurityClientApi();
-        }
         return remoteScanApi;
     }
 
     public MonitoringApi getMonitoringApi() {
-        if (monitoringApi == null) {
-            recreateMonitoringApi();
-        }
         return monitoringApi;
+    }
+
+    public BundleConfigurationApi getBundleConfigurationApi() {
+        return bundleConfigurationApi;
+    }
+
+    public BundleConfiguration getBundleConfiguration() {
+        return bundleConfiguration;
+    }
+
+    public void setBundleConfiguration(BundleConfiguration bundleConfiguration) {
+        this.bundleConfiguration = bundleConfiguration;
+        recreateRemoteScanApi();
+        recreateMonitoringApi();
+    }
+
+    public Map<String, Object> getCapabilityStatus() {
+        return capabilityStatus;
     }
 
 }

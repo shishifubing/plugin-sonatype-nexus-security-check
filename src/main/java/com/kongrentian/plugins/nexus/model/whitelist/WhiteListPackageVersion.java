@@ -1,4 +1,4 @@
-package com.kongrentian.plugins.nexus.model.white_list;
+package com.kongrentian.plugins.nexus.model.whitelist;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

@@ -1,4 +1,4 @@
-package com.kongrentian.plugins.nexus.capability.form_fields;
+package com.kongrentian.plugins.nexus.capability;
 
 import org.sonatype.nexus.formfields.AbstractFormField;
 import org.sonatype.nexus.formfields.FormField;

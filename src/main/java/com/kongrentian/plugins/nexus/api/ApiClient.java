@@ -1,7 +1,8 @@
 package com.kongrentian.plugins.nexus.api;
 
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityConfiguration;
-import com.kongrentian.plugins.nexus.capability.SecurityCapabilityHelper;
+import com.kongrentian.plugins.nexus.main.BundleHelper;
+import com.kongrentian.plugins.nexus.model.bundle.configuration.BundleConfiguration;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -17,7 +18,7 @@ import java.security.SecureRandom;
 import static com.kongrentian.plugins.nexus.logging.SecurityLogConfiguration.LOG;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
-public class SecurityClient {
+public class ApiClient {
 
     private static <TEMPLATE> TEMPLATE create(Class<TEMPLATE> api,
                                               SecurityCapabilityConfiguration config,
@@ -29,14 +30,15 @@ public class SecurityClient {
                 .writeTimeout(config.getHttpWriteTimeout(), MILLISECONDS);
 
         try {
-            if (!config.httpSSLVerify()) {
+            if (!config.getHttpSSLVerify()) {
                 buildUnsafeTrustManager(builder);
             }
         } catch (KeyManagementException | NoSuchAlgorithmException exception) {
             LOG.error("Could not build unsafe trust manager", exception);
         }
 
-        builder.addInterceptor(new ServiceInterceptor(auth, config.getHttpUserAgent()));
+        builder.addInterceptor(
+                new ApiClientServiceInterceptor(auth, config.getHttpUserAgent()));
 
         return new Retrofit
                 .Builder()
@@ -44,29 +46,41 @@ public class SecurityClient {
                 .baseUrl(baseUrl)
                 .addConverterFactory(
                         JacksonConverterFactory.create(
-                                SecurityCapabilityHelper.jsonMapper))
+                                BundleHelper.jsonMapper))
                 .build()
                 .create(api);
     }
 
-    public static MonitoringApi createMonitoringApi(SecurityCapabilityConfiguration config) {
+    public static MonitoringApi createMonitoringApi(
+            BundleConfiguration bundleConfiguration,
+            SecurityCapabilityConfiguration capabilityConfiguration) {
         return create(MonitoringApi.class,
-                config,
-                config.getMonitoringUrl(),
-                config.getMonitoringAuth());
+                capabilityConfiguration,
+                bundleConfiguration.getMonitoring().getBaseUrl(),
+                bundleConfiguration.getMonitoring().getAuth());
     }
 
-    public static RemoteScanApi createSecurityClientApi(SecurityCapabilityConfiguration config) {
+    public static RemoteScanApi createRemoteScanApi(
+            BundleConfiguration bundleConfiguration,
+            SecurityCapabilityConfiguration capabilityConfiguration) {
         return create(RemoteScanApi.class,
-                config,
-                config.getScanRemoteUrl(),
-                config.getScanRemoteAuth());
+                capabilityConfiguration,
+                bundleConfiguration.getScanners().getRemote().getBaseUrl(),
+                bundleConfiguration.getScanners().getRemote().getAuth());
+    }
+
+    public static BundleConfigurationApi createBundleConfigurationApi(
+            SecurityCapabilityConfiguration capabilityConfiguration) {
+        return create(BundleConfigurationApi.class,
+                capabilityConfiguration,
+                capabilityConfiguration.getConfigUrlBase(),
+                capabilityConfiguration.getConfigAuth());
     }
 
     private static void buildUnsafeTrustManager(OkHttpClient.Builder builder)
             throws NoSuchAlgorithmException, KeyManagementException {
         SSLContext sslContext = SSLContext.getInstance("TLS");
-        TrustManager[] trustManagers = SSLConfiguration.buildUnsafeTrustManager();
+        TrustManager[] trustManagers = ApiClientSSLConfiguration.buildUnsafeTrustManager();
         sslContext.init(null, trustManagers, new SecureRandom());
         SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
         builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustManagers[0]);

@@ -1,9 +1,11 @@
-package com.kongrentian.plugins.nexus.model.scan_result;
+package com.kongrentian.plugins.nexus.model.scanresult;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang.exception.ExceptionUtils;
 
-public class ScanResultException {
+import java.io.Serializable;
+
+public class ScanResultException implements Serializable {
 
     @JsonProperty("class")
     private final Class<? extends Throwable> exceptionClass;

@@ -1,31 +1,32 @@
 package com.kongrentian.plugins.nexus.monitoring;
 
 import com.kongrentian.plugins.nexus.api.MonitoringApi;
-import com.kongrentian.plugins.nexus.capability.SecurityCapabilityConfiguration;
-import com.kongrentian.plugins.nexus.capability.SecurityCapabilityHelper;
-import com.kongrentian.plugins.nexus.model.monitoring_information.MonitoringInformation;
+import com.kongrentian.plugins.nexus.main.BundleHelper;
+import com.kongrentian.plugins.nexus.model.bundle.configuration.BundleConfiguration;
+import com.kongrentian.plugins.nexus.model.information.monitoring.MonitoringInformation;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
+import java.io.Serializable;
 
 import static com.kongrentian.plugins.nexus.logging.SecurityLogConfiguration.LOG;
 
 @Named
-public class Monitoring {
+public class Monitoring implements Serializable {
 
 
-    private final SecurityCapabilityHelper securityCapabilityHelper;
+    private final BundleHelper bundleHelper;
 
     @Inject
-    public Monitoring(final SecurityCapabilityHelper securityCapabilityHelper) {
-        this.securityCapabilityHelper = securityCapabilityHelper;
+    public Monitoring(final BundleHelper bundleHelper) {
+        this.bundleHelper = bundleHelper;
     }
 
     public void send(MonitoringInformation information) {
-        SecurityCapabilityConfiguration config = securityCapabilityHelper
-                .getCapabilityConfiguration();
-        if (!config.isEnableMonitoring()) {
+        BundleConfiguration config = bundleHelper
+                .getBundleConfiguration();
+        if (!config.getMonitoring().isEnabled()) {
             return;
         }
         try {
@@ -36,15 +37,15 @@ public class Monitoring {
     }
 
     public void sendImpl(MonitoringInformation information,
-                         SecurityCapabilityConfiguration config) throws IOException {
-        MonitoringApi api = securityCapabilityHelper.getMonitoringApi();
-        StringBuilder builder = new StringBuilder(
-                SecurityCapabilityHelper.jsonMapper
-                        .writeValueAsString(information));
-        builder.insert(0, "{\"index\":{ } }\n");
-        api.bulk(builder.toString(),
-                config.getMonitoringIndex(),
-                SecurityCapabilityHelper.todayDate(),
-                config.getMonitoringPipeline()).execute();
+                         BundleConfiguration config) throws IOException {
+        MonitoringApi api = bundleHelper.getMonitoringApi();
+
+        api.bulk("{\"index\":{ } }\n"
+                        + BundleHelper.jsonMapper
+                        .writeValueAsString(information),
+                config.getMonitoring().getIndex(),
+                BundleHelper.todayDate(),
+                config.getMonitoring().getPipeline()
+        ).execute();
     }
 }

@@ -27,6 +27,7 @@ import static org.sonatype.nexus.common.app.ManagedLifecycle.Phase.TASKS;
 public class SecurityCapabilityUpdateTaskBootService
         extends LifecycleSupport {
 
+    // every five minutes
     static final String CRON = "*/5 * * * * ?";
 
     private final TaskScheduler taskScheduler;

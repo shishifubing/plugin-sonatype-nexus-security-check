@@ -1,5 +1,6 @@
 package com.kongrentian.plugins.nexus.capability;
 
+import com.kongrentian.plugins.nexus.main.BundleHelper;
 import org.sonatype.goodies.lifecycle.LifecycleSupport;
 import org.sonatype.nexus.capability.CapabilityRegistry;
 import org.sonatype.nexus.common.app.ManagedLifecycle;
@@ -26,7 +27,7 @@ public class SecurityCapabilityBootService
 
     @Override
     protected void doStart() {
-        SecurityCapabilityHelper.getOrCreateCapability(capabilityRegistry);
+        BundleHelper.getOrCreateCapability(capabilityRegistry);
     }
 }
 

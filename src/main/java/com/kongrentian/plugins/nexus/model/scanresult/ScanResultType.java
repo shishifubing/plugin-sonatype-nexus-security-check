@@ -1,6 +1,8 @@
-package com.kongrentian.plugins.nexus.model.scan_result;
+package com.kongrentian.plugins.nexus.model.scanresult;
 
-public enum ScanResultType {
+import java.io.Serializable;
+
+public enum ScanResultType implements Serializable {
     WHITE_LIST_CONTAINS_EXTENSION,
     WHITE_LIST_CONTAINS_USER,
     WHITE_LIST_PACKAGE_VERSION_ALLOWED,

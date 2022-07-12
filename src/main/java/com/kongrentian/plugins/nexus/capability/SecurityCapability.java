@@ -1,5 +1,7 @@
 package com.kongrentian.plugins.nexus.capability;
 
+import com.kongrentian.plugins.nexus.main.BundleHelper;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.sonatype.nexus.capability.CapabilitySupport;
@@ -12,32 +14,36 @@ import java.io.StringWriter;
 import java.time.Instant;
 import java.util.Map;
 
-import static com.kongrentian.plugins.nexus.capability.form_fields.SecurityCapabilityKey.SCAN_LOCAL_WHITE_LIST;
+import static com.kongrentian.plugins.nexus.capability.task.SecurityCapabilityUpdateTask.STATUS_KEY_TASK;
 import static com.kongrentian.plugins.nexus.logging.SecurityLogConfiguration.LOG;
+import static java.lang.String.format;
 
 @Named(SecurityCapabilityDescriptor.CAPABILITY_ID)
 public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConfiguration> {
+
+    public final static String STATUS_KEY_CONFIG = "current configuration";
 
     public final static String capabilityStatusTemplate =
             // apache velocity template
             // I cannot get access to the whole context ($context)
             // (the tool is not enabled, I think)
-            String.join("\n", new String[]{
-                    "#foreach( $entry in $status.entrySet() )",
-                    "<h4>$entry.getKey()</h4>",
-                    "<div><pre>$entry.getValue()</pre></div>",
-                    "#end",
-                    "<h4>white list</h4>",
-                    "<div><pre>$white_list</pre></div>"
-            });
-    private final SecurityCapabilityHelper securityCapabilityHelper;
+            format(String.join("\n", new String[]{
+                            "<h4>%s</h4>",
+                            "<div><pre>$%s</pre></div>",
+                            "<h4>$%s</h4>",
+                            "<div><pre>$%s</pre></div>",
+                            "#end",
+                    }),
+                    STATUS_KEY_TASK, STATUS_KEY_TASK,
+                    STATUS_KEY_CONFIG, STATUS_KEY_CONFIG);
+    private final BundleHelper bundleHelper;
     private final VelocityEngine velocityEngine;
     private Instant updateTime = Instant.now();
 
     @Inject
-    public SecurityCapability(final SecurityCapabilityHelper securityCapabilityHelper,
+    public SecurityCapability(final BundleHelper bundleHelper,
                               final VelocityEngine velocityEngine) {
-        this.securityCapabilityHelper = securityCapabilityHelper;
+        this.bundleHelper = bundleHelper;
         this.velocityEngine = velocityEngine;
     }
 
@@ -51,13 +57,18 @@ public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConf
     protected String renderStatus() {
         try {
             return render(new TemplateParameters()
-                    .set("status",
-                            getConfig().getStatus())
-                    .set("white_list",
-                            getConfig().get(SCAN_LOCAL_WHITE_LIST)));
+                    .set(STATUS_KEY_TASK,
+                            bundleHelper
+                                    .getCapabilityStatus()
+                                    .get(STATUS_KEY_TASK))
+                    .set(STATUS_KEY_CONFIG,
+                            BundleHelper.yamlMapper
+                                    .writeValueAsString(
+                                            bundleHelper.getBundleConfiguration())));
         } catch (Throwable exception) {
             LOG.error("Could not render the status", exception);
-            return "Could not render the status: <br>" + exception;
+            return "Could not render the status: <br>"
+                    + ExceptionUtils.getStackTrace(exception);
         }
     }
 
@@ -69,8 +80,8 @@ public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConf
 
     @Override
     public void onRemove() throws Exception {
-        securityCapabilityHelper.unsetCapabilityReference();
         super.onRemove();
+        bundleHelper.getOrCreateCapability();
     }
 
     @Override
@@ -87,8 +98,7 @@ public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConf
 
     private void update() {
         updateTime = Instant.now();
-        securityCapabilityHelper.recreateSecurityClientApi();
-        securityCapabilityHelper.recreateMonitoringApi();
+        bundleHelper.recreateBundleConfigurationApi();
     }
 
     /**
@@ -100,7 +110,7 @@ public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConf
         velocityEngine.evaluate(
                 new VelocityContext(parameters.get()),
                 writer,
-                SecurityCapabilityHelper.class.getName(),
+                BundleHelper.class.getName(),
                 capabilityStatusTemplate);
         return writer.toString();
     }

@@ -1,10 +1,9 @@
 package com.kongrentian.plugins.nexus.scanner;
 
 import com.kongrentian.plugins.nexus.api.RemoteScanApi;
-import com.kongrentian.plugins.nexus.capability.SecurityCapabilityHelper;
-import com.kongrentian.plugins.nexus.capability.form_fields.SecurityCapabilityKey;
-import com.kongrentian.plugins.nexus.model.request_information.RequestInformation;
-import com.kongrentian.plugins.nexus.model.scan_result.ScanResult;
+import com.kongrentian.plugins.nexus.main.BundleHelper;
+import com.kongrentian.plugins.nexus.model.information.request.RequestInformation;
+import com.kongrentian.plugins.nexus.model.scanresult.ScanResult;
 import org.sonatype.nexus.common.collect.NestedAttributesMap;
 import org.sonatype.nexus.repository.storage.AssetStore;
 import retrofit2.Response;
@@ -23,8 +22,8 @@ public class RemoteScanner extends AbstractScanner {
 
     @Inject
     public RemoteScanner(AssetStore assetStore,
-                         SecurityCapabilityHelper securityCapabilityHelper) {
-        super(assetStore, securityCapabilityHelper);
+                         BundleHelper bundleHelper) {
+        super(assetStore, bundleHelper);
     }
 
 
@@ -36,7 +35,7 @@ public class RemoteScanner extends AbstractScanner {
         if (lastScan != null) {
             return lastScan;
         }
-        RemoteScanApi securityClient = securityCapabilityHelper.getSecurityClientApi();
+        RemoteScanApi securityClient = bundleHelper.getSecurityClientApi();
         Response<ScanResult> responseCheck = securityClient
                 .check(information)
                 .execute();
@@ -53,11 +52,6 @@ public class RemoteScanner extends AbstractScanner {
         return scanResult;
     }
 
-    @Override
-    public SecurityCapabilityKey getFailKey() {
-        return SecurityCapabilityKey.SCAN_REMOTE_FAIL_ON_ERRORS;
-    }
-
     @Nullable
     private ScanResult getLastScan(@Nullable NestedAttributesMap securityAttributes) {
         if (securityAttributes == null) {
@@ -69,11 +63,21 @@ public class RemoteScanner extends AbstractScanner {
         }
         long interval = lastScan.getInterval();
         if (interval == ScanResult.NO_LAST_SCAN
-                || interval < securityCapabilityHelper
-                .getCapabilityConfiguration()
-                .getScanRemoteInterval()) {
+                || interval < bundleHelper
+                .getBundleConfiguration()
+                .getScanners().getRemote()
+                .getInterval()) {
             return lastScan;
         }
         return null;
+    }
+
+    @Override
+    boolean failOnErrors() {
+        return bundleHelper
+                .getBundleConfiguration()
+                .getScanners()
+                .getRemote()
+                .isFailOnErrors();
     }
 }

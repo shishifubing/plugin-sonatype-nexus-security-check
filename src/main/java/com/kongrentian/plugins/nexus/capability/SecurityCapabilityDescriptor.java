@@ -1,6 +1,5 @@
 package com.kongrentian.plugins.nexus.capability;
 
-import com.kongrentian.plugins.nexus.capability.form_fields.SecurityCapabilityField;
 import org.sonatype.nexus.capability.CapabilityDescriptorSupport;
 import org.sonatype.nexus.capability.CapabilityType;
 import org.sonatype.nexus.capability.Tag;
@@ -19,10 +18,10 @@ import java.util.Set;
 public class SecurityCapabilityDescriptor
         extends CapabilityDescriptorSupport<SecurityCapabilityConfiguration>
         implements Taggable {
-    static final String CAPABILITY_ID = "kongrentian.security";
-    static final CapabilityType CAPABILITY_TYPE = CapabilityType.capabilityType(CAPABILITY_ID);
-    private static final String CAPABILITY_NAME = "Security and monitoring of assets";
-    private static final String CAPABILITY_DESCRIPTION = "Security and monitoring of assets";
+    public static final String CAPABILITY_ID = "kongrentian.security";
+    public static final CapabilityType CAPABILITY_TYPE = CapabilityType.capabilityType(CAPABILITY_ID);
+    public static final String CAPABILITY_NAME = "Security and monitoring of assets";
+    public static final String CAPABILITY_DESCRIPTION = "Security and monitoring of assets";
     private final List<FormField> fields;
 
     public SecurityCapabilityDescriptor() throws RuntimeException {

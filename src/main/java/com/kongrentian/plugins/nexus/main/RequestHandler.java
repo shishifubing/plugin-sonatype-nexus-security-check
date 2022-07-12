@@ -1,11 +1,10 @@
 package com.kongrentian.plugins.nexus.main;
 
-import com.kongrentian.plugins.nexus.capability.SecurityCapabilityConfiguration;
-import com.kongrentian.plugins.nexus.capability.SecurityCapabilityHelper;
-import com.kongrentian.plugins.nexus.model.monitoring_information.MonitoringInformation;
-import com.kongrentian.plugins.nexus.model.monitoring_information.MonitoringInformationScanResult;
-import com.kongrentian.plugins.nexus.model.request_information.RequestInformation;
-import com.kongrentian.plugins.nexus.model.scan_result.ScanResult;
+import com.kongrentian.plugins.nexus.model.bundle.configuration.BundleConfiguration;
+import com.kongrentian.plugins.nexus.model.information.monitoring.MonitoringInformation;
+import com.kongrentian.plugins.nexus.model.information.monitoring.MonitoringInformationScanResult;
+import com.kongrentian.plugins.nexus.model.information.request.RequestInformation;
+import com.kongrentian.plugins.nexus.model.scanresult.ScanResult;
 import com.kongrentian.plugins.nexus.monitoring.Monitoring;
 import com.kongrentian.plugins.nexus.scanner.AbstractScanner;
 import com.kongrentian.plugins.nexus.scanner.LocalScanner;
@@ -34,7 +33,7 @@ import static java.lang.String.format;
 @Named
 @Singleton
 public class RequestHandler implements ContributedHandler {
-    private final SecurityCapabilityHelper securityCapabilityHelper;
+    private final BundleHelper bundleHelper;
     private final RemoteScanner remoteScanner;
     private final Monitoring monitoring;
     private final LocalScanner localScanner;
@@ -42,12 +41,12 @@ public class RequestHandler implements ContributedHandler {
 
 
     @Inject
-    public RequestHandler(final SecurityCapabilityHelper securityCapabilityHelper,
+    public RequestHandler(final BundleHelper bundleHelper,
                           final RemoteScanner remoteScanner,
                           final LocalScanner localScanner,
                           final Monitoring monitoring,
                           final ComponentStore componentStore) {
-        this.securityCapabilityHelper = securityCapabilityHelper;
+        this.bundleHelper = bundleHelper;
         this.remoteScanner = remoteScanner;
         this.monitoring = monitoring;
         this.localScanner = localScanner;
@@ -58,7 +57,7 @@ public class RequestHandler implements ContributedHandler {
     @Override
     public Response handle(@Nonnull Context context) throws Exception {
         Response response = context.proceed();
-        if (!securityCapabilityHelper.isCapabilityActive()) {
+        if (!bundleHelper.isCapabilityActive()) {
             return response;
         }
         Repository repository = context.getRepository();
@@ -78,23 +77,28 @@ public class RequestHandler implements ContributedHandler {
         }
         Component component = componentStore.read(asset.componentId());
 
-        SecurityCapabilityConfiguration config = securityCapabilityHelper.getCapabilityConfiguration();
-        String userId = (String) request.getAttributes().get(SecurityFilter.ATTR_USER_ID);
+        BundleConfiguration config = bundleHelper.getBundleConfiguration();
+        String userId = (String) request
+                .getAttributes()
+                .get(SecurityFilter.ATTR_USER_ID);
         if (userId == null) {
-            userId = config.getMonitoringAnonymousUserId();
+            userId = config
+                    .getMonitoring()
+                    .getAnonymousUserId();
         }
         RequestInformation information = new RequestInformation(
                 userId, repository, content, asset, component, request);
         MonitoringInformation results = new MonitoringInformation(information);
         for (AbstractScanner scanner : getScanners(config)) {
             ScanResult result = scanner.scan(information);
-            results.add(new MonitoringInformationScanResult(scanner.getClass(), result));
+            results.add(new MonitoringInformationScanResult(
+                    scanner.getClass(), result));
             if (!result.isAllowed()) {
                 results.setAllowed(false);
                 break;
             }
         }
-        LOG.debug("NEXUS SECURITY PLUGIN SCAN RESULTS:" + SecurityCapabilityHelper.jsonMapper
+        LOG.debug("NEXUS SECURITY PLUGIN SCAN RESULTS:" + BundleHelper.jsonMapper
                 .writeValueAsString(results));
         monitoring.send(results);
         if (results.isAllowed()) {
@@ -105,12 +109,12 @@ public class RequestHandler implements ContributedHandler {
                 results.getLastReason()));
     }
 
-    private List<AbstractScanner> getScanners(SecurityCapabilityConfiguration config) {
+    private List<AbstractScanner> getScanners(BundleConfiguration config) {
         List<AbstractScanner> scanners = new ArrayList<>();
-        if (config.isEnableScanLocal()) {
+        if (config.getScanners().getLocal().isEnabled()) {
             scanners.add(localScanner);
         }
-        if (config.isEnableScanRemote()) {
+        if (config.getScanners().getRemote().isEnabled()) {
             scanners.add(remoteScanner);
         }
         return scanners;

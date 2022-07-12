@@ -1,31 +1,72 @@
 package com.kongrentian.plugins.nexus.capability.task;
 
-import com.kongrentian.plugins.nexus.capability.SecurityCapabilityHelper;
-import org.sonatype.nexus.scheduling.Cancelable;
+import com.kongrentian.plugins.nexus.api.BundleConfigurationApi;
+import com.kongrentian.plugins.nexus.main.BundleHelper;
+import com.kongrentian.plugins.nexus.model.bundle.configuration.BundleConfiguration;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.sonatype.nexus.scheduling.TaskSupport;
+import retrofit2.Response;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.Map;
+
+import static java.lang.String.format;
 
 @Named
-public class SecurityCapabilityUpdateTask extends TaskSupport
-        implements Cancelable {
+public class SecurityCapabilityUpdateTask extends TaskSupport {
 
-    private final SecurityCapabilityHelper securityCapabilityHelper;
+    public static final String STATUS_KEY_TASK = "task status";
+    private final BundleHelper bundleHelper;
 
     @Inject
-    public SecurityCapabilityUpdateTask(final SecurityCapabilityHelper securityCapabilityHelper) {
-        this.securityCapabilityHelper = securityCapabilityHelper;
+    public SecurityCapabilityUpdateTask(final BundleHelper bundleHelper) {
+        this.bundleHelper = bundleHelper;
     }
 
     @Override
-    protected Object execute() throws Exception {
+    protected Object execute() {
+        BundleConfigurationApi api = bundleHelper.getBundleConfigurationApi();
+        Map<String, Object> status = bundleHelper.getCapabilityStatus();
+        status.put(STATUS_KEY_TASK, "Getting a new config");
+
+        BundleConfiguration newConfig;
+        try {
+            Response<BundleConfiguration> response =
+                    api.get(bundleHelper
+                            .getCapabilityConfiguration()
+                            .getConfigUrlRequest()
+                    ).execute();
+            String responseMessage = response.message();
+            log.debug("Config update response: {}",
+                    responseMessage);
+            newConfig = response.body();
+            if (!response.isSuccessful() || newConfig == null) {
+                throw new RuntimeException(
+                        "Invalid response code or null config: "
+                                + response.code()
+                                + ", "
+                                + responseMessage);
+            }
+        } catch (Throwable exception) {
+            String message = format("Could not update config: %s",
+                    ExceptionUtils.getStackTrace(exception));
+            log.error(message);
+            status.put(STATUS_KEY_TASK, message);
+            return null;
+        }
+        bundleHelper.setBundleConfiguration(newConfig);
+        status.put(STATUS_KEY_TASK,
+                "Successfully updated the config");
         return null;
     }
 
+
     @Override
     public String getMessage() {
-        return "message";
+        return (String) bundleHelper
+                .getCapabilityStatus()
+                .getOrDefault(STATUS_KEY_TASK, "");
     }
 
 }

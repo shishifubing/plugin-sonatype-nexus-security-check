@@ -1,7 +1,7 @@
-package com.kongrentian.plugins.nexus.model.monitoring_information;
+package com.kongrentian.plugins.nexus.model.information.monitoring;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.kongrentian.plugins.nexus.model.scan_result.ScanResult;
+import com.kongrentian.plugins.nexus.model.scanresult.ScanResult;
 import com.kongrentian.plugins.nexus.scanner.AbstractScanner;
 
 import java.io.Serializable;

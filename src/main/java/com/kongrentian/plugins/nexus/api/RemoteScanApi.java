@@ -1,7 +1,7 @@
 package com.kongrentian.plugins.nexus.api;
 
-import com.kongrentian.plugins.nexus.model.request_information.RequestInformation;
-import com.kongrentian.plugins.nexus.model.scan_result.ScanResult;
+import com.kongrentian.plugins.nexus.model.information.request.RequestInformation;
+import com.kongrentian.plugins.nexus.model.scanresult.ScanResult;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.PUT;

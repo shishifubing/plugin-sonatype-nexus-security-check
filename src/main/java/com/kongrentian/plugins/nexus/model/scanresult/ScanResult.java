@@ -1,4 +1,4 @@
-package com.kongrentian.plugins.nexus.model.scan_result;
+package com.kongrentian.plugins.nexus.model.scanresult;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

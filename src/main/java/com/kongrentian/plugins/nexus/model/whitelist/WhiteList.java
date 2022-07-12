@@ -1,13 +1,13 @@
-package com.kongrentian.plugins.nexus.model.white_list;
+package com.kongrentian.plugins.nexus.model.whitelist;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.kongrentian.plugins.nexus.capability.SecurityCapabilityHelper;
-import com.kongrentian.plugins.nexus.model.request_information.RequestInformation;
-import com.kongrentian.plugins.nexus.model.request_information.RequestInformationComponent;
-import com.kongrentian.plugins.nexus.model.request_information.RequestInformationRepository;
-import com.kongrentian.plugins.nexus.model.scan_result.ScanResultType;
+import com.kongrentian.plugins.nexus.main.BundleHelper;
+import com.kongrentian.plugins.nexus.model.information.request.RequestInformation;
+import com.kongrentian.plugins.nexus.model.information.request.RequestInformationComponent;
+import com.kongrentian.plugins.nexus.model.information.request.RequestInformationRepository;
+import com.kongrentian.plugins.nexus.model.scanresult.ScanResultType;
 import org.joda.time.DateTime;
 
 import javax.annotation.Nullable;
@@ -61,7 +61,7 @@ public class WhiteList implements Serializable {
     }
 
     public static WhiteList fromYAML(String yaml) throws JsonProcessingException {
-        return SecurityCapabilityHelper.yamlMapper.readValue(yaml, WhiteList.class);
+        return BundleHelper.yamlMapper.readValue(yaml, WhiteList.class);
 
     }
 
