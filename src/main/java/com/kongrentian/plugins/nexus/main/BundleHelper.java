@@ -64,9 +64,6 @@ public class BundleHelper {
     @Inject
     public BundleHelper(final CapabilityRegistry capabilityRegistry) {
         this.capabilityRegistry = capabilityRegistry;
-        recreateMonitoringApi();
-        recreateRemoteScanApi();
-        recreateBundleConfigurationApi();
     }
 
     private static boolean isTypeEqual(CapabilityReference reference) {
@@ -161,14 +158,23 @@ public class BundleHelper {
     }
 
     public RemoteScanApi getSecurityClientApi() {
+        if (remoteScanApi == null) {
+            recreateRemoteScanApi();
+        }
         return remoteScanApi;
     }
 
     public MonitoringApi getMonitoringApi() {
+        if (monitoringApi == null) {
+            recreateMonitoringApi();
+        }
         return monitoringApi;
     }
 
     public BundleConfigurationApi getBundleConfigurationApi() {
+        if (bundleConfigurationApi == null) {
+            recreateBundleConfigurationApi();
+        }
         return bundleConfigurationApi;
     }
 
