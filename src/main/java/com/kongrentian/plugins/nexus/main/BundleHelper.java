@@ -33,6 +33,8 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.kongrentian.plugins.nexus.logging.SecurityLogConfiguration.LOG;
+
 
 @Named
 @Singleton
@@ -67,6 +69,7 @@ public class BundleHelper {
     }
 
     private static boolean isTypeEqual(CapabilityReference reference) {
+        LOG.debug("checking capability reference: {}", reference);
         return SecurityCapabilityDescriptor.CAPABILITY_TYPE
                 .equals(reference.context().type());
     }
