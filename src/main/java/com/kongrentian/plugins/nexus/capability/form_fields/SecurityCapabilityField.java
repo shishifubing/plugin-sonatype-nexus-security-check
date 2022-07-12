@@ -1,15 +1,13 @@
-package com.kongrentian.plugins.nexus.capability;
+package com.kongrentian.plugins.nexus.capability.form_fields;
 
 import org.sonatype.nexus.formfields.AbstractFormField;
 import org.sonatype.nexus.formfields.FormField;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.kongrentian.plugins.nexus.capability.SecurityCapabilityKey.values;
 
 public final class SecurityCapabilityField<TEMPLATE> {
 
@@ -39,24 +37,28 @@ public final class SecurityCapabilityField<TEMPLATE> {
         this.convertFunction = convertFunction;
     }
 
-    public static List<FormField> createFields() throws RuntimeException {
-        return Arrays.stream(values()).map(securityCapabilityKey -> {
-            try {
-                return securityCapabilityKey.field().createField();
-            } catch (NoSuchMethodException
-                     | InvocationTargetException
-                     | InstantiationException
-                     | IllegalAccessException exception) {
-                throw new RuntimeException(exception);
-            }
-        }).collect(Collectors.toList());
+    public static List<FormField> createFields(
+            List<SecurityCapabilityField<?>> securityCapabilityFields)
+            throws RuntimeException {
+        return securityCapabilityFields
+                .stream()
+                .map(securityCapabilityField -> {
+                    try {
+                        return securityCapabilityField.createFormField();
+                    } catch (NoSuchMethodException
+                             | InvocationTargetException
+                             | InstantiationException
+                             | IllegalAccessException exception) {
+                        throw new RuntimeException(exception);
+                    }
+                }).collect(Collectors.toList());
     }
 
     public TEMPLATE convert(String input) {
         return convertFunction.apply(input);
     }
 
-    public FormField<TEMPLATE> createField()
+    public FormField<TEMPLATE> createFormField()
             throws NoSuchMethodException, InvocationTargetException,
             InstantiationException, IllegalAccessException {
         AbstractFormField<TEMPLATE> result = formField.getDeclaredConstructor(

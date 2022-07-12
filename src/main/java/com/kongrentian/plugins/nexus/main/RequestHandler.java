@@ -10,8 +10,6 @@ import com.kongrentian.plugins.nexus.monitoring.Monitoring;
 import com.kongrentian.plugins.nexus.scanner.AbstractScanner;
 import com.kongrentian.plugins.nexus.scanner.LocalScanner;
 import com.kongrentian.plugins.nexus.scanner.RemoteScanner;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.sonatype.nexus.common.collect.AttributesMap;
 import org.sonatype.nexus.repository.Repository;
 import org.sonatype.nexus.repository.storage.Asset;
@@ -29,13 +27,13 @@ import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.kongrentian.plugins.nexus.logging.SecurityLogConfiguration.LOG;
 import static java.lang.String.format;
 
 
 @Named
 @Singleton
 public class RequestHandler implements ContributedHandler {
-    private static final Logger LOG = LoggerFactory.getLogger(RequestHandler.class);
     private final SecurityCapabilityHelper securityCapabilityHelper;
     private final RemoteScanner remoteScanner;
     private final Monitoring monitoring;

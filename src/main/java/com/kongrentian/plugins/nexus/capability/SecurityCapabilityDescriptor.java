@@ -1,5 +1,7 @@
 package com.kongrentian.plugins.nexus.capability;
 
+import com.kongrentian.plugins.nexus.capability.form_fields.SecurityCapabilityField;
+import com.kongrentian.plugins.nexus.capability.form_fields.SecurityCapabilityKey;
 import org.sonatype.nexus.capability.CapabilityDescriptorSupport;
 import org.sonatype.nexus.capability.CapabilityType;
 import org.sonatype.nexus.capability.Tag;
@@ -25,7 +27,10 @@ public class SecurityCapabilityDescriptor
     private final List<FormField> fields;
 
     public SecurityCapabilityDescriptor() throws RuntimeException {
-        fields = SecurityCapabilityField.createFields();
+        // cannot define static methods in interface
+        // cannot inherit enums
+        fields = SecurityCapabilityField.createFields(
+                SecurityCapabilityKey.SCAN_LOCAL_FAIL_ON_ERRORS.getFields());
     }
 
     @Override

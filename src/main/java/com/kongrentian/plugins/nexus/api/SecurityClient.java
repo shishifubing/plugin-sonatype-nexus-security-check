@@ -3,8 +3,6 @@ package com.kongrentian.plugins.nexus.api;
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityConfiguration;
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityHelper;
 import okhttp3.OkHttpClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
@@ -16,10 +14,10 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
+import static com.kongrentian.plugins.nexus.logging.SecurityLogConfiguration.LOG;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public class SecurityClient {
-    private static final Logger LOG = LoggerFactory.getLogger(SecurityClient.class);
 
     private static <TEMPLATE> TEMPLATE create(Class<TEMPLATE> api,
                                               SecurityCapabilityConfiguration config,

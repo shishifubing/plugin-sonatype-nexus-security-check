@@ -2,8 +2,6 @@ package com.kongrentian.plugins.nexus.capability;
 
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.sonatype.nexus.capability.CapabilitySupport;
 import org.sonatype.nexus.common.template.TemplateParameters;
 
@@ -14,7 +12,8 @@ import java.io.StringWriter;
 import java.time.Instant;
 import java.util.Map;
 
-import static com.kongrentian.plugins.nexus.capability.SecurityCapabilityKey.SCAN_LOCAL_WHITE_LIST;
+import static com.kongrentian.plugins.nexus.capability.form_fields.SecurityCapabilityKey.SCAN_LOCAL_WHITE_LIST;
+import static com.kongrentian.plugins.nexus.logging.SecurityLogConfiguration.LOG;
 
 @Named(SecurityCapabilityDescriptor.CAPABILITY_ID)
 public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConfiguration> {
@@ -31,7 +30,6 @@ public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConf
                     "<h4>white list</h4>",
                     "<div><pre>$white_list</pre></div>"
             });
-    private static final Logger LOG = LoggerFactory.getLogger(SecurityCapability.class);
     private final SecurityCapabilityHelper securityCapabilityHelper;
     private final VelocityEngine velocityEngine;
     private Instant updateTime = Instant.now();

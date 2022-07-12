@@ -4,18 +4,16 @@ import com.kongrentian.plugins.nexus.api.MonitoringApi;
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityConfiguration;
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityHelper;
 import com.kongrentian.plugins.nexus.model.monitoring_information.MonitoringInformation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
 
+import static com.kongrentian.plugins.nexus.logging.SecurityLogConfiguration.LOG;
+
 @Named
 public class Monitoring {
 
-
-    static final Logger LOG = LoggerFactory.getLogger(Monitoring.class);
 
     private final SecurityCapabilityHelper securityCapabilityHelper;
 

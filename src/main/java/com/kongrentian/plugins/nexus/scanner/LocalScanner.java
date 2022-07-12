@@ -2,7 +2,7 @@ package com.kongrentian.plugins.nexus.scanner;
 
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityConfiguration;
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityHelper;
-import com.kongrentian.plugins.nexus.capability.SecurityCapabilityKey;
+import com.kongrentian.plugins.nexus.capability.form_fields.SecurityCapabilityKey;
 import com.kongrentian.plugins.nexus.model.request_information.RequestInformation;
 import com.kongrentian.plugins.nexus.model.scan_result.ScanResult;
 import com.kongrentian.plugins.nexus.model.scan_result.ScanResultType;

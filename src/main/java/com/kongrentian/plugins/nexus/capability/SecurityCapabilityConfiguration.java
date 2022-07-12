@@ -1,21 +1,20 @@
 package com.kongrentian.plugins.nexus.capability;
 
+import com.kongrentian.plugins.nexus.capability.form_fields.SecurityCapabilityKey;
 import com.kongrentian.plugins.nexus.model.white_list.WhiteList;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.sonatype.nexus.capability.CapabilityConfigurationSupport;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.kongrentian.plugins.nexus.capability.SecurityCapabilityKey.*;
+import static com.kongrentian.plugins.nexus.capability.form_fields.SecurityCapabilityKey.*;
+import static com.kongrentian.plugins.nexus.logging.SecurityLogConfiguration.LOG;
 import static java.lang.String.format;
 
 public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupport {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SecurityCapabilityConfiguration.class);
     private final boolean enableScanRemote;
     private final boolean enableMonitoring;
     private final boolean enableScanLocal;
@@ -104,7 +103,7 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
         String property = properties.get(propertyKey);
         try {
             if (property != null && !property.isEmpty()) {
-                return securityCapabilityKey.field().convert(property);
+                return securityCapabilityKey.getField().convert(property);
             } else if (!defaultValue.isEmpty()) {
                 status.put(propertyKey,
                         format("property is %s, using default: %s",
@@ -117,7 +116,7 @@ public class SecurityCapabilityConfiguration extends CapabilityConfigurationSupp
             LOG.error(message, exception);
             status.put(propertyKey, exception.getMessage());
         }
-        return securityCapabilityKey.field().convert(defaultValue);
+        return securityCapabilityKey.getField().convert(defaultValue);
     }
 
     public boolean isEnableScanRemote() {

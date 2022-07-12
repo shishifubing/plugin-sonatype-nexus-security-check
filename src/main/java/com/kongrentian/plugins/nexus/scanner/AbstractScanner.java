@@ -1,16 +1,15 @@
 package com.kongrentian.plugins.nexus.scanner;
 
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityHelper;
-import com.kongrentian.plugins.nexus.capability.SecurityCapabilityKey;
+import com.kongrentian.plugins.nexus.capability.form_fields.SecurityCapabilityKey;
 import com.kongrentian.plugins.nexus.model.request_information.RequestInformation;
 import com.kongrentian.plugins.nexus.model.scan_result.ScanResult;
 import com.kongrentian.plugins.nexus.model.scan_result.ScanResultType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.sonatype.nexus.repository.storage.AssetStore;
 
+import static com.kongrentian.plugins.nexus.logging.SecurityLogConfiguration.LOG;
+
 abstract public class AbstractScanner {
-    static final Logger LOG = LoggerFactory.getLogger(AbstractScanner.class);
 
     final AssetStore assetStore;
     final SecurityCapabilityHelper securityCapabilityHelper;

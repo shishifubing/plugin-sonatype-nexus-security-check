@@ -1,6 +1,12 @@
-package com.kongrentian.plugins.nexus.capability;
+package com.kongrentian.plugins.nexus.capability.form_fields;
 
+import com.kongrentian.plugins.nexus.capability.SecurityCapabilityConfiguration;
+import com.kongrentian.plugins.nexus.capability.SecurityCapabilityDescriptor;
 import org.sonatype.nexus.formfields.*;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -9,7 +15,7 @@ import org.sonatype.nexus.formfields.*;
  * <p></p>
  * cannot avoid duplication in {@link SecurityCapabilityConfiguration} though
  */
-public enum SecurityCapabilityKey {
+public enum SecurityCapabilityKey implements SecurityCapabilityKeyInterface {
     ENABLE_SCAN_REMOTE(new SecurityCapabilityField<>(
             "security.enable.scan.remote",
             "false",
@@ -44,7 +50,7 @@ public enum SecurityCapabilityKey {
             "",
             "User agent for all requests",
             StringTextFormField.class,
-            SecurityCapabilityKey::uselessStringPlaceholder
+            SecurityCapabilityKeyInterface::uselessStringPlaceholder
     )),
     HTTP_CONNECTION_TIMEOUT(new SecurityCapabilityField<>(
             "security.http.connection.timeout",
@@ -73,14 +79,14 @@ public enum SecurityCapabilityKey {
             "https://localhost",
             "Base url for remote scans",
             UrlFormField.class,
-            SecurityCapabilityKey::uselessStringPlaceholder
+            SecurityCapabilityKeyInterface::uselessStringPlaceholder
     )),
     SCAN_REMOTE_AUTH(new SecurityCapabilityField<>(
             "security.scan.remote.auth",
             "",
             "Auth for remote scans, either login:password or token",
             PasswordFormField.class,
-            SecurityCapabilityKey::uselessStringPlaceholder
+            SecurityCapabilityKeyInterface::uselessStringPlaceholder
     )),
     SCAN_REMOTE_FAIL_ON_ERRORS(new SecurityCapabilityField<>(
             "security.scan.remote.fail.on_scan_errors",
@@ -109,7 +115,7 @@ public enum SecurityCapabilityKey {
             "2022-02-20",
             "All last_modified dates after this one are blocked (inclusive)",
             StringTextFormField.class,
-            SecurityCapabilityKey::uselessStringPlaceholder
+            SecurityCapabilityKeyInterface::uselessStringPlaceholder
     )),
     SCAN_LOCAL_WHITE_LIST(new SecurityCapabilityField<>(
             "security.scan.local.white_list",
@@ -135,7 +141,7 @@ public enum SecurityCapabilityKey {
             }),
             "White list for packages and users",
             TextAreaFormField.class,
-            SecurityCapabilityKey::uselessStringPlaceholder
+            SecurityCapabilityKeyInterface::uselessStringPlaceholder
     )),
 
     MONITORING_URL(new SecurityCapabilityField<>(
@@ -143,45 +149,41 @@ public enum SecurityCapabilityKey {
             "https://localhost:9200",
             "Base url for monitoring",
             UrlFormField.class,
-            SecurityCapabilityKey::uselessStringPlaceholder
+            SecurityCapabilityKeyInterface::uselessStringPlaceholder
     )),
     MONITORING_AUTH(new SecurityCapabilityField<>(
             "security.monitoring.auth",
             "",
             "Auth for monitoring, either login:password or token ",
             PasswordFormField.class,
-            SecurityCapabilityKey::uselessStringPlaceholder
+            SecurityCapabilityKeyInterface::uselessStringPlaceholder
     )),
     MONITORING_ANONYMOUS_USER_ID(new SecurityCapabilityField<>(
             "security.monitoring.anonymous.user_id",
             "anonymous",
             "Username assigned to anonymous requests (for monitoring)",
             StringTextFormField.class,
-            SecurityCapabilityKey::uselessStringPlaceholder
+            SecurityCapabilityKeyInterface::uselessStringPlaceholder
     )),
     MONITORING_PIPELINE(new SecurityCapabilityField<>(
             "security.monitoring.pipeline",
             "timestamp",
             "Which pipeline to use for bulk request",
             StringTextFormField.class,
-            SecurityCapabilityKey::uselessStringPlaceholder
+            SecurityCapabilityKeyInterface::uselessStringPlaceholder
     )),
     MONITORING_INDEX(new SecurityCapabilityField<>(
             "security.monitoring.index",
             "nexus-assets",
             "Which index to use for bulk request",
             StringTextFormField.class,
-            SecurityCapabilityKey::uselessStringPlaceholder
+            SecurityCapabilityKeyInterface::uselessStringPlaceholder
     ));
 
     private final SecurityCapabilityField<?> securityCapabilityField;
 
     SecurityCapabilityKey(SecurityCapabilityField<?> securityCapabilityField) {
         this.securityCapabilityField = securityCapabilityField;
-    }
-
-    private static String uselessStringPlaceholder(String input) {
-        return input;
     }
 
     public String propertyKey() {
@@ -192,8 +194,14 @@ public enum SecurityCapabilityKey {
         return securityCapabilityField.defaultValue();
     }
 
-    public SecurityCapabilityField<?> field() {
+    public SecurityCapabilityField<?> getField() {
         return securityCapabilityField;
+    }
+
+    public List<SecurityCapabilityField<?>> getFields() {
+        return Arrays.stream(values())
+                .map(SecurityCapabilityKey::getField)
+                .collect(Collectors.toList());
     }
 
 }
