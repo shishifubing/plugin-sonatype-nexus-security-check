@@ -44,10 +44,10 @@ public class SecurityCapabilityUpdateTask extends TaskSupport {
             newConfig = response.body();
             if (!response.isSuccessful() || newConfig == null) {
                 throw new RuntimeException(
-                        "Invalid response code or null config: "
+                        "Invalid response code or null config: \ncode "
                                 + response.code()
-                                + ", "
-                                + responseMessage);
+                                + ", message\n'"
+                                + responseMessage + "'\n");
             }
         } catch (Throwable exception) {
             String message = format("Could not update config: %s",

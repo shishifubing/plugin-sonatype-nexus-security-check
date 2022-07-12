@@ -1,6 +1,5 @@
 package com.kongrentian.plugins.nexus.capability;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kongrentian.plugins.nexus.main.BundleHelper;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.velocity.VelocityContext;
@@ -58,11 +57,13 @@ public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConf
     @Override
     protected String renderStatus() {
         try {
-            String status = MAPPER_YAML.writeValueAsString(
+            String remoteConfig = MAPPER_YAML.writeValueAsString(
                     bundleHelper.getBundleConfiguration());
-            return render(
-                    new TemplateParameters(bundleHelper.getCapabilityStatus())
-                            .set(STATUS_KEY_CONFIG_REMOTE, status));
+            String capabilityConfig = MAPPER_YAML.writeValueAsString(
+                    bundleHelper.getCapabilityConfiguration());
+            return render(new TemplateParameters(bundleHelper.getCapabilityStatus())
+                    .set(STATUS_KEY_CONFIG_REMOTE, remoteConfig)
+                    .set(STATUS_KEY_CONFIG_CAPABILITY, capabilityConfig));
         } catch (Throwable exception) {
             LOG.error("Could not render the status", exception);
             return "Could not render the status: <br>"
@@ -95,12 +96,9 @@ public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConf
         update();
     }
 
-    private void update() throws JsonProcessingException {
+    private void update() {
         updateTime = Instant.now();
         bundleHelper.recreateBundleConfigurationApi();
-        bundleHelper.getCapabilityStatus().put(STATUS_KEY_CONFIG_CAPABILITY,
-                MAPPER_YAML.writeValueAsString(
-                        bundleHelper.getCapabilityConfiguration()));
     }
 
     /**
