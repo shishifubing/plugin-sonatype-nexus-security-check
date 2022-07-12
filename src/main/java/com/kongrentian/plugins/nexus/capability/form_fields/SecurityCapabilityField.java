@@ -4,6 +4,7 @@ import org.sonatype.nexus.formfields.AbstractFormField;
 import org.sonatype.nexus.formfields.FormField;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -37,14 +38,14 @@ public final class SecurityCapabilityField<TEMPLATE> {
         this.convertFunction = convertFunction;
     }
 
-    public static List<FormField> createFields(
-            List<SecurityCapabilityField<?>> securityCapabilityFields)
+    public static List<FormField> createFields()
             throws RuntimeException {
-        return securityCapabilityFields
-                .stream()
+        return Arrays.stream(SecurityCapabilityKey.values())
                 .map(securityCapabilityField -> {
                     try {
-                        return securityCapabilityField.createFormField();
+                        return securityCapabilityField
+                                .getField()
+                                .createFormField();
                     } catch (NoSuchMethodException
                              | InvocationTargetException
                              | InstantiationException
