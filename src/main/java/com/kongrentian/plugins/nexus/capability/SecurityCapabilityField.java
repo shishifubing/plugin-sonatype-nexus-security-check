@@ -21,10 +21,10 @@ public final class SecurityCapabilityField<TEMPLATE> {
     private final String description;
 
 
-    // always have to specify convertFunction, even if
+    // you always have to specify convertFunction, even if
     // it is useless,
     // otherwise you will not be able to use `convert`
-    // you can do it if you remove templating, but
+    // you can always do it if you remove templating, but
     // then you will not be able to generate fields
     public SecurityCapabilityField(
             String propertyKey,
