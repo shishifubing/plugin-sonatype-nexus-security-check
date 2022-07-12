@@ -5,7 +5,9 @@ import org.sonatype.nexus.formfields.FormField;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -53,6 +55,15 @@ public final class SecurityCapabilityField<TEMPLATE> {
                         throw new RuntimeException(exception);
                     }
                 }).collect(Collectors.toList());
+    }
+
+    public static Map<String, String> createDefaultProperties()
+            throws RuntimeException {
+        Map<String, String> result = new HashMap<>();
+        for (SecurityCapabilityKey key : SecurityCapabilityKey.values()) {
+            result.put(key.propertyKey(), key.defaultValue());
+        }
+        return result;
     }
 
     public TEMPLATE convert(String input) {

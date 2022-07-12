@@ -15,6 +15,7 @@ import com.kongrentian.plugins.nexus.api.RemoteScanApi;
 import com.kongrentian.plugins.nexus.capability.SecurityCapability;
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityConfiguration;
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityDescriptor;
+import com.kongrentian.plugins.nexus.capability.SecurityCapabilityField;
 import com.kongrentian.plugins.nexus.model.bundle.configuration.BundleConfiguration;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -95,8 +96,7 @@ public class BundleHelper {
                 .setDateFormat(DATE_FORMAT);
     }
 
-    public static CapabilityReference getOrCreateCapability(
-            final CapabilityRegistry capabilityRegistry) {
+    public CapabilityReference getOrCreateCapability() {
         CapabilityReference capabilityReference =
                 capabilityRegistry
                         .get(BundleHelper::isTypeEqual)
@@ -110,11 +110,7 @@ public class BundleHelper {
                 SecurityCapabilityDescriptor.CAPABILITY_TYPE,
                 false,
                 "Automatically created at " + Instant.now().toString(),
-                null);
-    }
-
-    public void getOrCreateCapability() {
-        BundleHelper.getOrCreateCapability(capabilityRegistry);
+                SecurityCapabilityField.createDefaultProperties());
     }
 
     @Nonnull
@@ -129,7 +125,8 @@ public class BundleHelper {
         if (securityCapabilityReference != null) {
             return securityCapabilityReference;
         }
-        return securityCapabilityReference = getOrCreateCapability(capabilityRegistry);
+        securityCapabilityReference = getOrCreateCapability();
+        return securityCapabilityReference;
     }
 
     public void recreateRemoteScanApi() {

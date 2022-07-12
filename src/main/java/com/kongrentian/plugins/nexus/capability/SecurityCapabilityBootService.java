@@ -2,7 +2,6 @@ package com.kongrentian.plugins.nexus.capability;
 
 import com.kongrentian.plugins.nexus.main.BundleHelper;
 import org.sonatype.goodies.lifecycle.LifecycleSupport;
-import org.sonatype.nexus.capability.CapabilityRegistry;
 import org.sonatype.nexus.common.app.ManagedLifecycle;
 
 import javax.inject.Inject;
@@ -18,16 +17,16 @@ import static org.sonatype.nexus.common.app.ManagedLifecycle.Phase.CAPABILITIES;
 public class SecurityCapabilityBootService
         extends LifecycleSupport {
 
-    private final CapabilityRegistry capabilityRegistry;
+    private final BundleHelper bundleHelper;
 
     @Inject
-    public SecurityCapabilityBootService(final CapabilityRegistry capabilityRegistry) {
-        this.capabilityRegistry = capabilityRegistry;
+    public SecurityCapabilityBootService(final BundleHelper bundleHelper) {
+        this.bundleHelper = bundleHelper;
     }
 
     @Override
     protected void doStart() {
-        BundleHelper.getOrCreateCapability(capabilityRegistry);
+        bundleHelper.getOrCreateCapability();
     }
 }
 

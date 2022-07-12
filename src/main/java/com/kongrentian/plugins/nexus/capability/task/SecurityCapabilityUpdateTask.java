@@ -12,12 +12,13 @@ import javax.inject.Named;
 import java.io.IOException;
 import java.util.Map;
 
+import static com.kongrentian.plugins.nexus.capability.SecurityCapability.STATUS_KEY_TASK;
 import static java.lang.String.format;
 
 @Named
 public class SecurityCapabilityUpdateTask extends TaskSupport {
 
-    public static final String STATUS_KEY_TASK = "task status";
+
     private final BundleHelper bundleHelper;
 
     @Inject

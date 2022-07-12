@@ -15,15 +15,16 @@ import java.io.StringWriter;
 import java.time.Instant;
 import java.util.Map;
 
-import static com.kongrentian.plugins.nexus.capability.task.SecurityCapabilityUpdateTask.STATUS_KEY_TASK;
 import static com.kongrentian.plugins.nexus.logging.SecurityLogConfiguration.LOG;
 import static java.lang.String.format;
 
 @Named(SecurityCapabilityDescriptor.CAPABILITY_ID)
 public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConfiguration> {
 
-    public final static String STATUS_KEY_CONFIG = "current remote configuration";
-    public final static String STATUS_KEY_CAPABILITY = "current capability configuration";
+    public final static String STATUS_KEY_CONFIG = "configuration.remote";
+    public final static String STATUS_KEY_CAPABILITY = "configuration.capability";
+
+    public static final String STATUS_KEY_TASK = "status.task";
 
     public final static String capabilityStatusTemplate =
             // apache velocity template
