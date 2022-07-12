@@ -13,6 +13,8 @@ public class BundleConfigurationScanners implements Serializable {
     private BundleConfigurationScannerRemote remote;
 
     public BundleConfigurationScanners() {
+        local = new BundleConfigurationScannerLocal();
+        remote = new BundleConfigurationScannerRemote();
     }
 
     public BundleConfigurationScanners(BundleConfigurationScannerLocal local,

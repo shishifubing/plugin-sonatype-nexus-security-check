@@ -34,6 +34,7 @@ public class SecurityCapabilityUpdateTask extends TaskSupport {
 
         BundleConfiguration newConfig;
         try {
+            bundleHelper.getCapabilityConfiguration();
             Response<BundleConfiguration> response =
                     api.get(bundleHelper
                             .getCapabilityConfiguration()
