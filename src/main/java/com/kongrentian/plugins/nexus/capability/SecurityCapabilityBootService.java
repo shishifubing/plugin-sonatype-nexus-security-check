@@ -8,12 +8,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import static org.sonatype.nexus.common.app.ManagedLifecycle.Phase.CAPABILITIES;
-
 
 @Named
 @Singleton
-@ManagedLifecycle(phase = CAPABILITIES)
+@ManagedLifecycle(phase = ManagedLifecycle.Phase.TASKS)
 public class SecurityCapabilityBootService
         extends LifecycleSupport {
 

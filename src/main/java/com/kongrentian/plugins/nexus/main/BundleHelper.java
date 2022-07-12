@@ -33,8 +33,6 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.kongrentian.plugins.nexus.logging.SecurityLogConfiguration.LOG;
-
 
 @Named
 @Singleton
@@ -105,10 +103,13 @@ public class BundleHelper {
                         .stream()
                         .findFirst()
                         .orElse(null);
-        LOG.debug("found capability: {}", capabilityReference);
         if (capabilityReference != null) {
             return capabilityReference;
         }
+        return createDefaultCapability();
+    }
+
+    public CapabilityReference createDefaultCapability() {
         return capabilityRegistry.add(
                 SecurityCapabilityDescriptor.CAPABILITY_TYPE,
                 false,

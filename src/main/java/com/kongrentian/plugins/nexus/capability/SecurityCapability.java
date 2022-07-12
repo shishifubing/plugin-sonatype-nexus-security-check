@@ -57,15 +57,11 @@ public class SecurityCapability extends CapabilitySupport<SecurityCapabilityConf
     @Override
     protected String renderStatus() {
         try {
-            return render(new TemplateParameters()
-                    .set(STATUS_KEY_TASK,
-                            bundleHelper
-                                    .getCapabilityStatus()
-                                    .get(STATUS_KEY_TASK))
-                    .set(STATUS_KEY_CONFIG,
-                            BundleHelper.yamlMapper
-                                    .writeValueAsString(
-                                            bundleHelper.getBundleConfiguration())));
+            String config = BundleHelper.yamlMapper
+                    .writeValueAsString(bundleHelper.getBundleConfiguration());
+            return render(
+                    new TemplateParameters(bundleHelper.getCapabilityStatus())
+                            .set(STATUS_KEY_CONFIG, config));
         } catch (Throwable exception) {
             LOG.error("Could not render the status", exception);
             return "Could not render the status: <br>"
