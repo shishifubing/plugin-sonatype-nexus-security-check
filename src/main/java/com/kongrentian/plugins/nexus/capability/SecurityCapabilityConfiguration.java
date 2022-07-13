@@ -6,6 +6,7 @@ import org.sonatype.nexus.capability.CapabilityConfigurationSupport;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.kongrentian.plugins.nexus.capability.SecurityCapabilityKey.*;
@@ -37,6 +38,8 @@ public class SecurityCapabilityConfiguration
     private final String configAuth;
     @JsonProperty("config_url_request")
     private final String configUrlRequest;
+    @JsonProperty("config_url_parameters")
+    private final Map<String, String> configUrlParameters = new HashMap<>();
     @JsonProperty("config_override")
     private final String configOverride;
 
@@ -51,6 +54,11 @@ public class SecurityCapabilityConfiguration
         configUrlBase = (String) get(CONFIG_URL_BASE);
         configAuth = (String) get(CONFIG_AUTH);
         configUrlRequest = (String) get(CONFIG_URL_REQUEST);
+        String[] parameters = ((String) get(CONFIG_URL_PARAMETERS))
+                .split("\\w+");
+        for (int index = 0; index < parameters.length; index += 2) {
+            configUrlParameters.put(parameters[index], parameters[index + 1]);
+        }
         configOverride = (String) get(CONFIG_OVERRIDE);
     }
 
@@ -105,6 +113,8 @@ public class SecurityCapabilityConfiguration
         return configUrlRequest;
     }
 
-
+    public Map<String, String> getConfigUrlParameters() {
+        return configUrlParameters;
+    }
 }
 

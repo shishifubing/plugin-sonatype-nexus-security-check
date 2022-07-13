@@ -1,6 +1,7 @@
 package com.kongrentian.plugins.nexus.capability.task;
 
 import com.kongrentian.plugins.nexus.api.BundleConfigurationApi;
+import com.kongrentian.plugins.nexus.capability.SecurityCapabilityConfiguration;
 import com.kongrentian.plugins.nexus.main.BundleHelper;
 import com.kongrentian.plugins.nexus.model.bundle.configuration.BundleConfiguration;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -34,9 +35,10 @@ public class SecurityCapabilityUpdateTask extends TaskSupport {
         Map<String, Object> status = bundleHelper.getCapabilityStatus();
         status.put(STATUS_KEY_TASK, "Getting a new config");
         BundleConfiguration newConfig;
+        SecurityCapabilityConfiguration config = bundleHelper.getCapabilityConfiguration();
         Call<BundleConfiguration> request = api.get(
-                bundleHelper.getCapabilityConfiguration()
-                        .getConfigUrlRequest());
+                config.getConfigUrlRequest(),
+                config.getConfigUrlParameters());
         Response<BundleConfiguration> response = null;
         try {
             response = request.execute();

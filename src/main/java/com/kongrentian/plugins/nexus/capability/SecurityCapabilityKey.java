@@ -15,15 +15,22 @@ public enum SecurityCapabilityKey implements Serializable {
 
     CONFIG_URL_BASE(new SecurityCapabilityFormField<>(
             "security.config.url.base",
-            "https://gitlab.com",
-            "Base url for config requests",
+            "https://gitlab.com/kongrentian-groups/java/nexus-plugin-security-check/-/raw/master/",
+            "Base url for config requests (will not be encoded)",
             UrlFormField.class,
             SecurityCapabilityKey::uselessStringPlaceholder
     )),
     CONFIG_URL_REQUEST(new SecurityCapabilityFormField<>(
             "security.config.url.request",
-            "kongrentian-groups/java/nexus-plugin-security-check/-/raw/master/plugin_config.yml",
-            "Rest of the url for config requests",
+            "plugin_config.yml",
+            "Rest of the url for config requests (will be encoded)",
+            StringTextFormField.class,
+            SecurityCapabilityKey::uselessStringPlaceholder
+    )),
+    CONFIG_URL_PARAMETERS(new SecurityCapabilityFormField<>(
+            "security.config.url.parameters",
+            "",
+            "Parameters for the request, list of keys and values separated by a comma (spaces are allowed)",
             StringTextFormField.class,
             SecurityCapabilityKey::uselessStringPlaceholder
     )),
@@ -84,7 +91,7 @@ public enum SecurityCapabilityKey implements Serializable {
         this.securityCapabilityFormField = securityCapabilityFormField;
     }
 
-    private static String uselessStringPlaceholder(String input) {
+    public static String uselessStringPlaceholder(String input) {
         return input;
     }
 
