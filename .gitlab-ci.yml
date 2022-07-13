@@ -12,7 +12,7 @@ build:
     DIRECTORY_DATA: /var/nexus/data
   rules:
     - changes:
-        - src/*
+        - src/**/*
         - .gitlab-ci.yml
         - docker-compose.yml
         - pom.xml
