@@ -1,8 +1,7 @@
-package com.kongrentian.plugins.nexus.model.bundle.configuration;
+package com.kongrentian.plugins.nexus.model.bundle.configuration.scannerlocal;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kongrentian.plugins.nexus.main.BundleHelper;
-import com.kongrentian.plugins.nexus.model.whitelist.WhiteList;
 import org.joda.time.DateTime;
 
 import java.io.Serializable;

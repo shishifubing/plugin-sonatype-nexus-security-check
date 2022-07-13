@@ -1,4 +1,4 @@
-package com.kongrentian.plugins.nexus.model.whitelist;
+package com.kongrentian.plugins.nexus.model.bundle.configuration.scannerlocal;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

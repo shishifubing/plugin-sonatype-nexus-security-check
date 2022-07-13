@@ -1,0 +1,24 @@
+monitoring:
+  enabled: false
+  auth: ""
+  pipeline: "timestamp"
+  index: "nexus-asset-requests"
+  base_url: "https://localhost:9200"
+  anonymous_user_id: "anonymous"
+scanners:
+  local:
+    enabled: false
+    fail_on_errors: true
+    last_modified: "2022-02-20T00:00:00.000Z"
+    white_list:
+      extensions: [ ]
+      repositories: [ ]
+      users: [ ]
+      formats: [ ]
+      packages: { }
+  remote:
+    enabled: false
+    auth: ""
+    interval: 5
+    base_url: "https://localhost"
+    fail_on_errors: true
