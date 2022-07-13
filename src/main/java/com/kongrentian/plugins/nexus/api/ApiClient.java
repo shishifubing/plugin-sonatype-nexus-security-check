@@ -1,5 +1,6 @@
 package com.kongrentian.plugins.nexus.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kongrentian.plugins.nexus.capability.SecurityCapabilityConfiguration;
 import com.kongrentian.plugins.nexus.model.bundle.configuration.BundleConfiguration;
 import okhttp3.OkHttpClient;
@@ -16,6 +17,7 @@ import java.security.SecureRandom;
 
 import static com.kongrentian.plugins.nexus.logging.SecurityLogConfiguration.LOG;
 import static com.kongrentian.plugins.nexus.main.BundleHelper.MAPPER_JSON;
+import static com.kongrentian.plugins.nexus.main.BundleHelper.MAPPER_YAML;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public class ApiClient {
@@ -23,7 +25,8 @@ public class ApiClient {
     private static <TEMPLATE> TEMPLATE create(Class<TEMPLATE> api,
                                               SecurityCapabilityConfiguration config,
                                               String baseUrl,
-                                              String auth) {
+                                              String auth,
+                                              ObjectMapper mapper) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .connectTimeout(config.getHttpConnectionTimeout(), MILLISECONDS)
                 .readTimeout(config.getHttpReadTimeout(), MILLISECONDS)
@@ -47,7 +50,7 @@ public class ApiClient {
                 .baseUrl(baseUrl)
                 .addConverterFactory(
                         JacksonConverterFactory
-                                .create(MAPPER_JSON))
+                                .create(mapper))
                 .build()
                 .create(api);
     }
@@ -58,7 +61,8 @@ public class ApiClient {
         return create(MonitoringApi.class,
                 capabilityConfiguration,
                 bundleConfiguration.getMonitoring().getBaseUrl(),
-                bundleConfiguration.getMonitoring().getAuth());
+                bundleConfiguration.getMonitoring().getAuth(),
+                MAPPER_JSON);
     }
 
     public static RemoteScanApi createRemoteScanApi(
@@ -67,7 +71,8 @@ public class ApiClient {
         return create(RemoteScanApi.class,
                 capabilityConfiguration,
                 bundleConfiguration.getScanners().getRemote().getBaseUrl(),
-                bundleConfiguration.getScanners().getRemote().getAuth());
+                bundleConfiguration.getScanners().getRemote().getAuth(),
+                MAPPER_JSON);
     }
 
     public static BundleConfigurationApi createBundleConfigurationApi(
@@ -75,7 +80,8 @@ public class ApiClient {
         return create(BundleConfigurationApi.class,
                 capabilityConfiguration,
                 capabilityConfiguration.getConfigUrlBase(),
-                capabilityConfiguration.getConfigAuth());
+                capabilityConfiguration.getConfigAuth(),
+                MAPPER_YAML);
     }
 
     private static void buildUnsafeTrustManager(OkHttpClient.Builder builder)
