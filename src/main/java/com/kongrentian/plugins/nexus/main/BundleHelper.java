@@ -109,7 +109,7 @@ public class BundleHelper {
     public CapabilityReference createDefaultCapability() {
         return capabilityRegistry.add(
                 SecurityCapabilityDescriptor.CAPABILITY_TYPE,
-                false,
+                true,
                 "Automatically created at " + Instant.now().toString(),
                 SecurityCapabilityFormField.createDefaultProperties());
     }
