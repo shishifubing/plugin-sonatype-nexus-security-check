@@ -7,9 +7,10 @@ import java.io.Serializable;
 public class BundleConfiguration implements Serializable {
 
     @JsonProperty
-    private final BundleConfigurationMonitoring monitoring;
+    private BundleConfigurationMonitoring monitoring;
     @JsonProperty
-    private final BundleConfigurationScanners scanners;
+    private BundleConfigurationScanners scanners;
+
 
     public BundleConfiguration() {
         monitoring = new BundleConfigurationMonitoring();
@@ -26,10 +27,19 @@ public class BundleConfiguration implements Serializable {
         return monitoring;
     }
 
+    public BundleConfiguration setMonitoring(BundleConfigurationMonitoring monitoring) {
+        this.monitoring = monitoring;
+        return this;
+    }
+
     public BundleConfigurationScanners getScanners() {
         return scanners;
     }
 
+    public BundleConfiguration setScanners(BundleConfigurationScanners scanners) {
+        this.scanners = scanners;
+        return this;
+    }
 }
 
 
