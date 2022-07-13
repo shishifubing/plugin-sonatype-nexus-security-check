@@ -39,11 +39,12 @@ public class SecurityCapabilityUpdateTask extends TaskSupport {
         Call<BundleConfiguration> request = api.get(
                 config.getConfigUrlRequest(),
                 config.getConfigUrlParameters());
+        log.info("request parameters: {}", config.getConfigUrlParameters());
         Response<BundleConfiguration> response = null;
         try {
             response = request.execute();
             String responseMessage = response.message();
-            log.debug("Config update response: {}",
+            log.info("Config update response: {}",
                     responseMessage);
             newConfig = response.body();
             if (!response.isSuccessful() || newConfig == null) {
