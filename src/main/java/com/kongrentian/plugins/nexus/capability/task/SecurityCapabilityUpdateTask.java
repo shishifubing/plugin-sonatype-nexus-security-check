@@ -63,7 +63,7 @@ public class SecurityCapabilityUpdateTask extends TaskSupport {
         }
         bundleHelper.setBundleConfiguration(newConfig);
         status.put(STATUS_KEY_TASK,
-                "Successfully updated the config"
+                "Successfully updated the config at "
                         + Instant.now());
         return null;
     }

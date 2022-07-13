@@ -1,5 +1,5 @@
 monitoring:
-  enabled: false
+  enabled: true
   auth: ""
   pipeline: "timestamp"
   index: "nexus-asset-requests"
