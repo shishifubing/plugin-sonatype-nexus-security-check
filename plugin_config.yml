@@ -11,11 +11,22 @@ scanners:
     fail_on_errors: true
     last_modified: "2022-02-20T00:00:00.000Z"
     white_list:
-      extensions: [ ]
-      repositories: [ ]
-      users: [ ]
-      formats: [ ]
-      packages: { }
+      extensions:
+        - json
+      repositories:
+        - repository_name
+      users:
+        - user
+      formats:
+        - go
+      packages:
+        pypi:
+          pip:
+            21.3.1:
+              allowed: true
+          autoscroll:
+            0.0.1:
+              allowed_date: 2022-03-01
   remote:
     enabled: false
     auth: ""

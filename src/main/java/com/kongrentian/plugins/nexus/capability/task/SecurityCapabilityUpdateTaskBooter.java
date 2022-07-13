@@ -5,6 +5,7 @@ import org.sonatype.goodies.lifecycle.LifecycleSupport;
 import org.sonatype.nexus.common.app.ManagedLifecycle;
 import org.sonatype.nexus.scheduling.TaskConfiguration;
 import org.sonatype.nexus.scheduling.TaskInfo;
+import org.sonatype.nexus.scheduling.TaskRemovedException;
 import org.sonatype.nexus.scheduling.TaskScheduler;
 import org.sonatype.nexus.scheduling.schedule.Cron;
 import org.sonatype.nexus.scheduling.schedule.Schedule;
@@ -24,7 +25,7 @@ import static org.sonatype.nexus.common.app.ManagedLifecycle.Phase.TASKS;
 @Named
 @Singleton
 @ManagedLifecycle(phase = TASKS)
-public class SecurityCapabilityUpdateTaskBootService
+public class SecurityCapabilityUpdateTaskBooter
         extends LifecycleSupport {
 
     // every five minutes
@@ -33,7 +34,7 @@ public class SecurityCapabilityUpdateTaskBootService
     private final TaskScheduler taskScheduler;
 
     @Inject
-    public SecurityCapabilityUpdateTaskBootService(final TaskScheduler taskScheduler) {
+    public SecurityCapabilityUpdateTaskBooter(final TaskScheduler taskScheduler) {
         this.taskScheduler = checkNotNull(taskScheduler);
     }
 
@@ -71,17 +72,21 @@ public class SecurityCapabilityUpdateTaskBootService
                 .listsTasks()
                 .stream()
                 .filter(isUpdateTask())
-                .filter(info -> TASK_NAME
-                        .equals(info.getConfiguration().getName()))
+                .filter(info -> TASK_NAME.equals(
+                        info.getConfiguration().getName()))
                 .filter(scheduleMatches())
                 .collect(Collectors.toList());
 
-        if (tasks.size() < 2) {
+        if (tasks.size() == 0) {
             return;
         }
         tasks.subList(1, tasks.size())
                 .forEach(TaskInfo::remove);
-
+        try {
+            tasks.get(0).runNow();
+        } catch (TaskRemovedException exception) {
+            log.error("Could not run the update task on startup", exception);
+        }
     }
 
     private boolean doesTaskExist() {
