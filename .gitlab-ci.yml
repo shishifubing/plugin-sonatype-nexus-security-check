@@ -11,10 +11,11 @@ build:
     DIRECTORY_DEPLOY: /var/nexus/deploy
     DIRECTORY_DATA: /var/nexus/data
   rules:
-    - changes: ./src/*
-    - changes: ./.gitlab-ci.yml
-    - changes: ./docker-compose.yml
-    - changes: ./pom.xml
+    - changes:
+        - src/*
+        - .gitlab-ci.yml
+        - docker-compose.yml
+        - pom.xml
   artifacts:
     paths:
       - target/*.kar
