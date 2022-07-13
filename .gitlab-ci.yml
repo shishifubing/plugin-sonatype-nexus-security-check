@@ -10,6 +10,11 @@ build:
     NEXUS_VERSION: 3.37.3
     DIRECTORY_DEPLOY: /var/nexus/deploy
     DIRECTORY_DATA: /var/nexus/data
+  rules:
+    - changes: ./src/*
+    - changes: ./.gitlab-ci.yml
+    - changes: ./docker-compose.yml
+    - changes: ./pom.xml
   artifacts:
     paths:
       - target/*.kar
