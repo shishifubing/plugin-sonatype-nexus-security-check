@@ -56,7 +56,7 @@ public class SecurityCapabilityConfiguration
         configUrlRequest = (String) get(CONFIG_URL_REQUEST);
         String[] parameters = ((String) get(CONFIG_URL_PARAMETERS))
                 .split("\\w+");
-        for (int index = 0; index < parameters.length; index += 2) {
+        for (int index = 0; index + 1 < parameters.length; index += 2) {
             configUrlParameters.put(parameters[index], parameters[index + 1]);
         }
         configOverride = (String) get(CONFIG_OVERRIDE);
