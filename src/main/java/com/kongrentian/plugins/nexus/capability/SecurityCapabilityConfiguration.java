@@ -55,7 +55,7 @@ public class SecurityCapabilityConfiguration
         configAuth = (String) get(CONFIG_AUTH);
         configUrlRequest = (String) get(CONFIG_URL_REQUEST);
         String[] parameters = ((String) get(CONFIG_URL_PARAMETERS))
-                .split("\\w+");
+                .split("\\s*,\\s*");
         for (int index = 0; index + 1 < parameters.length; index += 2) {
             configUrlParameters.put(parameters[index], parameters[index + 1]);
         }

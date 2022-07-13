@@ -39,7 +39,6 @@ public class SecurityCapabilityUpdateTask extends TaskSupport {
         Call<BundleConfiguration> request = api.get(
                 config.getConfigUrlRequest(),
                 config.getConfigUrlParameters());
-        log.info("request parameters: {}", config.getConfigUrlParameters());
         Response<BundleConfiguration> response = null;
         try {
             response = request.execute();
