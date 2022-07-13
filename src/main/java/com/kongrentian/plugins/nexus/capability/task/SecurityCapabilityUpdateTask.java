@@ -45,22 +45,24 @@ public class SecurityCapabilityUpdateTask extends TaskSupport {
                     responseMessage);
             newConfig = response.body();
             if (!response.isSuccessful() || newConfig == null) {
-                throw new RuntimeException("Invalid response code or null config:");
+                throw new RuntimeException(format(
+                        "Invalid response code or null config:\n%s, message\n'%s'\n",
+                        response.code(),
+                        responseMessage));
             }
         } catch (Throwable exception) {
-            String message = format(
+            status.put(STATUS_KEY_TASK, format(
                     "Could not update config at %s:\n%s\n%s\n%s",
                     Instant.now(),
-                    request,
+                    request.request().url(),
                     response,
-                    ExceptionUtils.getStackTrace(exception));
-            log.error(message);
-            status.put(STATUS_KEY_TASK, message);
+                    ExceptionUtils.getStackTrace(exception)));
             throw exception;
         }
         bundleHelper.setBundleConfiguration(newConfig);
         status.put(STATUS_KEY_TASK,
-                "Successfully updated the config");
+                "Successfully updated the config"
+                        + Instant.now());
         return null;
     }
 

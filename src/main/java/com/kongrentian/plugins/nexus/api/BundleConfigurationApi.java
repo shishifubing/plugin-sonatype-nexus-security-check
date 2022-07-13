@@ -7,5 +7,5 @@ import retrofit2.http.Path;
 
 public interface BundleConfigurationApi {
     @GET("{path}")
-    Call<BundleConfiguration> get(@Path("path") String path);
+    Call<BundleConfiguration> get(@Path(value = "path", encoded = true) String path);
 }
