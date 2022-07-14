@@ -7,7 +7,7 @@ monitoring:
   anonymous_user_id: "anonymous"
 scanners:
   local:
-    enabled: false
+    enabled: true
     fail_on_errors: true
     last_modified: "2022-02-20T00:00:00.000Z"
     white_list:
