@@ -18,7 +18,7 @@ public class SecurityLogConfiguration
 
     @Override
     public void customize(final Configuration configuration) {
-        configuration.setLoggerLevel("com.kongrentian.plugins.nexus",
+        configuration.setLoggerLevel(RequestHandler.class.getName(),
                 LoggerLevel.INFO);
     }
 }

@@ -78,7 +78,6 @@ public class RequestHandler implements ContributedHandler {
         }
         Component component = componentStore.read(asset.componentId());
 
-
         BundleConfiguration config = bundleHelper.getBundleConfiguration();
         String userId = (String) request
                 .getAttributes()
@@ -89,7 +88,8 @@ public class RequestHandler implements ContributedHandler {
                     .getAnonymousUserId();
         }
         RequestInformation information = new RequestInformation(
-                userId, repository, content, asset, component, request);
+                userId, repository, content,
+                asset, component, request);
         MonitoringInformation results = new MonitoringInformation(information);
         for (AbstractScanner scanner : getScanners(config)) {
             ScanResult result = scanner.scan(information);

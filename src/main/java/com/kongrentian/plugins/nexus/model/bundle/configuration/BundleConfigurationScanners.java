@@ -1,7 +1,6 @@
 package com.kongrentian.plugins.nexus.model.bundle.configuration;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.kongrentian.plugins.nexus.model.bundle.configuration.scannerlocal.BundleConfigurationScannerLocal;
 
 import java.io.Serializable;
 

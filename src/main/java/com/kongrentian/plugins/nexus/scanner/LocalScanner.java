@@ -2,11 +2,11 @@ package com.kongrentian.plugins.nexus.scanner;
 
 import com.kongrentian.plugins.nexus.main.BundleHelper;
 import com.kongrentian.plugins.nexus.model.bundle.configuration.BundleConfiguration;
-import com.kongrentian.plugins.nexus.model.bundle.configuration.scannerlocal.BundleConfigurationScannerLocal;
-import com.kongrentian.plugins.nexus.model.bundle.configuration.scannerlocal.WhiteList;
+import com.kongrentian.plugins.nexus.model.bundle.configuration.BundleConfigurationScannerLocal;
 import com.kongrentian.plugins.nexus.model.information.request.RequestInformation;
 import com.kongrentian.plugins.nexus.model.scanresult.ScanResult;
 import com.kongrentian.plugins.nexus.model.scanresult.ScanResultType;
+import com.kongrentian.plugins.nexus.model.white_list.WhiteList;
 import org.joda.time.DateTime;
 import org.sonatype.nexus.repository.storage.AssetStore;
 

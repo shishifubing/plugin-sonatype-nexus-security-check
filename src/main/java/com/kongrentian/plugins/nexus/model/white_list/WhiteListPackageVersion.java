@@ -1,4 +1,4 @@
-package com.kongrentian.plugins.nexus.model.bundle.configuration.scannerlocal;
+package com.kongrentian.plugins.nexus.model.white_list;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
