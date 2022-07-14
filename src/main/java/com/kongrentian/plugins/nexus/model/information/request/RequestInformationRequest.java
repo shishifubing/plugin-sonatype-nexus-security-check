@@ -13,7 +13,10 @@ public class RequestInformationRequest implements Serializable {
     private final String userId;
 
     public RequestInformationRequest(Request request, String userId) {
-        this.path = request.getPath();
+        this.path = (String) request
+                .getAttributes()
+                .get("javax.servlet.include.servlet_path",
+                        request.getPath());
         this.userId = userId;
     }
 
