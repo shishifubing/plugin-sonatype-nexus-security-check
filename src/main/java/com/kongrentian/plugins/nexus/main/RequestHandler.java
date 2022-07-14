@@ -25,7 +25,6 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static com.kongrentian.plugins.nexus.logging.SecurityLogConfiguration.LOG;
 import static com.kongrentian.plugins.nexus.main.BundleHelper.MAPPER_JSON;
@@ -67,14 +66,6 @@ public class RequestHandler implements ContributedHandler {
             return response;
         }
         Request request = context.getRequest();
-        LOG.info("REQUEST SERVLET - {}", request.getAttributes().get("javax.servlet.include.servlet_path"));
-        for (Map.Entry entry : request.getAttributes().entries()) {
-            LOG.info("REQUEST ENTRY {}/{} - {}: {}",
-                    entry.getKey().getClass(),
-                    entry.getValue().getClass(),
-                    entry.getKey(),
-                    entry.getValue());
-        }
         Payload payload = response.getPayload();
         if (!(payload instanceof Content)) {
             return response;
