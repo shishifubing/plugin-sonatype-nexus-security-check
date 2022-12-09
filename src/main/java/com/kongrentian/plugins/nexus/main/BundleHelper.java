@@ -42,18 +42,14 @@ public class BundleHelper {
     public final static String DATE_FORMAT_PATTERN = "yyyy-MM-dd";
     public final static SimpleDateFormat DATE_FORMAT =
             new SimpleDateFormat(DATE_FORMAT_PATTERN);
-    public final static ObjectMapper MAPPER_YAML =
-            configureObjectMapper(new ObjectMapper(
-                    new YAMLFactory().disable(
-                            YAMLGenerator.Feature.WRITE_DOC_START_MARKER)));
+    public final static ObjectMapper MAPPER_YAML = configureObjectMapper(new ObjectMapper(
+            new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER)));
 
 
     public final static ObjectMapper MAPPER_JSON =
             configureObjectMapper(new ObjectMapper());
-    private static final DateTimeFormatter dateTimeFormatter =
-            DateTimeFormat
-                    .forPattern(DATE_FORMAT_PATTERN)
-                    .withZone(DateTimeZone.UTC);
+    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormat
+            .forPattern(DATE_FORMAT_PATTERN).withZone(DateTimeZone.UTC);
     private final CapabilityRegistry capabilityRegistry;
     private final Map<String, Object> capabilityStatus = new HashMap<>();
     private BundleConfiguration bundleConfiguration = new BundleConfiguration();

@@ -36,8 +36,7 @@ public class ApiClient {
             if (!config.getHttpSSLVerify()) {
                 buildUnsafeTrustManager(builder);
             }
-        } catch (KeyManagementException
-                 | NoSuchAlgorithmException exception) {
+        } catch (KeyManagementException | NoSuchAlgorithmException exception) {
             LOG.error("Could not build unsafe trust manager", exception);
         }
 
