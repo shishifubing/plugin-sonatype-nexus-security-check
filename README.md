@@ -9,13 +9,16 @@
 
 Security plugin for Sonatype Nexus 3
 
+![BPMN diagram][diagram]
+
 <!-- relative links -->
+
+[diagram]: ./doc/diagram.svg
 
 <!-- project links -->
 
 [repo-url]: https://github.com/shishifubing/plugin-sonatype-nexus-security-check
 [license-url]: https://github.com/shishifubing/plugin-sonatype-nexus-security-check/blob/main/LICENSE
-
 
 <!-- external links -->
 
