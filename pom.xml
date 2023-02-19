@@ -5,7 +5,7 @@
 
     <properties>
         <version.retrofit2>2.9.0</version.retrofit2>
-        <version.snakeyaml>1.30</version.snakeyaml>
+        <version.snakeyaml>1.32</version.snakeyaml>
         <version.velocity>1.7</version.velocity>
         <version.karaf-maven-plugin>4.4.0</version.karaf-maven-plugin>
         <version.maven-bundle-plugin>5.1.4</version.maven-bundle-plugin>
