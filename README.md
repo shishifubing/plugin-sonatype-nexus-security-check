@@ -9,7 +9,9 @@ Security plugin for Sonatype Nexus 3
 
 </div>
 
-# About The Project
+## About The Project
+
+### BPMN diagram
 
 ![BPMN diagram]
 
