@@ -1,0 +1,17 @@
+name: Tag
+
+on:
+  push:
+    branches:
+      - "main"
+    paths-ignore:
+      - README.md
+      - docs/**
+      - .github/**/*.md
+      - .github/FUNDING.yml
+      - .github/ISSUE_TEMPLATE/**
+
+jobs:
+  tag:
+    uses: shishifubing/ci-actions-common/.github/workflows/tag.yml@main
+    secrets: inherit
