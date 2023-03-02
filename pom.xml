@@ -17,7 +17,7 @@
         <version>3.37.3-02</version>
     </parent>
 
-    <groupId>kongrentian</groupId>
+    <groupId>shishifubing</groupId>
     <artifactId>nexus-security-plugin</artifactId>
     <version>${revision}</version>
     <packaging>bundle</packaging>
