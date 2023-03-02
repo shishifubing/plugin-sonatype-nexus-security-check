@@ -11,13 +11,15 @@ Security plugin for Sonatype Nexus 3
 
 ## About The Project
 
+This plugin allows you to perform a check every time an artifact is requested from a repository.
+
 ### BPMN diagram
 
 ![BPMN diagram]
 
 <!-- relative links -->
 
-[BPMN diagram]: ./doc/diagram.svg
+[BPMN diagram]: docs/diagram.svg
 
 <!-- project links -->
 
