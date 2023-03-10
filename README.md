@@ -11,7 +11,7 @@ Security plugin for Sonatype Nexus 3
 
 ## About The Project
 
-This plugin allows you to perform a check every time an artifact is requested from a repository.
+This plugin allows you to perform a check every time an artifact is requested from a repository
 
 ### BPMN diagram
 
@@ -30,5 +30,5 @@ This plugin allows you to perform a check every time an artifact is requested fr
 
 <!-- shield links -->
 
-[shield-status-finished]: https://img.shields.io/badge/status-finished-informational?style=for-the-badge
-[shield-license]: https://img.shields.io/github/license/shishifubing/plugin-sonatype-nexus-security-check.svg?style=for-the-badge
+[shield-status-finished]: https://img.shields.io/badge/status-finished-informational
+[shield-license]: https://img.shields.io/github/license/shishifubing/plugin-sonatype-nexus-security-check.svg
