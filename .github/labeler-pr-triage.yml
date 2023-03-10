@@ -1,0 +1,18 @@
+#needs-triage:
+#  - "**/*"
+
+repo:
+  - "*"
+
+documentation:
+  - docs/**/*
+  - "*.md"
+
+github-actions:
+  - .github/**/*
+
+dependencies:
+  - .github/dependabot.yml
+
+examples:
+  - examples/**/*
