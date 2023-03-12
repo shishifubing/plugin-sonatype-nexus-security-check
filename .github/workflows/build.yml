@@ -12,5 +12,5 @@ on:
 
 jobs:
   build:
-    name: reuse / build
+    name: reuse-build
     uses: ./.github/workflows/reuse-build.yml
