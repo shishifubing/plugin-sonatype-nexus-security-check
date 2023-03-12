@@ -8,11 +8,11 @@ on:
 
 jobs:
   info:
-    name: reuse / release-info
+    name: reuse-release-info
     uses: shishifubing/ci-actions-common/.github/workflows/release-info.yml@main
 
   build:
-    name: reuse / build
+    name: reuse-build
     uses: ./.github/workflows/reuse-build.yml
     secrets: inherit
     needs: info
@@ -20,7 +20,7 @@ jobs:
       version: ${{ needs.info.outputs.version }}
 
   release:
-    name: reuse / release
+    name: reuse-release
     uses: shishifubing/ci-actions-common/.github/workflows/release.yml@main
     needs: build
     secrets: inherit
