@@ -1,4 +1,4 @@
-name: build-local
+name: build
 
 on:
   push:
@@ -13,4 +13,4 @@ on:
 jobs:
   build:
     name: reuse / build
-    uses: ./.github/workflows/build.yml
+    uses: ./.github/workflows/reuse-build.yml
