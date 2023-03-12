@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      
+
 jobs:
   tag:
     uses: shishifubing/ci-actions-common/.github/workflows/tag.yml@main
