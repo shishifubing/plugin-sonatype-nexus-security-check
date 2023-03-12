@@ -1,44 +1,16 @@
 name: build
 
 on:
-  workflow_call:
-    inputs:
-      version:
-        description: artifact version
-        default: LOCAL-SNAPSHOT-${{ github.sha }}-${{ github.run_attempt }}
-        type: string
-
-concurrency:
-  cancel-in-progress: true
-  group: build-${{ github.head_ref || github.run_id }}
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - src
+      - .github/**/*
+  workflow_dispatch:
 
 jobs:
   build:
-    name: Build .kar
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
-
-      - name: Set up JDK 11
-        uses: actions/setup-java@3f07048e3d294f56e9b90ac5ea2c6f74e9ad0f98 # v3.10.0
-        with:
-          java-version: 11
-          distribution: temurin
-          cache: maven
-
-      - name: Build
-        run: |
-          ./mvnw clean verify                  \
-            -P buildKar                        \
-            -Drevision="${{ inputs.version }}" \
-            --show-version                     \
-            --batch-mode                       \
-            --errors
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3.1.2
-        with:
-          path: target/*.kar
-          name: plugin
+    name: reuse / build
+    uses: ./.github/workflows/reuse-build.yml
