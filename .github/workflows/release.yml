@@ -7,9 +7,15 @@ on:
   workflow_dispatch:
 
 jobs:
+  info:
+    uses: shishifubing/ci-actions-common/.github/workflows/release-info.yml@main
+
   build:
     uses: ./.github/workflows/build.yml
     secrets: inherit
+    needs: info
+    with:
+      version: ${{ needs.info.outputs.version }}
 
   release:
     uses: shishifubing/ci-actions-common/.github/workflows/release.yml@main
