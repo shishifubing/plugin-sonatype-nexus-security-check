@@ -7,18 +7,19 @@
         <version.retrofit2>2.9.0</version.retrofit2>
         <version.snakeyaml>2.0</version.snakeyaml>
         <version.velocity>1.7</version.velocity>
-        <version.karaf-maven-plugin>4.4.0</version.karaf-maven-plugin>
-        <version.maven-bundle-plugin>5.1.4</version.maven-bundle-plugin>
-        <revision>3.37.3-02</revision>
+        <!-- will be overridden in CD pipeline -->
+        <revision>LOCAL-SNAPSHOT</revision>
     </properties>
+
     <parent>
         <groupId>org.sonatype.nexus.plugins</groupId>
         <artifactId>nexus-plugins</artifactId>
-        <version>3.37.3-02</version>
+        <version>3.49.0-02</version>
     </parent>
 
     <groupId>shishifubing</groupId>
     <artifactId>nexus-security-plugin</artifactId>
+    <name>${project.groupId}:${project.artifactId}</name>
     <version>${revision}</version>
     <packaging>bundle</packaging>
 
@@ -28,7 +29,6 @@
                 <plugin>
                     <groupId>org.apache.karaf.tooling</groupId>
                     <artifactId>karaf-maven-plugin</artifactId>
-                    <version>${version.karaf-maven-plugin}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -36,7 +36,6 @@
             <plugin>
                 <groupId>org.apache.karaf.tooling</groupId>
                 <artifactId>karaf-maven-plugin</artifactId>
-                <version>${version.karaf-maven-plugin}</version>
             </plugin>
         </plugins>
     </build>

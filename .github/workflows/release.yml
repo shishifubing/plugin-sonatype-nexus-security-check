@@ -1,0 +1,28 @@
+name: release
+
+on:
+  schedule:
+    # daily at 23:00 UTC
+    - cron: 0 23 * * *
+  workflow_dispatch:
+
+jobs:
+  info:
+    name: reuse / release-info
+    uses: shishifubing/ci-actions-common/.github/workflows/release-info.yml@main
+
+  build:
+    name: reuse / build
+    uses: ./.github/workflows/build.yml
+    secrets: inherit
+    needs: info
+    with:
+      version: ${{ needs.info.outputs.version }}
+
+  release:
+    name: reuse / release
+    uses: shishifubing/ci-actions-common/.github/workflows/release.yml@main
+    needs: build
+    secrets: inherit
+    with:
+      download: true

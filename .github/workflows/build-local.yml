@@ -1,0 +1,16 @@
+name: build-local
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - src
+      - .github/**/*
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: reuse / build
+    uses: ./.github/workflows/build.yml
