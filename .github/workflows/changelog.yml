@@ -6,6 +6,6 @@ on:
 
 jobs:
   update:
-    name: Reuse changelog
+    name: reuse / changelog
     uses: shishifubing/ci-actions-common/.github/workflows/changelog.yml@main
     secrets: inherit
