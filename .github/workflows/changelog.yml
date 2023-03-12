@@ -1,0 +1,10 @@
+name: changelog
+
+on:
+  release:
+    types: [released]
+
+jobs:
+  update:
+    uses: shishifubing/ci-actions-common/.github/workflows/changelog.yml@main
+    secrets: inherit
