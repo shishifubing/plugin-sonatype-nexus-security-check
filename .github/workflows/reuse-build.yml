@@ -10,7 +10,7 @@ on:
 
 concurrency:
   cancel-in-progress: true
-  group: build-${{ github.head_ref || github.run_id }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
 
 jobs:
   build:
