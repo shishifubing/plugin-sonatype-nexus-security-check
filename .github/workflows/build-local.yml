@@ -8,10 +8,9 @@ on:
     paths:
       - src
       - .github/**/*
+  workflow_dispatch:
 
 jobs:
   build:
     name: Reuse build
     uses: ./.github/workflows/build.yml
-    with:
-      version: LOCAL-SNAPSHOT-${{ github.sha }}-${{ github.run_attempt }}
