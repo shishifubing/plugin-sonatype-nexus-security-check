@@ -13,7 +13,7 @@ jobs:
 
   build:
     name: reuse / build
-    uses: ./.github/workflows/build.yml
+    uses: ./.github/workflows/reuse-build.yml
     secrets: inherit
     needs: info
     with:
